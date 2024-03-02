@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaef5d30ab8397d4898a381aba4f3e7d, type: 3}
   m_Name: A2
   m_EditorClassIdentifier: 
-  areaName: Where it all began
-  paletteIndex: 1
+  areaName: The rat's nest
+  paletteIndex: 3
   contrastText: 0
   colorText: {r: 0, g: 0, b: 0, a: 0}
   roomList:
-  - {fileID: 11400000, guid: defaf318916236b4aa647e145faadc0c, type: 2}
+  - {fileID: 11400000, guid: c12b7bad6a8c9d3409a821169b20a393, type: 2}

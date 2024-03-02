@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,8 @@ public class GlobalHelper
     public static Dictionary<string, List<Room>> roomDatas;
 
     public static List<Area> areaList;
-
+    public static System.Random rand;
+    public static List<UnitData> unitDataList;
     public static GlobalVariables getGlobal()
     {
         return GlobalVariables;
@@ -33,6 +35,12 @@ public class GlobalHelper
     /// </summary>
     public static void LoadGame()
     {
+        if(GlobalVariables.GenerateSeed)
+        {
+            GlobalVariables.seed = Environment.TickCount;
+
+        }
+        rand = new System.Random(GlobalVariables.seed);
         roomDatas = new Dictionary<string, List<Room>>();
         areaList = Resources.LoadAll<Area>("Areas").ToList();
         int roomCount = 0;
@@ -55,10 +63,16 @@ public class GlobalHelper
             area.roomList = roomDatas[area.name]; 
         }
         Debug.Log("Sucessfully loaded" + roomDatas.Keys.Count + " Areas");
+        unitDataList = Resources.LoadAll<UnitData>("Data/Units").ToList();
     }
     public static GameObject GetRoomPrefab(string roomIndex)
     {
         return Resources.Load<GameObject>("Prefabs/Rooms/" + roomIndex);
+    }
+
+    public static UnitData GetUnitData(string identifier)
+    {
+        return unitDataList.FirstOrDefault((x)=> x.unitName == identifier);
     }
 
 }

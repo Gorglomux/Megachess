@@ -9,11 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7818c817b7df0ec4cbbc34440d52c96f, type: 3}
-  m_Name: A2R1
+  m_Script: {fileID: 11500000, guid: aaef5d30ab8397d4898a381aba4f3e7d, type: 3}
+  m_Name: A3
   m_EditorClassIdentifier: 
-  roomName: A Cramped place
-  roomPrefab: {fileID: 0}
-  par: 3
-  isTutorial: 0
-  isBoss: 0
+  areaName: Deeper crevice
+  paletteIndex: 15
+  contrastText: 0
+  colorText: {r: 0, g: 0, b: 0, a: 0}
+  roomList:
+  - {fileID: 11400000, guid: c12b7bad6a8c9d3409a821169b20a393, type: 2}
+  shuffleArea: 1

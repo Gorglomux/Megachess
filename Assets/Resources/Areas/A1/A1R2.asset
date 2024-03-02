@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7818c817b7df0ec4cbbc34440d52c96f, type: 3}
-  m_Name: A2R1
+  m_Name: A1R2
   m_EditorClassIdentifier: 
-  roomName: A Cramped place
+  roomName: A Horsey Problem
   roomPrefab: {fileID: 0}
   par: 3
-  isTutorial: 0
+  isTutorial: 1
   isBoss: 0

@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: A1R1
   m_EditorClassIdentifier: 
   roomName: Warm Greetings
-  roomIndex: 
-  roomPrefab: {fileID: 0}
+  roomPrefab: {fileID: 7856683090932274919, guid: 60e555f7015cf8740990a889e03fe82c, type: 3}
   par: 5
-  isTutorial: 0
+  isTutorial: 1
   isBoss: 0

@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PaletteSwap
+  m_Name: OldPaletteSwap
   m_Shader: {fileID: -6465566751694194690, guid: af73f1fe6ab9abc4a9214d81e8ac7fcc, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []

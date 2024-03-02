@@ -6,9 +6,13 @@ public class GlobalInitializer : MonoBehaviour
 {
 
     public GlobalVariables global;
+    public Material paletteMaterial;
+    public GameObject unitPrefab;
     private void Awake()
     {
         GlobalHelper.GlobalVariables = global;
+        global.paletteMaterial = paletteMaterial;
+        global.unitPrefab = unitPrefab;
         GlobalHelper.LoadGame();
     }
 

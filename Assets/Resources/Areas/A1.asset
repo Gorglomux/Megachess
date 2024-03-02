@@ -13,8 +13,11 @@ MonoBehaviour:
   m_Name: A1
   m_EditorClassIdentifier: 
   areaName: Where it all began
-  paletteIndex: 1
+  paletteIndex: 14
   contrastText: 0
   colorText: {r: 0, g: 0, b: 0, a: 0}
   roomList:
+  - {fileID: 11400000, guid: ea8badaa7eba7644ab2bb47e6be35273, type: 2}
+  - {fileID: 11400000, guid: 839b9ef43e6ea584dad158cfb061cac9, type: 2}
   - {fileID: 11400000, guid: defaf318916236b4aa647e145faadc0c, type: 2}
+  shuffleArea: 1

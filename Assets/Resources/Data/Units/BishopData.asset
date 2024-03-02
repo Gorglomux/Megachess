@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7818c817b7df0ec4cbbc34440d52c96f, type: 3}
-  m_Name: A2R1
+  m_Script: {fileID: 11500000, guid: ee64ea7af66fc514b9895e63be2103c5, type: 3}
+  m_Name: BishopData
   m_EditorClassIdentifier: 
-  roomName: A Cramped place
-  roomPrefab: {fileID: 0}
-  par: 3
-  isTutorial: 0
+  unitName: Bishop
+  sprite: {fileID: -137377275, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
+  baseCost: 3
   isBoss: 0
+  effectDatas: []
