@@ -24,10 +24,12 @@ public class Unit : MonoBehaviour , IClickable, IHoverable
     public List<Func<List<Vector3Int>, Tilemap>> movementMethods;
     public List<Func<List<Vector3Int>, Tilemap>> attackMethods;
 
-    public int basePaletteIndex;
+    private int basePaletteIndex = -1;
 
     public List<EffectData> currentEffects;
+    public bool isEnemy = false;
 
+    public int health;
 
     public RoomView _room;
     public RoomView roomRef { get
@@ -45,19 +47,29 @@ public class Unit : MonoBehaviour , IClickable, IHoverable
     // Start is called before the first frame update
     void Start()
     {
-        
     }
-    public void Initialize(UnitData ud)
+    public void Initialize(UnitData ud, bool isEnemy)
     {
         unitData = ud;
         spriteRenderer.sprite = ud.sprite;
         currentEffects = ud.effectDatas;
         LoadPalette();
+        this.isEnemy = isEnemy;
+        health = occupiedCells.Count;
         UID = GlobalHelper.GetUID();
     }
     void LoadPalette(bool megaTransform = false)
     {
-        spriteRenderer.material = GlobalHelper.GlobalVariables.areaMaterial;
+        if(basePaletteIndex == -1 || megaTransform)
+        {
+            spriteRenderer.material = GlobalHelper.GlobalVariables.areaMaterial;
+        }
+        else
+        {
+            //This is for debug 
+            spriteRenderer.material = new Material(GlobalHelper.GlobalVariables.paletteMaterial);
+            spriteRenderer.material.SetFloat("_PaletteIndex", basePaletteIndex);
+        }
 
         //Load the palette according to the time created;
 
@@ -72,6 +84,27 @@ public class Unit : MonoBehaviour , IClickable, IHoverable
         
     }
     
+    public void Attack(List<Vector3Int> positions)
+    {
+        if (roomRef.isValidAttack(this,positions))
+        {
+            List<Unit> targeted = roomRef.GetUnitsAt(positions);
+            if(targeted != null && targeted.Count > 0)
+            {
+                foreach (Unit targetedUnit in targeted)
+                {
+                    targetedUnit.TakeDamage(occupiedCells.Count);
+                }
+            }
+            if (unitData.moveAfterAttack)
+            {
+                Move(positions);
+            }
+
+        }
+
+    }
+
 
     public bool Move(List<Vector3Int> positions)
     {
@@ -86,10 +119,12 @@ public class Unit : MonoBehaviour , IClickable, IHoverable
 
         }
 
-
-
-
-
+        List<Vector3Int> result = roomRef.CheckMega(this, occupiedCells[0]);
+        if (result != null && result.Count > 0)
+        {
+            roomRef.MakeMega(this, result);
+        }
+    
         return MOVE_SUCCESS;
     }
 
@@ -106,5 +141,14 @@ public class Unit : MonoBehaviour , IClickable, IHoverable
         meanPosition += rv.tilemapFloorWalls.cellSize / 2;
 
         return meanPosition;
+    }
+    public void TakeDamage(int damageCount)
+    {
+        health -= damageCount;
+        if(health == 0)
+        {
+            //Destroy me 
+            roomRef.DestroyUnit(this);
+        }
     }
 }

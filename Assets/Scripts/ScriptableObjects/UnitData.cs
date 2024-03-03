@@ -9,6 +9,9 @@ public class UnitData : ScriptableObject
     public Sprite sprite;
     public int baseCost = 1;
     public bool isBoss = false;
+    public bool moveAfterAttack = true;
+    public bool canTargetAllies = false;
+
 
     public List<EffectData> effectDatas;
 }
