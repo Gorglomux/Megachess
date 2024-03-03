@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class GlobalHelper
 {
@@ -17,6 +18,14 @@ public class GlobalHelper
     public static List<Area> areaList;
     public static System.Random rand;
     public static List<UnitData> unitDataList;
+
+    public static int NEXT_UID = 50;
+
+    public static int GetUID()
+    {
+        NEXT_UID++;
+        return NEXT_UID;
+    }
     public static GlobalVariables getGlobal()
     {
         return GlobalVariables;
@@ -75,4 +84,13 @@ public class GlobalHelper
         return unitDataList.FirstOrDefault((x)=> x.unitName == identifier);
     }
 
+
+    #region ROOM_MANIPULATION
+
+    public static RoomView GetRoom()
+    {
+        return GlobalVariables.gameInfos.currentRoom;
+    }
+
+    #endregion
 }
