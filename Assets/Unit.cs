@@ -1,19 +1,21 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public interface IClickable
+public interface ISelectable
 {
 
 }
 public interface IHoverable
 {
-
+    void onHoverEnter();
+    void onHoverExit();
 }
 
-public class Unit : MonoBehaviour , IClickable, IHoverable
+public class Unit : MonoBehaviour , ISelectable, IHoverable
 {
     public UnitData unitData;
     public int UID;
@@ -30,7 +32,7 @@ public class Unit : MonoBehaviour , IClickable, IHoverable
     public bool isEnemy = false;
 
     public int health;
-
+    public int megaSize = 1;
     public RoomView _room;
     public RoomView roomRef { get
         {
@@ -57,6 +59,7 @@ public class Unit : MonoBehaviour , IClickable, IHoverable
         this.isEnemy = isEnemy;
         health = occupiedCells.Count;
         UID = GlobalHelper.GetUID();
+        megaSize = (int)Mathf.Sqrt(occupiedCells.Count);
     }
     void LoadPalette(bool megaTransform = false)
     {
@@ -150,5 +153,58 @@ public class Unit : MonoBehaviour , IClickable, IHoverable
             //Destroy me 
             roomRef.DestroyUnit(this);
         }
+    }
+
+
+    public bool blinking = false;
+    public Coroutine tweenBlink;
+    public void ToggleBlink(bool enabled)
+    {
+        if (blinking && !enabled)
+        {
+            blinking = false;
+            spriteRenderer.color = new Color(1, 1, 1, 1);
+            StopCoroutine(tweenBlink);
+        }
+        else if (!blinking && enabled)
+        {
+            tweenBlink = StartCoroutine(corBlink(frameOutDelaySelected, frameInDelaySelected));
+            //tweenBlink = spriteRenderer.DOColor(new Color(1, 1, 1, 0.7f), 0.5f).SetEase(Ease.Flash,20,0).SetLoops(-1, LoopType.Restart);
+            blinking = true;
+        }
+
+    }
+
+
+    [Range(0,1)]public float frameOutDelaySelected = 0.17f;
+    [Range(0, 1)] public float frameInDelaySelected = 0.44f;
+    public IEnumerator corBlink( float outDelay, float inDelay)
+    {
+
+        while (true)
+        {
+            spriteRenderer.color = new Color(1, 1, 1, 1);
+            yield return new WaitForSeconds(inDelay);
+            spriteRenderer.color = new Color(1, 1, 1, 0);
+            yield return new WaitForSeconds(outDelay);
+
+        }
+
+
+    }
+
+    public void onHoverEnter()
+    {
+        print(UID + " is hovered !");
+        //DoScale if ally? 
+        GlobalHelper.GlobalVariables.indicatorManager.DisplayMovement(this);
+
+
+    }
+
+    public void onHoverExit()
+    {
+        print(UID + " exit hover!");
+        GlobalHelper.GlobalVariables.indicatorManager.HideAll();
     }
 }

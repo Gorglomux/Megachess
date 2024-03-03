@@ -55,6 +55,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _AlphaCLip: 1
     - _IndexToLerpTo: 0
     - _Lerp: 0
     - _PaletteCount: 17

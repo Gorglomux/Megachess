@@ -32,7 +32,7 @@ public class RoomView : MonoBehaviour
         GlobalHelper.GlobalVariables.gameInfos.currentRoom = this;
         arrayUnits = new Unit[tilemapFloorWalls.size.x, tilemapFloorWalls.size.y];
         LoadEntities();
-        StartCoroutine(testMoveUnitsRight());
+        //StartCoroutine(testMoveUnitsRight());
         //StartCoroutine(testInstantiateAllyUnitAndFight());
         return AnimateLevel();
     }
@@ -71,7 +71,7 @@ public class RoomView : MonoBehaviour
         u.transform.localScale = Vector3.one;
         u.transform.position = Vector3.zero;
         //Put it in the cell to world position 
-        u.transform.localPosition = tilemapEntities.CellToLocal(CellToTilemap(p)) + (tilemapEntities.cellSize / 2) + new Vector3(0.01f, 0, 0);
+        u.transform.localPosition = GetCenter(CellToTilemap(p)) + new Vector3(0.01f, 0, 0);
         //Set a different palette, then initialize
         //u.basePaletteIndex = 5;
         //Assign the tile in the array 
@@ -79,18 +79,18 @@ public class RoomView : MonoBehaviour
         u.occupiedCells.Add(p);
 
         u.Initialize(ud, false);
-        while (true)
-        {
-            yield return new WaitForSeconds(0.5f);
-            //Attack a target 
-            List<Vector3Int> newPositions = new List<Vector3Int>();
-            foreach (Vector3Int position in u.occupiedCells)
-            {
-                newPositions.Add(position + Vector3Int.left);
-            }
-            u.Attack(newPositions);
-        }
-
+        //while (true)
+        //{
+        //    yield return new WaitForSeconds(0.5f);
+        //    //Attack a target 
+        //    List<Vector3Int> newPositions = new List<Vector3Int>();
+        //    foreach (Vector3Int position in u.occupiedCells)
+        //    {
+        //        newPositions.Add(position + Vector3Int.left);
+        //    }
+        //    u.Attack(newPositions);
+        //}
+        //GlobalHelper.GlobalVariables.indicatorManager.DisplayMovement(u);
 
     }
     #endregion
@@ -102,7 +102,10 @@ public class RoomView : MonoBehaviour
         transform.localScale = Vector3.one;
         return null;
     }
-
+    public Vector3 GetCenter(Vector3Int tilePosition)
+    {
+        return tilemapEntities.CellToLocal(tilePosition) + (tilemapEntities.cellSize / 2);
+    }
     public void LoadEntities()
     {
         //For in entities
@@ -395,7 +398,7 @@ public class RoomView : MonoBehaviour
                 {
                     Unit u = arrayUnits[toCheck.x, toCheck.y];
 
-                    if (u != null && u.isEnemy == baseUnit.isEnemy)
+                    if (u != null&& u.unitData ==baseUnit.unitData && u.isEnemy == baseUnit.isEnemy)
                     {
                         result.Add(toCheck);
                     }

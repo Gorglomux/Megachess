@@ -45,6 +45,7 @@ SpriteAtlas:
   - {fileID: -1108418689, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
   - {fileID: -119297253, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
   - {fileID: -137377275, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
+  - {fileID: 21300000, guid: e32560e74888514408239be24b38e613, type: 3}
   - {fileID: 21300000, guid: f58c0b9808b657f4f8fb8c6f91ac5847, type: 3}
   - {fileID: 257097304, guid: 891d934c0dd03124283a0470f55e25d3, type: 3}
   - {fileID: -1157015681, guid: 891d934c0dd03124283a0470f55e25d3, type: 3}
@@ -116,6 +117,7 @@ SpriteAtlas:
   - Pawn
   - Invalid
   - Bishop
+  - Indicator
   - Knight
   - TileMap_60
   - TileMap_61

@@ -18,4 +18,8 @@ public class GameInfos : ScriptableObject
 
     public GAME_STATE gameState;
 
+
+    public ISelectable selected;
+
+    public IHoverable hovered;
 }
