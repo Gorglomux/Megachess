@@ -13,7 +13,9 @@ public class RoomView : MonoBehaviour
     public GameObject unitsParent;
     public Tilemap tilemapFloorWalls;
     public Tilemap tilemapEntities;
+    public Tilemap tilemapSpawnableCells;
 
+    public List<Vector3Int> SpawnableCells = new List<Vector3Int>();
     public Unit[,] arrayUnits;  
     // Start is called before the first frame update
     void Start()
@@ -32,9 +34,25 @@ public class RoomView : MonoBehaviour
         GlobalHelper.GlobalVariables.gameInfos.currentRoom = this;
         arrayUnits = new Unit[tilemapFloorWalls.size.x, tilemapFloorWalls.size.y];
         LoadEntities();
+        LoadSpawnableCells();
         //StartCoroutine(testMoveUnitsRight());
-        //StartCoroutine(testInstantiateAllyUnitAndFight());
+        StartCoroutine(testInstantiateAllyUnitAndFight());
         return AnimateLevel();
+    }
+    public void LoadSpawnableCells()
+    {
+        foreach (Vector3Int position in tilemapSpawnableCells.cellBounds.allPositionsWithin)
+        {
+            if (!tilemapSpawnableCells.HasTile(position))
+            {
+                continue;
+            }
+            if(tilemapSpawnableCells.GetTile(position).name == "SpawnableCell")
+            {
+                SpawnableCells.Add(position);
+            }
+        }
+        tilemapSpawnableCells.gameObject.SetActive(false);
     }
     #region testMethods
     public IEnumerator testMoveUnitsRight()
@@ -78,19 +96,7 @@ public class RoomView : MonoBehaviour
         arrayUnits[p.x, p.y] = u;
         u.occupiedCells.Add(p);
 
-        u.Initialize(ud, false);
-        //while (true)
-        //{
-        //    yield return new WaitForSeconds(0.5f);
-        //    //Attack a target 
-        //    List<Vector3Int> newPositions = new List<Vector3Int>();
-        //    foreach (Vector3Int position in u.occupiedCells)
-        //    {
-        //        newPositions.Add(position + Vector3Int.left);
-        //    }
-        //    u.Attack(newPositions);
-        //}
-        //GlobalHelper.GlobalVariables.indicatorManager.DisplayMovement(u);
+        u.Initialize(ud, true); 
 
     }
     #endregion
@@ -125,21 +131,8 @@ public class RoomView : MonoBehaviour
             }
             else
             {
-                //Instantiate the unit 
-                GameObject unitGo = GameObject.Instantiate(GlobalHelper.GlobalVariables.unitPrefab);
-                Unit u = unitGo.GetComponent<Unit>();
-                u.transform.parent = unitsParent.transform;
-                u.transform.localScale = Vector3.one;
-                u.transform.position = Vector3.zero;
-                //Put it in the cell to world position 
-                u.transform.localPosition = tilemapEntities.CellToLocal(position) +  (tilemapEntities.cellSize / 2) + new Vector3(0.01f,0,0);
-
-                Vector3Int p = TilemapToCell(position);
-                //Assign the tile in the array 
-                arrayUnits[p.x,p.y] = u;
-                u.occupiedCells.Add(p);
-                u.Initialize(ud, true);
-                print(u.transform.localPosition + " " + p);
+                Unit u = CreateUnit(ud, true);
+                PlaceUnitOnMap(u, position);
             }
         }
 
@@ -250,7 +243,7 @@ public class RoomView : MonoBehaviour
                 Unit target = GetUnitAt(position);
                 if (target != null)
                 {
-                    if(u.isEnemy != target.isEnemy || u.unitData.canTargetAllies)
+                    if(u.isEnemy != target.isEnemy || u.unitData.canTargetAllies ||u.UID == target.UID)
                     {
 
                     }
@@ -438,5 +431,29 @@ public class RoomView : MonoBehaviour
         u.occupiedCells.AddRange(positions);
         u.Initialize(template.unitData, template.isEnemy );
         u.transform.localPosition = u.GetWorldPosition();
+    }
+
+    public Unit CreateUnit(UnitData ud, bool isEnemy)
+    {
+        //Instantiate the unit 
+        GameObject unitGo = GameObject.Instantiate(GlobalHelper.GlobalVariables.unitPrefab);
+        Unit u = unitGo.GetComponent<Unit>();
+        u.transform.parent = unitsParent.transform;
+        u.transform.localScale = Vector3.one;
+        u.transform.position = Vector3.zero;
+
+        u.Initialize(ud, isEnemy);
+        return u;
+    }
+    public void PlaceUnitOnMap(Unit u, Vector3Int position)
+    {
+        //Put it in the cell to world position 
+        u.transform.localPosition = tilemapEntities.CellToLocal(position) + (tilemapEntities.cellSize / 2) + new Vector3(0.01f, 0, 0);
+        Vector3Int p = TilemapToCell(position);
+
+        //Assign the tile in the array 
+        arrayUnits[p.x, p.y] = u;
+        u.occupiedCells.Add(p);
+
     }
 }

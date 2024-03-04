@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
 public class GameManager : MonoBehaviour
 {
 
@@ -15,6 +17,9 @@ public class GameManager : MonoBehaviour
     private Coroutine paletteCoroutine;
 
     public GameObject roomRoot;
+
+
+    public IState currentState;
     // Start is called before the first frame update
     void Start()
     {
@@ -28,6 +33,7 @@ public class GameManager : MonoBehaviour
             LoadArea(GlobalHelper.areaList[0]);
 
         }
+        ChangeState(new UnitPlaceState());
     }
 
     public void LoadArea(Area a)
@@ -70,9 +76,23 @@ public class GameManager : MonoBehaviour
         currentRoom = GameObject.Instantiate(r.roomPrefab,roomRoot.transform).GetComponent<RoomView>();
         currentRoom.LoadRoom();
     }
-    // Update is called once per frame
-    void Update()
+
+
+
+    public void ChangeState(IState s)
     {
-        
+        if(currentState != null)
+        {
+            currentState.OnExit(this);
+        }
+
+        currentState = s;
+        GlobalHelper.GlobalVariables.gameInfos.gameState = currentState;
+        currentState.OnEntry(this);
+    }
+
+    private void Update()
+    {
+        currentState.OnUpdate(this);
     }
 }

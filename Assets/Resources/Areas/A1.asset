@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: A1
   m_EditorClassIdentifier: 
   areaName: Where it all began
-  paletteIndex: 14
+  paletteIndex: 4
   contrastText: 0
   colorText: {r: 0, g: 0, b: 0, a: 0}
   roomList:

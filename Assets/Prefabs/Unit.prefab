@@ -137,7 +137,9 @@ MonoBehaviour:
   currentEffects: []
   isEnemy: 0
   health: 0
+  megaSize: 1
   _room: {fileID: 0}
+  ColorDragged: {r: 1, g: 1, b: 1, a: 0.5019608}
   blinking: 0
   frameOutDelaySelected: 0.17
   frameInDelaySelected: 0.44

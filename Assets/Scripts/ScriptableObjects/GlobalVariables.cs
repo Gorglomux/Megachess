@@ -15,7 +15,11 @@ public class GlobalVariables : ScriptableObject
     public Material areaMaterial;
     //public PlayerInventory player;
 
+
+    public Player player;
+
     public IndicatorManager indicatorManager;
+    public InputManager inputManager;
     public GameObject unitPrefab;
     public string TILE_GROUND = "RuleFloor";
     public string TILE_WALL= "RuleWall";

@@ -7,6 +7,7 @@ public class UnitData : ScriptableObject
 {
     public string unitName;
     public Sprite sprite;
+    public Sprite sprite_NB;
     public int baseCost = 1;
     public bool isBoss = false;
     public bool moveAfterAttack = true;

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2729523971863738516}
   - component: {fileID: 2442369830073093191}
+  - component: {fileID: 5504275386970724505}
   m_Layer: 0
   m_Name: Indicator
   m_TagString: Untagged
@@ -84,3 +85,22 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &5504275386970724505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4576876239406597798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b6954ed715e69042832968d7362179a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteEnemy: {fileID: 21300000, guid: e32560e74888514408239be24b38e613, type: 3}
+  spriteAllyInactive: {fileID: 21300000, guid: c25a787d9d52e3643b685e11b2f54b62, type: 3}
+  spriteAllyActive: {fileID: 21300000, guid: 4509a998b9b6ce948bd2c85b8c0f1bef, type: 3}
+  spriteAllyTargeted: {fileID: 21300000, guid: aa853142c8975274782c866d532b4fe0, type: 3}
+  spritePlaceFromReserve: {fileID: 21300000, guid: 7282d620c1a857543a121c22afe86174, type: 3}
+  currentState: 0
+  spriteRenderer: {fileID: 2442369830073093191}

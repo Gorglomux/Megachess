@@ -20,7 +20,19 @@ SpriteAtlas:
       readable: 0
       crunchedCompression: 0
       sRGB: 1
-    platformSettings: []
+    platformSettings:
+    - serializedVersion: 3
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 0
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
     packingSettings:
       serializedVersion: 2
       padding: 4
@@ -38,14 +50,31 @@ SpriteAtlas:
     cachedData: {fileID: 0}
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 21300000, guid: 7282d620c1a857543a121c22afe86174, type: 3}
+  - {fileID: 21300000, guid: aa853142c8975274782c866d532b4fe0, type: 3}
+  - {fileID: 21300000, guid: 4cb84f4336b37fc42adee52ddf5a0ab9, type: 3}
+  - {fileID: 21300000, guid: 55b9f493f789b4b41a0288b6b06c2439, type: 3}
+  - {fileID: 21300000, guid: f9226e54216133243b75eeb5cfe33aa3, type: 3}
+  - {fileID: 21300000, guid: a3111fd43a643b546a8f77f9e89e68a8, type: 3}
+  - {fileID: 21300000, guid: f934a0057eb0fae4087c64ca448dcd06, type: 3}
+  - {fileID: 21300000, guid: 15592925ce64c0e428fbe4c8b84e56be, type: 3}
   - {fileID: 21300000, guid: efb88896c1e3e3e449ed05fed5b08f5b, type: 3}
+  - {fileID: 21300000, guid: acd9149706978dd468b959bf8df43459, type: 3}
+  - {fileID: 1098968499, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
   - {fileID: -259599329, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
   - {fileID: -724591318, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
+  - {fileID: -620975232, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
   - {fileID: 1350926885, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
   - {fileID: -1108418689, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
+  - {fileID: -1371548624, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
+  - {fileID: -617521042, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
   - {fileID: -119297253, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
+  - {fileID: 801383429, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
+  - {fileID: -751631345, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
   - {fileID: -137377275, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
+  - {fileID: 21300000, guid: 56a9c1d7494b4974e96486d41a41ef3c, type: 3}
   - {fileID: 21300000, guid: e32560e74888514408239be24b38e613, type: 3}
+  - {fileID: 21300000, guid: 4509a998b9b6ce948bd2c85b8c0f1bef, type: 3}
   - {fileID: 21300000, guid: f58c0b9808b657f4f8fb8c6f91ac5847, type: 3}
   - {fileID: 257097304, guid: 891d934c0dd03124283a0470f55e25d3, type: 3}
   - {fileID: -1157015681, guid: 891d934c0dd03124283a0470f55e25d3, type: 3}
@@ -109,15 +138,34 @@ SpriteAtlas:
   - {fileID: 836697146, guid: 891d934c0dd03124283a0470f55e25d3, type: 3}
   - {fileID: -433071377, guid: 891d934c0dd03124283a0470f55e25d3, type: 3}
   - {fileID: 1427058420, guid: 891d934c0dd03124283a0470f55e25d3, type: 3}
+  - {fileID: 21300000, guid: ac64f77dd1192f04e9566f2c642be738, type: 3}
+  - {fileID: 21300000, guid: c25a787d9d52e3643b685e11b2f54b62, type: 3}
   m_PackedSpriteNamesToIndex:
+  - IndicatorPlaceFromReserve
+  - IndicatorSelected
+  - IndicatorAlly
+  - ReserveUI
+  - ContainerToggled
+  - Button
+  - ButtonPressed
+  - ButtonHovered
   - Palette
+  - TileMap-export
+  - Bishop_NB
   - Rook
   - Queen
+  - Queen_NB
   - Knight
   - Pawn
+  - Knight_NB
+  - Pawn_NB
   - Invalid
+  - Rook_NB
+  - SpawnableCell
   - Bishop
+  - test
   - Indicator
+  - IndicatorAllyActive
   - Knight
   - TileMap_60
   - TileMap_61
@@ -181,6 +229,8 @@ SpriteAtlas:
   - TileMap_29
   - TileMap_39
   - TileMap_38
+  - ContainerReserve
+  - IndicatorAllyInactive
   m_RenderDataMap: {}
   m_Tag: Atlas
   m_IsVariant: 0

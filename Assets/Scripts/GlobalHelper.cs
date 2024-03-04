@@ -84,7 +84,17 @@ public class GlobalHelper
         return unitDataList.FirstOrDefault((x)=> x.unitName == identifier);
     }
 
+    public static Vector3 GetMouseWorldPosition()
+    {
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        worldPosition = new Vector3(worldPosition.x, worldPosition.y, 0);
+        return worldPosition;
+    }
 
+    public static void GetGameState()
+    {
+        return GlobalVariables.gameInfos.gameState;
+    }
     #region ROOM_MANIPULATION
 
     public static RoomView GetRoom()

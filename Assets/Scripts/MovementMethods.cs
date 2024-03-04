@@ -149,8 +149,24 @@ public class MovementMethods
                 {
                     if (room.GetTileAt(movement)?.name == GlobalHelper.GlobalVariables.TILE_GROUND)
                     {
-                        temp[tempIndex].Add(movement);
                         Unit u = room.GetUnitAt(movement);
+                        if(u != null && (u.isEnemy != unit.isEnemy || u.UID == unit.UID))
+                        {
+                            temp[tempIndex].Add(movement);
+
+                        }else if(u != null &&  (u.isEnemy == unit.isEnemy))
+                        {
+
+                            maxDistance = i;
+                            break;
+                        }
+                        else if (u == null)
+                        {
+                            temp[tempIndex].Add(movement);
+
+                        }
+
+
                         if (u != null && u.UID != unit.UID)
                         {
                             maxDistance = i;
