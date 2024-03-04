@@ -10,6 +10,7 @@ public class GlobalInitializer : MonoBehaviour
     public GameObject unitPrefab;
     public IndicatorManager indicatorManager;
     public InputManager inputManager;
+    public UIManager uiManager;
 
     public GameObject playerPrefab;
     private void Awake()
@@ -19,6 +20,7 @@ public class GlobalInitializer : MonoBehaviour
         global.unitPrefab = unitPrefab;
         global.indicatorManager = indicatorManager;
         global.inputManager = inputManager;
+        global.UIManager = uiManager;
         GlobalHelper.LoadGame();
 
         global.player = GameObject.Instantiate(playerPrefab).GetComponent<Player>();

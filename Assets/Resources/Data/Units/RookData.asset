@@ -14,6 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitName: Rook
   sprite: {fileID: -259599329, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
+  sprite_NB: {fileID: 801383429, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
   baseCost: 4
   isBoss: 0
+  moveAfterAttack: 1
+  canTargetAllies: 0
   effectDatas: []

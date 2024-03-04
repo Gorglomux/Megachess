@@ -22,4 +22,6 @@ public class GameInfos : ScriptableObject
     public ISelectable selected;
 
     public IHoverable hovered;
+
+    public int currentTurn = 0;
 }

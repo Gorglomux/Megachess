@@ -10,5 +10,6 @@ public class Room : ScriptableObject
     public int par;
     public bool isTutorial = false;
     public bool isBoss = false;
+    public int maxUnits = 3;
 
 }

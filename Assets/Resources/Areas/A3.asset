@@ -15,7 +15,6 @@ MonoBehaviour:
   areaName: Deeper crevice
   paletteIndex: 15
   contrastText: 0
-  colorText: {r: 0, g: 0, b: 0, a: 0}
-  roomList:
-  - {fileID: 11400000, guid: c12b7bad6a8c9d3409a821169b20a393, type: 2}
+  colorText: {r: 1, g: 1, b: 1, a: 1}
+  roomList: []
   shuffleArea: 1

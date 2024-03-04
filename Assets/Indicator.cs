@@ -62,7 +62,7 @@ public class Indicator : MonoBehaviour
     {
         yield return null;
         yield return null;
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.05f);
         gameObject.SetActive(false);
         desactivateCoroutine = null;
     }

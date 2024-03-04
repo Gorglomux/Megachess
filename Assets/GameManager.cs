@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +8,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-
+    public event Action OnAreaLoaded = delegate { };
+    public event Action OnRoomLoaded = delegate { };
     public Room roomToDebug;
 
     public RoomView currentRoom;
@@ -23,6 +25,8 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        OnRoomLoaded += GlobalHelper.GlobalVariables.UIManager.OnRoomChange;
+        OnAreaLoaded += GlobalHelper.GlobalVariables.UIManager.OnAreaChange;
         if (roomToDebug != null)
         {
             print("Debug Initiative launched");
@@ -35,9 +39,10 @@ public class GameManager : MonoBehaviour
         }
         ChangeState(new UnitPlaceState());
     }
-
+    void test() { print("testetste"); }
     public void LoadArea(Area a)
     {
+        GlobalHelper.GlobalVariables.gameInfos.currentArea = a;
         print("Loading area " + a.name);
         a.GetRooms().ForEach(r => roomQueue.Enqueue(r));
 
@@ -47,6 +52,8 @@ public class GameManager : MonoBehaviour
         }
         paletteCoroutine = StartCoroutine(LoadPalette(a.paletteIndex, a.colorText));
         LoadRoom(roomQueue.Dequeue());
+        OnAreaLoaded.Invoke();
+
     }
     public IEnumerator LoadPalette(int paletteIndex, Color textColor)
     {
@@ -74,10 +81,10 @@ public class GameManager : MonoBehaviour
     public void LoadRoom(Room r)
     {
         currentRoom = GameObject.Instantiate(r.roomPrefab,roomRoot.transform).GetComponent<RoomView>();
+        GlobalHelper.GlobalVariables.gameInfos.currentRoom = currentRoom;
         currentRoom.LoadRoom();
+        OnRoomLoaded();
     }
-
-
 
     public void ChangeState(IState s)
     {

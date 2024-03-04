@@ -46,9 +46,9 @@ TagManager:
   - name: Tiles
     uniqueID: 2300897139
     locked: 0
-  - name: Drag Preview
-    uniqueID: 2063369387
-    locked: 0
   - name: UI
     uniqueID: 3917137713
+    locked: 0
+  - name: Drag Preview
+    uniqueID: 2063369387
     locked: 0

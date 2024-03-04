@@ -91,9 +91,9 @@ public class GlobalHelper
         return worldPosition;
     }
 
-    public static void GetGameState()
+    public static UIManager UI()
     {
-        return GlobalVariables.gameInfos.gameState;
+        return GlobalVariables.UIManager;
     }
     #region ROOM_MANIPULATION
 
@@ -101,6 +101,11 @@ public class GlobalHelper
     {
         return GlobalVariables.gameInfos.currentRoom;
     }
-
+    
     #endregion
+
+    public static IState GetGameState()
+    {
+        return GlobalVariables.gameInfos.gameState;
+    }
 }

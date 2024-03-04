@@ -15,7 +15,7 @@ MonoBehaviour:
   areaName: Where it all began
   paletteIndex: 4
   contrastText: 0
-  colorText: {r: 0, g: 0, b: 0, a: 0}
+  colorText: {r: 1, g: 1, b: 1, a: 1}
   roomList:
   - {fileID: 11400000, guid: defaf318916236b4aa647e145faadc0c, type: 2}
   - {fileID: 11400000, guid: ea8badaa7eba7644ab2bb47e6be35273, type: 2}

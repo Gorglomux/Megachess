@@ -14,6 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitName: Pawn
   sprite: {fileID: -1108418689, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
+  sprite_NB: {fileID: -617521042, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
   baseCost: 1
   isBoss: 0
+  moveAfterAttack: 1
+  canTargetAllies: 0
   effectDatas: []

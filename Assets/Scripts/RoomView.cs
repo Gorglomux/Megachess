@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,8 @@ using UnityEngine.Tilemaps;
 
 public class RoomView : MonoBehaviour
 {
+    public Action OnBoardUpdate = delegate {}; 
+    public Action<Unit> OnKillUnit = delegate {}; 
     public Room roomData;
 
 
@@ -20,6 +23,7 @@ public class RoomView : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {    
+        
     }
 
     // Update is called once per frame
@@ -36,7 +40,7 @@ public class RoomView : MonoBehaviour
         LoadEntities();
         LoadSpawnableCells();
         //StartCoroutine(testMoveUnitsRight());
-        StartCoroutine(testInstantiateAllyUnitAndFight());
+        //StartCoroutine(testInstantiateAllyUnitAndFight());
         return AnimateLevel();
     }
     public void LoadSpawnableCells()
@@ -64,7 +68,7 @@ public class RoomView : MonoBehaviour
             {
                 //print("Moving " + u.name + " " + u.transform.localPosition + " " + u.gameObject + " To the right");
                 List<Vector3Int> newPositions = new List<Vector3Int>();
-                Vector3Int randomDirection = new Vector3Int(Random.Range(-1,2), Random.Range(-1, 2));
+                Vector3Int randomDirection = new Vector3Int(UnityEngine.Random.Range(-1,2), UnityEngine.Random.Range(-1, 2));
                 foreach (Vector3Int position in u.occupiedCells)
                 {
                     newPositions.Add(position + Vector3Int.left);
@@ -309,6 +313,7 @@ public class RoomView : MonoBehaviour
             arrayUnits[offset.x, offset.y] = u;
             u.occupiedCells[i] = offset;
         }
+        OnBoardUpdate();
     }
 
     public bool InBounds(Vector3 position)
@@ -324,9 +329,20 @@ public class RoomView : MonoBehaviour
         {
             arrayUnits[position.x, position.y] = null;
         }
-        Destroy(u.gameObject);
+        OnKillUnit(u);
+        u.gameObject.SetActive(false);
+        //Destroy(u.gameObject);
     }
+    public List<Unit> destroyedUnitsThisFight = new List<Unit>();
 
+    public void CleanUpFight()
+    {
+        foreach(Unit u in destroyedUnitsThisFight)
+        {
+            Destroy(u.gameObject);
+        }
+        destroyedUnitsThisFight.Clear();
+    }
     public List<Vector3Int> CheckMega(Unit baseUnit, Vector3Int baseCell)
     {
         List<Vector3Int> result = new List<Vector3Int> ();
@@ -454,6 +470,33 @@ public class RoomView : MonoBehaviour
         //Assign the tile in the array 
         arrayUnits[p.x, p.y] = u;
         u.occupiedCells.Add(p);
+        OnBoardUpdate();
 
     }
+
+    public List<Unit> GetEnemies()
+    {
+        List<Unit> enemies = new List<Unit>();
+        foreach(Unit u in getAllUnits())
+        {
+            if (u.isEnemy)
+            {
+                enemies.Add(u);
+            }
+        }
+        return enemies;
+    }
+    public List<Unit> GetAllies()
+    {
+        List<Unit> allies = new List<Unit>();
+        foreach (Unit u in getAllUnits())
+        {
+            if (!u.isEnemy)
+            {
+                allies.Add(u);
+            }
+        }
+        return allies;
+    }
+
 }

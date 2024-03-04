@@ -14,6 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitName: Bishop
   sprite: {fileID: -137377275, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
+  sprite_NB: {fileID: 1098968499, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
   baseCost: 3
   isBoss: 0
+  moveAfterAttack: 1
+  canTargetAllies: 0
   effectDatas: []

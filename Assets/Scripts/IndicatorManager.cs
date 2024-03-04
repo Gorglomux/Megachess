@@ -35,12 +35,7 @@ public class IndicatorManager : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
-        if(GlobalHelper.GlobalVariables.gameInfos.selected != null && GlobalHelper.GlobalVariables.gameInfos.selected is Unit)
-        {
-            Unit u = GlobalHelper.GlobalVariables.gameInfos.selected as Unit;
-
-        }
+    { 
     }
 
     public Indicator getNext(List<Indicator> indicatorList = null)
@@ -70,6 +65,7 @@ public class IndicatorManager : MonoBehaviour
     }
     public void DisplayMovement(Unit u)
     {
+        print("Displaying movement of " + u.unitData.unitName);
         RoomView r = GlobalHelper.GetRoom();
         List<Vector3Int> positions = MovementMethods.GetMovementMethod(u.unitData.unitName).Invoke(r,u);
 
@@ -78,7 +74,7 @@ public class IndicatorManager : MonoBehaviour
             //Pool an indicator
             Indicator indicator = getNext();
             //Set it at the position
-            indicator.transform.position = r.GetCenter( r.CellToTilemap(position));
+            indicator.transform.position = transform.position + GetIndicatorPosition(position);
             //Show
             indicator.gameObject.SetActive(true);
             if (u.isEnemy)
@@ -99,7 +95,7 @@ public class IndicatorManager : MonoBehaviour
                 if (uToBlink != null && u.UID != uToBlink.UID && u.isEnemy != uToBlink.isEnemy)
                 {
                     float blinkSpeed = 1;
-                    if(selectedUnit != null)
+                    if(selectedUnit != null && u.actionsLeft > 0 )
                     {
                         blinkSpeed = 3;
                     }
@@ -133,6 +129,7 @@ public class IndicatorManager : MonoBehaviour
             selectedUnit = GlobalHelper.GlobalVariables.gameInfos.selected as Unit;
             //Toggle back the indicators 
             DisplayMovement(selectedUnit);
+            print("ICI");
         }
         else
         {
@@ -141,6 +138,7 @@ public class IndicatorManager : MonoBehaviour
     }
     public void ShowSpawnableCells()
     {
+        HideSpawnableCells();
         RoomView r = GlobalHelper.GetRoom();
         foreach(Vector3Int cell in r.SpawnableCells)
         {
@@ -149,7 +147,7 @@ public class IndicatorManager : MonoBehaviour
             Indicator indicator = getNext(spawnableCellIndicators);
             indicator.gameObject.SetActive(true);
             //Set it at the position
-            indicator.transform.position = r.GetCenter(cell);
+            indicator.transform.position = transform.position + GetIndicatorPosition(r.TilemapToCell(cell));
             indicator.SetState(INDICATOR_STATE.PLACE_FROM_RESERVE);
         }
 
@@ -162,7 +160,7 @@ public class IndicatorManager : MonoBehaviour
 
         foreach (Vector3Int position in r.SpawnableCells)
         {
-            Indicator indicator = spawnableCellIndicators.Find((x) => x.transform.position == r.GetCenter(position));
+            Indicator indicator = spawnableCellIndicators.Find((x) => x.transform.position == transform.position + GetIndicatorPosition(r.TilemapToCell(position)));
             if (positions.Contains(r.TilemapToCell( position)))
             {
                 if (indicator != null && indicator.currentState == INDICATOR_STATE.PLACE_FROM_RESERVE)
@@ -194,7 +192,7 @@ public class IndicatorManager : MonoBehaviour
         List<Vector3Int> validPositions = MovementMethods.GetMovementMethod(u.unitData.unitName).Invoke(r, u);
         foreach (Vector3Int position in validPositions)
         {
-            Indicator indicator = activeIndicators.Find((x) => x.transform.position == r.GetCenter(r.CellToTilemap(position)));
+            Indicator indicator = activeIndicators.Find((x) => x.transform.position ==  transform.position + GetIndicatorPosition(position));
             if (positions.Contains(position))
             {
                 
@@ -203,11 +201,23 @@ public class IndicatorManager : MonoBehaviour
                     indicator.SetState(INDICATOR_STATE.ALLY_TARGETED);
                 }
             }
-            else
+            else if(indicator != null)
             {
-                indicator.SetState((INDICATOR_STATE.ALLY_ACTIVE));
+                if (GlobalHelper.GetGameState() is FightState)
+                {
+                    indicator.SetState((INDICATOR_STATE.ALLY_ACTIVE));
+                }
+                else
+                {
+                    indicator.SetState((INDICATOR_STATE.ALLY_INACTIVE));
+                }
             }
         }
 
+    }
+    Vector3 GetIndicatorPosition(Vector3Int position)
+    {
+        RoomView room = GlobalHelper.GetRoom();
+        return  room.GetCenter(room.CellToTilemap(position));
     }
 }

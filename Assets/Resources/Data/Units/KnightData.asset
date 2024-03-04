@@ -14,6 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitName: Knight
   sprite: {fileID: 1350926885, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
+  sprite_NB: {fileID: -1371548624, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
   baseCost: 2
   isBoss: 0
+  moveAfterAttack: 1
+  canTargetAllies: 0
   effectDatas: []

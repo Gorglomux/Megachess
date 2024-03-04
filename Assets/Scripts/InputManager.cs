@@ -23,6 +23,8 @@ public class InputManager : MonoBehaviour
     public bool dragStarted = false;
     public SpriteRenderer spritePreview;
     public float minDistanceToStartDrag = 0.15f;
+
+    private Vector3 startDragPosition = Vector3.positiveInfinity;
     // Update is called once per frame
     void Update()
     {
@@ -66,7 +68,6 @@ public class InputManager : MonoBehaviour
                         infos.selected = null;
                         currentSelected.onDeselect(new Vector3(worldPosition.x,worldPosition.y,0));
                     }
-                    infos.selected = selectable;
                     currentSelected = selectable;
                     currentHovered.onHoverExit();
                     currentHovered = null;
@@ -75,6 +76,10 @@ public class InputManager : MonoBehaviour
 
                         infos.selected = null;
                         currentSelected = null;
+                    }
+                    else
+                    {
+                        infos.selected = selectable;
                     }
                 }
             }
@@ -95,12 +100,14 @@ public class InputManager : MonoBehaviour
 
             if(currentSelected is IDraggable)
             {
+                if(startDragPosition.x == float.PositiveInfinity)
+                {
+                    startDragPosition = worldPosition;
+                }
                 MonoBehaviour selected = currentSelected as MonoBehaviour;
-                float distanceSelected = Vector3.Distance(selected.transform.position, worldPosition);
-                print(distanceSelected + " " + worldPosition + " " + selected.transform.position);
+                float distanceSelected = Vector3.Distance(startDragPosition, worldPosition);
                 if (distanceSelected >= minDistanceToStartDrag && !dragStarted)
                 {
-                    print("This is the start of a drag");
                     currentDraggable = currentSelected as IDraggable;
                     Sprite spriteToShow = currentDraggable.onDragBegin(worldPosition);
                     dragStarted = true;
@@ -121,7 +128,6 @@ public class InputManager : MonoBehaviour
 
                 if (dragStarted)
                 {
-                    print("The drag is ticking");
                     currentDraggable.onDragTick(worldPosition);
                     //Tilt the sprite a little bit 
                     //Put it at the center of the mouse 
@@ -134,13 +140,13 @@ public class InputManager : MonoBehaviour
             if(dragStarted)
             {
                 dragStarted = false;
-                print("This is the end of the drag;");
                 currentDraggable.onDragEnd(worldPosition);
                 spritePreview.sprite = null;
                 spritePreview.gameObject.SetActive(false);
                 Deselect(worldPosition);
 
             }
+            startDragPosition = Vector3.positiveInfinity;
         }
         if (spritePreview.enabled)
         {

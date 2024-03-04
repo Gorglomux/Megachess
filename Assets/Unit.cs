@@ -42,6 +42,9 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
 
     public int health;
     public int megaSize = 1;
+
+    public int maxActions = 1;
+    public int actionsLeft = 1;
     public RoomView _room;
     public RoomView roomRef { get
         {
@@ -132,7 +135,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
             }
 
         }
-
+        GlobalHelper.GlobalVariables.indicatorManager.HideAll();
     }
 
 
@@ -154,7 +157,8 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         {
             roomRef.MakeMega(this, result);
         }
-    
+
+        GlobalHelper.GlobalVariables.indicatorManager.HideAll();
         return MOVE_SUCCESS;
     }
 
@@ -247,6 +251,28 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
 
         return output;
     }
+    public List<Vector3Int> EvaluateAroundCellPosition(Vector3Int cellPosition)
+    {
+
+        List<Vector3Int> output = new List<Vector3Int>();
+        //Get closest tile index from mousePosision - megasize 
+
+        for (int y = 0; y < megaSize; y++)
+        {
+            for (int x = 0; x < megaSize; x++)
+            {
+                Vector3Int tilemapCoords = cellPosition + new Vector3Int(x, y);
+                TileBase tb = roomRef.GetTileAt(tilemapCoords);
+                if (tb != null)
+                {
+                    output.Add(tilemapCoords);
+                }
+            }
+        }
+        return output;
+
+    }
+
     public void TryMoveOrAttackAtPosition(Vector3 position)
     {
         position = new Vector3(position.x,position.y,0);
@@ -266,10 +292,15 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
             }
             if (evaluatedCorrect)
             {
-                print("I WILL MOVE !!!!");
-                //If(CanAttack(there) -> Attack else -> move 
-                Attack(evaluated);
-                //Move(evaluated);
+                if (ConsumeAction())
+                {
+                    Attack(evaluated);
+
+                }
+                else
+                {
+                    print("No more actions ! ");
+                }
             }
 
         }
@@ -292,17 +323,18 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
 
     public bool onSelect()
     {
-        if (isEnemy)
+        bool success = true;
+        if (isEnemy || actionsLeft <= 0)
         {
-
+            success = false;
         }
-        else
+        else if(actionsLeft > 0)
         {
             print(UID + " is selected");
             GlobalHelper.GlobalVariables.indicatorManager.DisplayMovement(this);
 
         }
-        return !isEnemy;
+        return success;
     }
 
     public void onDeselect(Vector3 mousePosition)
@@ -312,16 +344,26 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
 
         print(UID + " is deselected");
 
-        //If canAttack 
-        TryMoveOrAttackAtPosition(mousePosition);
-       
+        if (GlobalHelper.GlobalVariables.gameInfos.gameState is UnitPlaceState)
+        {
+            MoveInUnitPlace();
+        }
+        else
+        {
+
+            TryMoveOrAttackAtPosition(mousePosition);
+        }
+
         GlobalHelper.GlobalVariables.indicatorManager.HideAll();
     }
     public void onSelectTick(Vector3 mousePosition)
     {
+        if(actionsLeft > 0)
+        {
         mousePosition = new Vector3(mousePosition.x, mousePosition.y,0);
         List<Vector3Int> evaluated = EvaluateAroundPosition(mousePosition);
-        GlobalHelper.GlobalVariables.indicatorManager.ShowPossibleUnitMove(this,evaluated);
+        GlobalHelper.GlobalVariables.indicatorManager.ShowPossibleUnitMove(this, evaluated); 
+        }
 
 
     }
@@ -340,9 +382,89 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
     public void onDragEnd(Vector3 mousePosition)
     {
         spriteRenderer.color = Color.white;
-        TryMoveOrAttackAtPosition(mousePosition);
+        if(GlobalHelper.GlobalVariables.gameInfos.gameState is UnitPlaceState)
+        {
+            MoveInUnitPlace();
+        }
+        else
+        {
+
+            TryMoveOrAttackAtPosition(mousePosition);
+        }
         print("Attack?");
         //Attack or move here
     }
     #endregion
+    public void MoveInUnitPlace()
+    {
+        List<Vector3Int> evaluated = EvaluateAroundPosition(GlobalHelper.GetMouseWorldPosition());
+        if (evaluated.Count > 0)
+        {
+            bool allCorrect = true;
+            foreach (Vector3Int point in evaluated)
+            {
+                if (!roomRef.SpawnableCells.Contains(roomRef.CellToTilemap(point)))
+                {
+                    allCorrect = false;
+                    break;
+                }
+            }
+            if (allCorrect)
+            {
+                Move(evaluated);
+            }
+        }
+    }
+
+    public void RefreshActions()
+    {
+        actionsLeft = maxActions;
+    }
+    public bool ConsumeAction()
+    {
+        if(actionsLeft > 0)
+        {
+            actionsLeft--;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public void EnemyAttack()
+    {
+        //Foreach cells in attackPattern
+        //Evaluate around position 
+        List<Vector3Int> validPositions = MovementMethods.GetMovementMethod(unitData.unitName).Invoke(roomRef, this);
+        foreach (Vector3Int validPosition in validPositions)
+        {
+            List<Vector3Int> evaluated = EvaluateAroundCellPosition(validPosition);
+            //If all cells in attack pattern
+            if (Mathf.Sqrt(evaluated.Count) ==megaSize)
+            {
+                //Loop through the cells}
+                foreach(Vector3Int point in evaluated)
+                {
+                    //If get tile is player unit 
+                    Unit u = roomRef.GetUnitAt(point);
+                    if(u != null && u.isEnemy != isEnemy)
+                    {
+                        Attack(evaluated);
+                        if (unitData.moveAfterAttack)
+                        {
+                            Move(evaluated);
+                        }
+                        return;
+                    }
+                }
+
+            }
+
+        }
+
+
+
+    }
 }

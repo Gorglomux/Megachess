@@ -106,7 +106,7 @@ public class ReserveContainer : MonoBehaviour
             {
                 foreach(Vector3Int point in evaluated)
                 {
-                    if (r.SpawnableCells.Contains(r.CellToTilemap(point)))
+                    if (r.SpawnableCells.Contains(r.CellToTilemap(point)) && r.GetUnitAt(point) == null)
                     {
                         RemoveUnit();
                         Unit unit = (Unit)units.Dequeue();
@@ -150,6 +150,6 @@ public class ReserveContainer : MonoBehaviour
     public bool canSelect()
     {
 
-        return units.Count > 0;
+        return units.Count > 0 && GlobalHelper.GlobalVariables.gameInfos.gameState is UnitPlaceState;
     }
 }
