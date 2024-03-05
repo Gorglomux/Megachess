@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5056264981853230972}
   - component: {fileID: 5056264981853230970}
+  - component: {fileID: 8189224300281341721}
   m_Layer: 6
   m_Name: Sprite
   m_TagString: Untagged
@@ -73,7 +74,7 @@ SpriteRenderer:
   m_SortingLayerID: -1994070157
   m_SortingLayer: 1
   m_SortingOrder: 45
-  m_Sprite: {fileID: 1350926885, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 73bb7ae7d8ea75445bd0f416e1b9db84, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -84,6 +85,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &8189224300281341721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056264981853230971}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c78fecb3e00c2564cb6e319b7faf9601, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  spriteRenderer: {fileID: 5056264981853230970}
+  referenceSprite: {fileID: 0}
 --- !u!1 &5056264982835310702
 GameObject:
   m_ObjectHideFlags: 0
@@ -134,10 +150,13 @@ MonoBehaviour:
   UID: 0
   occupiedCells: []
   spriteRenderer: {fileID: 5056264981853230970}
+  sendAtlasPosition: {fileID: 8189224300281341721}
   currentEffects: []
   isEnemy: 0
   health: 0
   megaSize: 1
+  maxActions: 1
+  actionsLeft: 1
   _room: {fileID: 0}
   ColorDragged: {r: 1, g: 1, b: 1, a: 0.5019608}
   blinking: 0

@@ -7,6 +7,7 @@ public class GlobalInitializer : MonoBehaviour
 
     public GlobalVariables global;
     public Material paletteMaterial;
+    public Material unitMaterial;
     public GameObject unitPrefab;
     public IndicatorManager indicatorManager;
     public InputManager inputManager;
@@ -17,6 +18,7 @@ public class GlobalInitializer : MonoBehaviour
     {
         GlobalHelper.GlobalVariables = global;
         global.paletteMaterial = paletteMaterial;
+        global.unitMaterial = unitMaterial;
         global.unitPrefab = unitPrefab;
         global.indicatorManager = indicatorManager;
         global.inputManager = inputManager;

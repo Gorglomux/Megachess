@@ -12,7 +12,7 @@ public class GlobalVariables : ScriptableObject
 
     public int paletteCount = 17;
     public Material paletteMaterial;
-    public Material areaMaterial;
+    public Material unitMaterial;
     //public PlayerInventory player;
 
 

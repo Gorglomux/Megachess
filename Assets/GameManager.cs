@@ -58,9 +58,6 @@ public class GameManager : MonoBehaviour
     public IEnumerator LoadPalette(int paletteIndex, Color textColor)
     {
         Material globalMaterial = GlobalHelper.GlobalVariables.paletteMaterial; ;
-        GlobalHelper.GlobalVariables.areaMaterial = new Material(globalMaterial);
-        GlobalHelper.GlobalVariables.areaMaterial.SetFloat("_PaletteIndex", paletteIndex);
-        GlobalHelper.GlobalVariables.areaMaterial.SetFloat("_IndexToLerpTo", 0);
         print("Setting Palette ! ");
         //Set the palette to the room
         globalMaterial.SetFloat("_IndexToLerpTo", paletteIndex);

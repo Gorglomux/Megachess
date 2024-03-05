@@ -31,6 +31,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
     public List<Vector3Int> occupiedCells = new List<Vector3Int>();
     
     public SpriteRenderer spriteRenderer;
+    public SendSpriteAtlasPosition sendAtlasPosition;
 
     public List<Func<List<Vector3Int>, Tilemap>> movementMethods;
     public List<Func<List<Vector3Int>, Tilemap>> attackMethods;
@@ -69,17 +70,10 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
     public void Initialize(UnitData ud, bool isEnemy)
     {
         unitData = ud;
-        if (isEnemy)
-        {
-            spriteRenderer.sprite = ud.sprite_NB;
-        }
-        else
-        {
-            spriteRenderer.sprite = ud.sprite;
-        }
+
         currentEffects = ud.effectDatas;
-        LoadPalette();
         this.isEnemy = isEnemy;
+        LoadPalette();
         health = occupiedCells.Count;
         UID = GlobalHelper.GetUID();
         megaSize = (int)Mathf.Sqrt(occupiedCells.Count);
@@ -90,23 +84,30 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
     }
     void LoadPalette(bool megaTransform = false)
     {
-        if(basePaletteIndex == -1 || megaTransform)
+        if (isEnemy)
         {
-            spriteRenderer.material = GlobalHelper.GlobalVariables.areaMaterial;
+            sendAtlasPosition.referenceSprite = unitData.sprite_NB;
+        }
+        else
+        {
+            sendAtlasPosition.referenceSprite = unitData.sprite;
+        }
+        sendAtlasPosition.m = new Material(GlobalHelper.GlobalVariables.unitMaterial);
+        if (basePaletteIndex == -1 || megaTransform)
+        {
+            basePaletteIndex = GlobalHelper.GlobalVariables.gameInfos.currentArea.paletteIndex;
+            sendAtlasPosition.m.SetFloat("_PaletteIndex", basePaletteIndex);
         }
         else
         {
             //This is for debug 
-            spriteRenderer.material = new Material(GlobalHelper.GlobalVariables.paletteMaterial);
-            spriteRenderer.material.SetFloat("_PaletteIndex", basePaletteIndex);
+            sendAtlasPosition.m.SetFloat("_PaletteIndex", basePaletteIndex);
         }
 
         //Load the palette according to the time created;
 
-        if (!megaTransform)
-        {
-            basePaletteIndex =(int) GlobalHelper.GlobalVariables.areaMaterial.GetFloat("_PaletteIndex");
-        }
+        sendAtlasPosition.m.SetFloat("_Dither", 0);
+        sendAtlasPosition.SendPosition();
     }
     // Update is called once per frame
     void Update()
@@ -184,6 +185,11 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
             //Destroy me 
             roomRef.DestroyUnit(this);
         }
+        else
+        {
+            float f = Mathf.Lerp(5, 16, 1- ((float)health / (float)occupiedCells.Count));
+            spriteRenderer.material.SetFloat("_Dither",f);
+        }
     }
 
 
@@ -247,8 +253,20 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         }
         //regarding position + megasize * cellSize / 2 
 
-
-
+        bool hasMoved = false;
+        foreach(Vector3Int cell in output)
+        {
+            if (!occupiedCells.Contains(cell))
+            {
+                hasMoved = true;
+                break;
+            }
+        }
+        if (!hasMoved )
+        {
+           
+            output.Clear();
+        }
         return output;
     }
     public List<Vector3Int> EvaluateAroundCellPosition(Vector3Int cellPosition)
@@ -376,7 +394,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
     public Sprite onDragBegin(Vector3 mousePosition)
     {
         spriteRenderer.color = ColorDragged;
-        return spriteRenderer.sprite;
+        return unitData.sprite;
     }
 
     public void onDragEnd(Vector3 mousePosition)
@@ -442,22 +460,36 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         {
             List<Vector3Int> evaluated = EvaluateAroundCellPosition(validPosition);
             //If all cells in attack pattern
-            if (Mathf.Sqrt(evaluated.Count) ==megaSize)
+            if (Mathf.Sqrt(evaluated.Count) == megaSize)
             {
+                Unit unitToBeat = null; 
                 //Loop through the cells}
                 foreach(Vector3Int point in evaluated)
                 {
-                    //If get tile is player unit 
-                    Unit u = roomRef.GetUnitAt(point);
-                    if(u != null && u.isEnemy != isEnemy)
+                    if (!validPositions.Contains(point))
                     {
-                        Attack(evaluated);
-                        if (unitData.moveAfterAttack)
-                        {
-                            Move(evaluated);
-                        }
-                        return;
+                        break;
                     }
+                    if(unitToBeat == null)
+                    {
+                        Unit u = roomRef.GetUnitAt(point);
+                        if(u != null && u.isEnemy != isEnemy)
+                        {
+                            unitToBeat = u;
+
+                        }
+
+                    }
+
+                }
+                if(unitToBeat != null && unitToBeat.isEnemy != isEnemy)
+                {
+                    Attack(evaluated);
+                    if (unitData.moveAfterAttack)
+                    {
+                        Move(evaluated);
+                    }
+                    return;
                 }
 
             }

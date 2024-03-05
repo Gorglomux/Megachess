@@ -45,6 +45,7 @@ public class UnitPlaceState : IState
     }
     public void EndPlaceState()
     {
+        GlobalHelper.GetRoom().CheckMegasOnGrid();
         gmRef.ChangeState(new FightState());
     }
     public void CheckUnitsLeft()

@@ -62,7 +62,7 @@ public class MovementMethods
                 new Vector3Int(1,1),
                 new Vector3Int(-1,-1),
                 new Vector3Int(1,-1),
-                new Vector3Int(-1,1)
+               new Vector3Int(-1,1)
             };
             foreach (Vector3Int direction in directions)
             {
@@ -208,7 +208,43 @@ public class MovementMethods
             output.AddRange(list.Take(maxDistance + 1));
 
         }
-        return output;
+        output = output.Distinct().ToList();
+        List<Vector3Int> outputCleaned = new List<Vector3Int>();
+        foreach(Vector3Int cell in output)
+        {
+            List<Vector3Int> toAdd = new List<Vector3Int>();
+            bool correctCell = true;
+            for (int y = 0; y < unit.megaSize; y++)
+            {
+                for (int x = 0; x < unit.megaSize; x++)
+                {
+                    Vector3Int toCheck = cell + new Vector3Int(x, y);
+                    if (output.Contains(toCheck) && room.InBounds(toCheck) && room.GetTileAt(toCheck)?.name == GlobalHelper.GlobalVariables.TILE_GROUND)
+                    {
+                        
+                    }
+                    else
+                    {
+                        correctCell = false;
+                        break;
+                    }
+                }
+            }
+            if (correctCell)
+            {
+                for (int y = 0; y < unit.megaSize; y++)
+                {
+                    for (int x = 0; x < unit.megaSize; x++)
+                    {
+                        Vector3Int add = cell + new Vector3Int(x, y);
+                        outputCleaned.Add(add);
+                    }
+                }
+            }
+        }
+        outputCleaned = outputCleaned.Distinct().ToList();
+
+        return outputCleaned;
     }
     #endregion;
 }

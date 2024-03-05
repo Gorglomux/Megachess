@@ -140,23 +140,26 @@ public class RoomView : MonoBehaviour
             }
         }
 
+        CheckMegasOnGrid();
+        //Hide the tilemap 
+        tilemapEntities.gameObject.SetActive(false);
+    }
+    public void CheckMegasOnGrid()
+    {
         //Form megas when possible without animation 
-        foreach(Unit u in getAllUnits().ToList())
+        foreach (Unit u in getAllUnits().ToList())
         {
             if (u != null)
             {
                 List<Vector3Int> result = CheckMega(u, u.occupiedCells[0]);
-                if (result != null && result.Count>0)
+                if (result != null && result.Count > 0)
                 {
-                    MakeMega(u,result);
+                    MakeMega(u, result);
                 }
             }
 
         }
-        //Hide the tilemap 
-        tilemapEntities.gameObject.SetActive(false);
     }
-
 
     public List<Unit> getAllUnits()
     {

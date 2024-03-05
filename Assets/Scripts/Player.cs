@@ -32,6 +32,10 @@ public class Player : MonoBehaviour
         AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Rook"), false ));
         AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Rook"), false ));
         AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Queen"), false ));
+        AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Queen"), false ));
+        AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Queen"), false ));
+        AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Queen"), false ));
+        AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Queen"), false ));
 
         //TODO : REMOVE THIS AND PUT IT AT THE START OF THE SELECTION PHASE
         GlobalHelper.GlobalVariables.indicatorManager.ShowSpawnableCells();

@@ -117,7 +117,7 @@ public class InputManager : MonoBehaviour
                     if (u != null)
                     {
                         spritePreview.transform.localScale =Vector3.one * u.megaSize;
-                        spritePreview.material = u.spriteRenderer.material;
+                        spritePreview.material.SetFloat("_PaletteIndex", u.spriteRenderer.material.GetFloat("_PaletteIndex"));
                     }
                     else
                     {
