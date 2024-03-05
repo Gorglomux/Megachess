@@ -27,7 +27,6 @@ public class SendSpriteAtlasPosition : MonoBehaviour
         Vector2 positionInAtlas = new Vector2(s.rect.position.x / texSize.x, s.rect.position.y / texSize.y);
         Vector2 textureSize = s.rect.size / texSize;
 
-        print(positionInAtlas.x + " " + positionInAtlas.y + " " + textureSize);
         //Recalculate and send the index to the material 
         m.SetVector("_SpritePosition", positionInAtlas);
         m.SetVector("_SpriteSize", textureSize);

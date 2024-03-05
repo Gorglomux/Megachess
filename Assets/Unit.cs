@@ -46,6 +46,8 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
 
     public int maxActions = 1;
     public int actionsLeft = 1;
+
+    public Sequence idleSequence;
     public RoomView _room;
     public RoomView roomRef { get
         {
@@ -66,6 +68,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
     // Start is called before the first frame update
     void Start()
     {
+
     }
     public void Initialize(UnitData ud, bool isEnemy)
     {
@@ -80,6 +83,21 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         if(megaSize == 0)
         {
             megaSize = 1;
+        }
+
+        if (!isEnemy)
+        {
+
+            idleSequence = DOTween.Sequence().SetAutoKill(false).Pause();
+
+            //TODO : REFAIRE CETTE MERDE 
+            //idleSequence.Join(transform.DOScale(0.95f, 2));
+            idleSequence.Append(transform.DORotate(new Vector3(0, 0, -15f), 1f));
+            //idleSequence.Join(transform.DOScale(1.08f,2));
+            idleSequence.Append(transform.DORotate(new Vector3(0, 0, 15),2f));
+            idleSequence.Append(transform.DORotate(new Vector3(0, 0, 0),1f)).SetEase(Ease.Linear);
+            idleSequence.SetLoops(-1,LoopType.Restart);
+            idleSequence.Play();
         }
     }
     void LoadPalette(bool megaTransform = false)
@@ -115,32 +133,63 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         
     }
     
-    public void Attack(List<Vector3Int> positions)
+    public Sequence Attack(List<Vector3Int> positions)
     {
+        Sequence attackSequence = DOTween.Sequence();
         if (roomRef.isValidAttack(this,positions))
         {
+            bool hasMoved = false;
             List<Unit> targeted = roomRef.GetUnitsAt(positions);
             if(targeted != null && targeted.Count > 0)
             {
+
+                bool onlySelf = true;
                 foreach (Unit targetedUnit in targeted)
                 {
                     if(targetedUnit.UID != UID)
                     {
-                        targetedUnit.TakeDamage(occupiedCells.Count);
+                        onlySelf = false;
+                        hasMoved = true;
+                        Tween t = transform.DOLocalMove(GetProjectedWorldPosition(positions), GlobalHelper.TWEEN_DURATION_MOVE).SetEase(Ease.InBack, GlobalHelper.TWEEN_OVERSHOOT_MOVE);
+                        t.onComplete += () =>
+                        {
+                            if (!targetedUnit.TakeDamage(occupiedCells.Count))
+                            {
+                                Tween t = transform.DOLocalMove(GetWorldPosition(), GlobalHelper.TWEEN_DURATION_MOVE*0.5f).SetEase(Ease.OutCubic);
+                            } 
+                            GlobalHelper.getCamMovement().ShakeCamera(megaSize * 0.2f * GlobalHelper.CAM_SHAKE_ATTACK);
+                        };
+                        attackSequence.Append(t);
                     }
                 }
-            }
-            if (unitData.moveAfterAttack)
-            {
-                Move(positions);
-            }
+                if (!onlySelf && !isEnemy && !roomRef.firstAttackThisRound)
+                {
+                    roomRef.firstAttackThisRound = true;
+                    attackSequence.Prepend(GlobalHelper.getCamMovement().ZoomToPosition(GetWorldPosition() + (targeted[0].GetWorldPosition() - GetWorldPosition()) / 2));
+                }
+                else if (isEnemy)
+                {
+                    attackSequence.Prepend(GlobalHelper.getCamMovement().ZoomToPosition(GetWorldPosition() + (targeted[0].GetWorldPosition() - GetWorldPosition()) / 2));
 
+                }
+            }
+            attackSequence.onComplete += () =>
+            {
+
+                if (unitData.moveAfterAttack)
+                {
+                    Move(positions, !hasMoved);
+                    GlobalHelper.getCamMovement().ResetCameraPosition();
+                    GlobalHelper.GlobalVariables.indicatorManager.HideAll();
+                }
+            };
         }
-        GlobalHelper.GlobalVariables.indicatorManager.HideAll();
+        attackSequence.Play();
+        return attackSequence;
     }
 
 
-    public bool Move(List<Vector3Int> positions)
+    public bool Move(List<Vector3Int> positions, bool animate = true)
     {
         bool MOVE_SUCCESS = false;
 
@@ -148,7 +197,15 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
             //Animate here
             //On complete : MoveUnit 
             roomRef.MoveUnit(this, positions);
-            transform.localPosition = GetWorldPosition();
+            if (animate)
+            {
+                Tween t = transform.DOLocalMove(GetProjectedWorldPosition(positions), GlobalHelper.TWEEN_DURATION_MOVE*0.4f).SetEase(Ease.OutQuint);
+            }
+            else
+            {
+                transform.localPosition = GetWorldPosition();
+
+            }
             MOVE_SUCCESS = true;
 
         }
@@ -177,18 +234,35 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
 
         return meanPosition;
     }
-    public void TakeDamage(int damageCount)
+    public Vector3 GetProjectedWorldPosition(List<Vector3Int> positions)
+    {
+        RoomView rv = GlobalHelper.GetRoom();
+        Vector3 meanPosition = Vector3.zero;
+        foreach (Vector3Int position in positions)
+        {
+
+            meanPosition += rv.tilemapFloorWalls.CellToLocal(rv.CellToTilemap(position));
+        }
+        meanPosition /= occupiedCells.Count;
+        meanPosition += rv.tilemapFloorWalls.cellSize / 2;
+
+        return meanPosition;
+    }
+
+    public bool TakeDamage(int damageCount)
     {
         health -= damageCount;
         if(health <= 0)
         {
             //Destroy me 
             roomRef.DestroyUnit(this);
+            return true;
         }
         else
         {
             float f = Mathf.Lerp(5, 16, 1- ((float)health / (float)occupiedCells.Count));
             spriteRenderer.material.SetFloat("_Dither",f);
+            return false;
         }
     }
 
@@ -451,7 +525,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         }
     }
 
-    public void EnemyAttack()
+    public IEnumerator EnemyAttack()
     {
         //Foreach cells in attackPattern
         //Evaluate around position 
@@ -484,12 +558,19 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
                 }
                 if(unitToBeat != null && unitToBeat.isEnemy != isEnemy)
                 {
-                    Attack(evaluated);
-                    if (unitData.moveAfterAttack)
+                    if (ConsumeAction())
                     {
-                        Move(evaluated);
+
+                        yield return Attack(evaluated).WaitForCompletion();
+                        if (unitData.moveAfterAttack)
+                        {
+                            Move(evaluated, false);
+                        }
                     }
-                    return;
+                    else
+                    {
+                        yield break;
+                    }
                 }
 
             }

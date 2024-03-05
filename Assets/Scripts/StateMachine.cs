@@ -45,7 +45,6 @@ public class UnitPlaceState : IState
     }
     public void EndPlaceState()
     {
-        GlobalHelper.GetRoom().CheckMegasOnGrid();
         gmRef.ChangeState(new FightState());
     }
     public void CheckUnitsLeft()
@@ -66,7 +65,7 @@ public class FightState : IState
     {
         GlobalHelper.UI().SetButtonBottomRightText("End Turn");
         GlobalHelper.UI().SetBottomText("Kill all enemies");
-        GlobalHelper.UI().OnChangePhase += EndTurn;
+        GlobalHelper.UI().OnChangePhase += onChangePhase;
         OnEndTurn += GlobalHelper.UI().OnEndTurn;
 
         CheckGameWinState();
@@ -86,15 +85,19 @@ public class FightState : IState
     public void OnUpdate(GameManager gm)
     {
     }
-
-    public void EndTurn()
+    public void onChangePhase()
+    {
+        GlobalHelper.GetRoom().StartCoroutine(EndTurn());
+    }
+    public IEnumerator EndTurn()
     {
         Debug.Log("Ending turn");
         foreach(Unit u in GlobalHelper.GetRoom().getAllUnits())
         {
             if (u.isEnemy)
             {
-                u.EnemyAttack();
+                u.RefreshActions();
+                yield return u.StartCoroutine(u.EnemyAttack());
             }
             else
             {

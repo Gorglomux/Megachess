@@ -57,6 +57,14 @@ Material:
         m_Texture: {fileID: 2800000, guid: efb88896c1e3e3e449ed05fed5b08f5b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SplitPalette_0e95907c452c40baba722f66fc175b04_Palette_1589289301:
+        m_Texture: {fileID: 2800000, guid: efb88896c1e3e3e449ed05fed5b08f5b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SplitPalette_f8fb12efb7d541d9bfe1fdc89f5eede8_Palette_1589289301:
+        m_Texture: {fileID: 2800000, guid: efb88896c1e3e3e449ed05fed5b08f5b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -71,16 +79,16 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Dither: 9.06
+    - _Dither: 0
     - _DitherOffset: 0.5
     - _DitherSize: 6.09
     - _IndexToLerpTo: 17
     - _Lerp: 0
     - _PaletteCount: 17
-    - _PaletteIndex: 4
+    - _PaletteIndex: 0
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:
-    - _SpritePosition: {r: 0.09375, g: 0.96875, b: 0, a: 0}
+    - _SpritePosition: {r: 0.0625, g: 0.9375, b: 0, a: 0}
     - _SpriteSize: {r: 0.03125, g: 0.03125, b: 0, a: 0}
   m_BuildTextureStacks: []

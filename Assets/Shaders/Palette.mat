@@ -58,7 +58,7 @@ Material:
     - _AlphaCLip: 1
     - _IndexToLerpTo: 0
     - _Lerp: 0
-    - _PaletteCount: 17
+    - _PaletteCount: 0.9
     - _PaletteIndex: 4
     - _QueueControl: 0
     - _QueueOffset: 0

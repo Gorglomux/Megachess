@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -162,6 +163,27 @@ public class InputManager : MonoBehaviour
                 currentHovered = null;
                 infos.hovered = null;
             }
+        }
+        //REMOVE ME
+        if (Input.GetKeyUp(KeyCode.KeypadMinus))
+        {
+            DOTween.timeScale = 0.2f;
+            GlobalHelper.UI().SetBottomText("Timescale " + DOTween.timeScale);
+        }
+        if (Input.GetKeyUp(KeyCode.KeypadPlus))
+        {
+            DOTween.timeScale = 1;
+            GlobalHelper.UI().SetBottomText("Timescale " + DOTween.timeScale);
+        }
+        if (Input.GetKeyUp(KeyCode.Keypad1))
+        {
+            DOTween.timeScale = 5;
+            GlobalHelper.UI().SetBottomText("Timescale " + DOTween.timeScale);
+        }
+        if (Input.GetKeyUp(KeyCode.Keypad0))
+        {
+            DOTween.timeScale = 0;
+            GlobalHelper.UI().SetBottomText("Timescale " + DOTween.timeScale);
         }
     }
 

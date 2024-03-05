@@ -19,7 +19,8 @@ public class RoomView : MonoBehaviour
     public Tilemap tilemapSpawnableCells;
 
     public List<Vector3Int> SpawnableCells = new List<Vector3Int>();
-    public Unit[,] arrayUnits;  
+    public Unit[,] arrayUnits;
+    public bool firstAttackThisRound = false;
     // Start is called before the first frame update
     void Start()
     {    
@@ -140,11 +141,11 @@ public class RoomView : MonoBehaviour
             }
         }
 
-        CheckMegasOnGrid();
+        CheckMegasOnGrid(false);
         //Hide the tilemap 
         tilemapEntities.gameObject.SetActive(false);
     }
-    public void CheckMegasOnGrid()
+    public void CheckMegasOnGrid(bool animate = true)
     {
         //Form megas when possible without animation 
         foreach (Unit u in getAllUnits().ToList())
@@ -154,7 +155,7 @@ public class RoomView : MonoBehaviour
                 List<Vector3Int> result = CheckMega(u, u.occupiedCells[0]);
                 if (result != null && result.Count > 0)
                 {
-                    MakeMega(u, result);
+                    MakeMega(u, result, animate);
                 }
             }
 
@@ -431,7 +432,7 @@ public class RoomView : MonoBehaviour
         }
         return null;
     }
-    public void MakeMega(Unit template, List<Vector3Int> positions)
+    public void MakeMega(Unit template, List<Vector3Int> positions, bool animate = true)
     {
         //Instantiate the unit 
         GameObject unitGo = GameObject.Instantiate(GlobalHelper.GlobalVariables.unitPrefab);
@@ -439,17 +440,59 @@ public class RoomView : MonoBehaviour
         u.transform.parent = unitsParent.transform;
         u.transform.localScale = Vector3.one * Mathf.Sqrt(positions.Count);
         u.transform.position = Vector3.zero;
+        u.gameObject.SetActive(false);
+
+        u.occupiedCells.AddRange(positions);
+        u.Initialize(template.unitData, template.isEnemy);
+        u.transform.localPosition = u.GetWorldPosition();
+
+        Sequence s = DOTween.Sequence().Pause();
         //Put it in the cell to world position 
-        foreach(Vector3Int position in positions)
+        foreach (Vector3Int position in positions)
         {
             Unit unit = GetUnitAt(position);
-            Destroy(unit.gameObject);
+            if (animate)
+            {
+                Tween t = unit.transform.DOMove(u.transform.localPosition, GlobalHelper.TWEEN_DURATION_MEGA).SetEase(Ease.InBack, GlobalHelper.TWEEN_OVERSHOOT_MEGA);
+                s.Join(t);
+                t.onComplete += () =>
+                {
+                    Destroy(unit.gameObject);
+                };
+            }
+            else
+            {
+                Destroy(unit.gameObject);
+            }
+
             //Assign the tile in the array 
             arrayUnits[position.x, position.y] = u;
         }
-        u.occupiedCells.AddRange(positions);
-        u.Initialize(template.unitData, template.isEnemy );
-        u.transform.localPosition = u.GetWorldPosition();
+        s.onPlay += () =>
+        {
+            //GlobalHelper.getCamMovement().ZoomToPosition(u.transform.position, 0.8f, 0.3f);
+        };
+        if (animate)
+        {
+            print("MUGA");
+            s.Restart();
+        }
+        else
+        {
+            s.Kill();
+            u.gameObject.SetActive(true);
+
+        }
+        s.onComplete += () =>
+        {
+            //TODO : CAMERASHAKE
+            //GlobalHelper.getCamMovement().ShakeCamera(0.3f,0.5f);
+            //TODO : SATURATION
+            GlobalHelper.getCamMovement().FlashCamera(1.05f);
+            //u.transform.DOShakeRotation(0.5f, new Vector3(0,0,5)).SetEase(Ease.OutBounce);
+            u.transform.DOPunchScale(transform.localScale * 0.5f, 0.5f).SetEase(Ease.OutQuint);
+            u.gameObject.SetActive(true);
+        };
     }
 
     public Unit CreateUnit(UnitData ud, bool isEnemy)
@@ -475,6 +518,11 @@ public class RoomView : MonoBehaviour
         u.occupiedCells.Add(p);
         OnBoardUpdate();
 
+        if (!u.isEnemy)
+        {
+            CheckMegasOnGrid();
+
+        }
     }
 
     public List<Unit> GetEnemies()

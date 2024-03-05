@@ -12,6 +12,7 @@ public class GlobalInitializer : MonoBehaviour
     public IndicatorManager indicatorManager;
     public InputManager inputManager;
     public UIManager uiManager;
+    public CameraMovementManager cameraMovement;
 
     public GameObject playerPrefab;
     private void Awake()
@@ -23,6 +24,7 @@ public class GlobalInitializer : MonoBehaviour
         global.indicatorManager = indicatorManager;
         global.inputManager = inputManager;
         global.UIManager = uiManager;
+        global.cameraMovement = cameraMovement;
         GlobalHelper.LoadGame();
 
         global.player = GameObject.Instantiate(playerPrefab).GetComponent<Player>();

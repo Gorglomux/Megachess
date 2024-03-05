@@ -21,6 +21,24 @@ public class GlobalHelper
 
     public static int NEXT_UID = 50;
 
+    #region tween variables
+    public static float TWEEN_DURATION_MEGA = 0.5f;
+    public static float TWEEN_DURATION_MOVE = 0.5f;
+    public static float TWEEN_OVERSHOOT_MOVE = 4f;
+    public static float TWEEN_OVERSHOOT_MEGA = 8f;
+    public static float DEFAULT_CAMERA_SHAKE_DURATION = 1f;
+    public static float DEFAULT_CAMERA_MOVE_DURATION = 2f;
+    public static float DEFAULT_CAMERA_FLASH_BRIGHTNESS = 1.2f;
+    public static float DEFAULT_CAMERA_FLASH_DURATION = 0.12f;
+
+    public static float CAM_SHAKE_ATTACK = 5f;
+    public static float CAM_SHAKE_MEGA = 6f;
+    public static float DURATION_SHAKE_MEGA = 2f;
+    public static float DEFAULT_CAMERA_ZOOM_DURATION = 0.5f;
+    public static float DEFAULT_CAMERA_ZOOM_STRENGTH = 0.6f;
+
+    
+    #endregion
     public static int GetUID()
     {
         NEXT_UID++;
@@ -31,7 +49,10 @@ public class GlobalHelper
         return GlobalVariables;
     }
 
-
+    public static CameraMovementManager getCamMovement()
+    {
+        return GlobalVariables.cameraMovement;
+    }
     public static void SetGlobal(GlobalVariables go)
     {
         GlobalVariables = go;

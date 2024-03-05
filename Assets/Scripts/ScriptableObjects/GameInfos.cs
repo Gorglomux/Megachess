@@ -24,4 +24,5 @@ public class GameInfos : ScriptableObject
     public IHoverable hovered;
 
     public int currentTurn = 0;
+
 }

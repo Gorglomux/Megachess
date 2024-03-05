@@ -6,6 +6,7 @@ TagManager:
   tags:
   - FriendlyUnit
   - EnemyUnit
+  - MainVolume
   layers:
   - Default
   - TransparentFX

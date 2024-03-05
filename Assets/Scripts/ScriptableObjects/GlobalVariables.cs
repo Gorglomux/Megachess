@@ -25,4 +25,5 @@ public class GlobalVariables : ScriptableObject
     public string TILE_WALL= "RuleWall";
 
     public UIManager UIManager;
+    public CameraMovementManager cameraMovement;
 }
