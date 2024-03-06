@@ -7,6 +7,11 @@ using UnityEngine.EventSystems;
 public class InputManager : MonoBehaviour
 {
 
+    public Texture2D cursorTexture;
+    public Texture2D clickedCursorTexture;
+
+    public Vector2 cursorHotspot;
+
     public LayerMask mask;
 
 
@@ -27,8 +32,10 @@ public class InputManager : MonoBehaviour
 
     private Vector3 startDragPosition = Vector3.positiveInfinity;
     // Update is called once per frame
+
     void Update()
     {
+
 
         //Get the mouse position
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -73,6 +80,7 @@ public class InputManager : MonoBehaviour
                     currentHovered.onHoverExit();
                     currentHovered = null;
                     infos.hovered = currentHovered;
+                    infos.selected = selectable;
                     if (!currentSelected.onSelect()) {
 
                         infos.selected = null;

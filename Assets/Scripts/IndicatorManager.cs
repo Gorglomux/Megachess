@@ -65,6 +65,11 @@ public class IndicatorManager : MonoBehaviour
     }
     public void DisplayMovement(Unit u)
     {
+        if (GlobalHelper.GlobalVariables.gameInfos.selected != null)
+        {
+            selectedUnit = GlobalHelper.GlobalVariables.gameInfos.selected as Unit;
+        }
+
         print("Displaying movement of " + u.unitData.unitName);
         RoomView r = GlobalHelper.GetRoom();
         List<Vector3Int> positions = MovementMethods.GetMovementMethod(u.unitData.unitName).Invoke(r,u);
@@ -87,7 +92,6 @@ public class IndicatorManager : MonoBehaviour
                 indicator.SetState(INDICATOR_STATE.ALLY_INACTIVE);
 
             }
-
             if (selectedUnit == null ||( selectedUnit != null && selectedUnit.UID == u.UID) )
             {
                 //If there is a unit at this position
@@ -129,7 +133,6 @@ public class IndicatorManager : MonoBehaviour
             selectedUnit = GlobalHelper.GlobalVariables.gameInfos.selected as Unit;
             //Toggle back the indicators 
             DisplayMovement(selectedUnit);
-            print("ICI");
         }
         else
         {

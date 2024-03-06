@@ -35,7 +35,7 @@ public class RoomView : MonoBehaviour
 
     public Tween LoadRoom()
     {
-        transform.localScale = Vector3.zero;
+        transform.parent.localScale = Vector3.zero;
         GlobalHelper.GlobalVariables.gameInfos.currentRoom = this;
         arrayUnits = new Unit[tilemapFloorWalls.size.x, tilemapFloorWalls.size.y];
         LoadEntities();
@@ -60,58 +60,23 @@ public class RoomView : MonoBehaviour
         tilemapSpawnableCells.gameObject.SetActive(false);
     }
     #region testMethods
-    public IEnumerator testMoveUnitsRight()
-    {
-        while(true)
-        {
-            yield return new WaitForSeconds(0.65f);
-            foreach (Unit u in getAllUnits())
-            {
-                //print("Moving " + u.name + " " + u.transform.localPosition + " " + u.gameObject + " To the right");
-                List<Vector3Int> newPositions = new List<Vector3Int>();
-                Vector3Int randomDirection = new Vector3Int(UnityEngine.Random.Range(-1,2), UnityEngine.Random.Range(-1, 2));
-                foreach (Vector3Int position in u.occupiedCells)
-                {
-                    newPositions.Add(position + Vector3Int.left);
-                }
-                u.Move(newPositions);
-            }
 
-        }
-
-
-    }
-    public IEnumerator testInstantiateAllyUnitAndFight()
-    {
-        yield return null;
-        //Instantiate a unit at position
-        UnitData ud = GlobalHelper.GetUnitData("Rook");
-        Vector3Int p = new Vector3Int(6,0,0);
-        //Instantiate the unit 
-        GameObject unitGo = GameObject.Instantiate(GlobalHelper.GlobalVariables.unitPrefab);
-        Unit u = unitGo.GetComponent<Unit>();
-        u.transform.parent = unitsParent.transform;
-        u.transform.localScale = Vector3.one;
-        u.transform.position = Vector3.zero;
-        //Put it in the cell to world position 
-        u.transform.localPosition = GetCenter(CellToTilemap(p)) + new Vector3(0.01f, 0, 0);
-        //Set a different palette, then initialize
-        //u.basePaletteIndex = 5;
-        //Assign the tile in the array 
-        arrayUnits[p.x, p.y] = u;
-        u.occupiedCells.Add(p);
-
-        u.Initialize(ud, true); 
-
-    }
+    
     #endregion
 
     //doscale to 1, screen shake , pop the name in the UI (typewriter?), after 1 second load the text
     public Tween AnimateLevel()
     {
 
-        transform.localScale = Vector3.one;
-        return null;
+        Tween t = Camera.main.DOShakePosition(1f, Vector3.one * 0.005f, 3, 90).SetLoops(-1);
+        Tween tween = transform.parent.DOScale(Vector3.one,3).SetEase(Ease.OutQuart);
+        tween.onComplete += () =>
+        {
+            t.Kill();
+            GlobalHelper.getCamMovement().ShakeCamera(5f, 1);
+            transform.parent.localScale = Vector3.one;
+        };
+        return tween;
     }
     public Vector3 GetCenter(Vector3Int tilePosition)
     {
@@ -186,12 +151,12 @@ public class RoomView : MonoBehaviour
 
     public Vector3Int TilemapToCell(Vector3Int position)
     {
-        return position + Abs(tilemapEntities.cellBounds.position);
+        return position + Abs(tilemapFloorWalls.cellBounds.position);
     }
 
     public Vector3Int CellToTilemap(Vector3Int position)
     {
-        return position - Abs(tilemapEntities.cellBounds.position);
+        return position - Abs(tilemapFloorWalls.cellBounds.position);
     }
 
     public Vector3Int Abs(Vector3Int v)
@@ -331,7 +296,11 @@ public class RoomView : MonoBehaviour
         //Remove the unit from the grid
         foreach(Vector3Int position in u.occupiedCells)
         {
-            arrayUnits[position.x, position.y] = null;
+            if(arrayUnits[position.x, position.y] == u)
+            {
+                arrayUnits[position.x, position.y] = null;
+
+            }
         }
         OnKillUnit(u);
         u.gameObject.SetActive(false);
@@ -446,23 +415,26 @@ public class RoomView : MonoBehaviour
         u.Initialize(template.unitData, template.isEnemy);
         u.transform.localPosition = u.GetWorldPosition();
 
+        List<Unit> toDestroy = new List<Unit>();
         Sequence s = DOTween.Sequence().Pause();
         //Put it in the cell to world position 
         foreach (Vector3Int position in positions)
         {
             Unit unit = GetUnitAt(position);
+
+            toDestroy.Add(unit);
             if (animate)
             {
                 Tween t = unit.transform.DOMove(u.transform.localPosition, GlobalHelper.TWEEN_DURATION_MEGA).SetEase(Ease.InBack, GlobalHelper.TWEEN_OVERSHOOT_MEGA);
                 s.Join(t);
                 t.onComplete += () =>
                 {
-                    Destroy(unit.gameObject);
+                    DestroyUnit(unit);
                 };
             }
             else
             {
-                Destroy(unit.gameObject);
+                DestroyUnit(unit);
             }
 
             //Assign the tile in the array 
@@ -474,7 +446,6 @@ public class RoomView : MonoBehaviour
         };
         if (animate)
         {
-            print("MUGA");
             s.Restart();
         }
         else
@@ -493,6 +464,8 @@ public class RoomView : MonoBehaviour
             u.transform.DOPunchScale(transform.localScale * 0.5f, 0.5f).SetEase(Ease.OutQuint);
             u.gameObject.SetActive(true);
         };
+        List<Unit> debug = getAllUnits();
+
     }
 
     public Unit CreateUnit(UnitData ud, bool isEnemy)
@@ -500,7 +473,6 @@ public class RoomView : MonoBehaviour
         //Instantiate the unit 
         GameObject unitGo = GameObject.Instantiate(GlobalHelper.GlobalVariables.unitPrefab);
         Unit u = unitGo.GetComponent<Unit>();
-        u.transform.parent = unitsParent.transform;
         u.transform.localScale = Vector3.one;
         u.transform.position = Vector3.zero;
 
@@ -510,7 +482,9 @@ public class RoomView : MonoBehaviour
     public void PlaceUnitOnMap(Unit u, Vector3Int position)
     {
         //Put it in the cell to world position 
+        u.transform.parent = unitsParent.transform;
         u.transform.localPosition = tilemapEntities.CellToLocal(position) + (tilemapEntities.cellSize / 2) + new Vector3(0.01f, 0, 0);
+        u.transform.localScale = Vector3.one;
         Vector3Int p = TilemapToCell(position);
 
         //Assign the tile in the array 
@@ -548,6 +522,54 @@ public class RoomView : MonoBehaviour
             }
         }
         return allies;
+    }
+
+
+
+    public IEnumerator HideTilemap()
+    {
+        tilemapFloorWalls.CompressBounds();
+        //Calculate tile center cell 
+        Vector3Int cellCenter = new Vector3Int(tilemapFloorWalls.cellBounds.size.x / 2 + tilemapFloorWalls.cellBounds.x, tilemapFloorWalls.cellBounds.size.y / 2 + tilemapFloorWalls.cellBounds.y, 0);
+        int horizontalDistance = tilemapFloorWalls.cellBounds.size.x / 2 +1;
+
+
+        tilemapFloorWalls.SetTile(cellCenter, GlobalHelper.GlobalVariables.TileEmpty );
+        for (int horizontal = 0; horizontal < horizontalDistance; horizontal++)
+        {
+            for (int y = -horizontal; y < horizontal; y++)
+            {
+                for (int x = -horizontal; x < horizontal; x++)
+                {
+                    if (tilemapFloorWalls.GetTile(cellCenter + new Vector3Int(x, y, 0)) != null)
+                    {
+
+                        tilemapFloorWalls.SetTile(cellCenter + new Vector3Int(x, y, 0), GlobalHelper.GlobalVariables.TileEmpty);
+                    }
+                }
+            }
+            GlobalHelper.getCamMovement().ShakeCamera(1f, 0.1f);
+            yield return new WaitForSeconds(0.12f);
+
+        }
+
+
+    }
+
+    /// <summary>
+    /// Check the number of units a player can play in the start phase
+    /// </summary>
+    /// <returns></returns>
+    public int CheckUnitsLeft()
+    {
+        List<Unit> units = GetAllies();
+        int realUnitCount = 0;
+        foreach (Unit u in units)
+        {
+            realUnitCount += (int)Mathf.Pow(u.megaSize, 2);
+        }
+        int unitLeft = roomData.maxUnits - realUnitCount;
+        return unitLeft;
     }
 
 }

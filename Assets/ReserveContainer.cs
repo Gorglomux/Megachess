@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -14,7 +15,7 @@ public class ReserveContainer : MonoBehaviour
     public TextMeshProUGUI unitCountText;
 
     private int _unitCount;
-    public int unitCount { get { return _unitCount; } set { if (value != _unitCount) { _unitCount = value; UpdateText(); } } }
+    public int unitCount { get { return _unitCount; } set { if (value != _unitCount) { UpdateText(_unitCount,value); _unitCount = value;  } } }
 
     UnitData unitData;
     public Queue units = new Queue();
@@ -36,9 +37,17 @@ public class ReserveContainer : MonoBehaviour
     {
         unitCount--;
     }
-    public void UpdateText()
+    public void UpdateText(int oldValue, int newValue)
     {
-        unitCountText.text = unitCount.ToString();
+        unitCountText.text = newValue.ToString();
+        if (newValue > oldValue)
+        {
+
+            unitCountText.transform.DOPunchScale(Vector3.one * 1.2f, 0.2f, 2).SetEase(Ease.OutQuint).onComplete += () =>
+            {
+                unitCountText.transform.DOScale(Vector3.one, 0.2f);
+            };
+        }
 
     }
 
@@ -87,15 +96,39 @@ public class ReserveContainer : MonoBehaviour
     }
     public void OnSelect(BaseEventData data)
     {
-        selected = true;
-        GlobalHelper.GlobalVariables.inputManager.spritePreview.gameObject.SetActive(true);
-        GlobalHelper.GlobalVariables.inputManager.spritePreview.sprite = unitImage.sprite;
-        unitImage.color = new Color(1, 1, 1, 0.5f);
+        RoomView room = GlobalHelper.GetRoom();
+        if (room.CheckUnitsLeft()>0)
+        {
+            selected = true;
+            SpriteRenderer spritePreview = GlobalHelper.GlobalVariables.inputManager.spritePreview;
+            spritePreview.gameObject.SetActive(true);
+            spritePreview.sprite = unitImage.sprite;
+            spritePreview.transform.localScale = Vector3.one;
+            Unit u = (Unit)units.Peek();
+            if (u != null)
+            {
+                spritePreview.material.SetFloat("_PaletteIndex", u.basePaletteIndex);
+
+            }
+
+
+            unitImage.color = new Color(1, 1, 1, 0.5f);
+        }
+        else
+        {
+            GlobalHelper.UI().ShakeButtonBottomRightText();
+            GlobalHelper.UI().SetBottomText("Press the Fight button to start the fight!"); 
+        }
+
     }
 
     public void OnDeselect(BaseEventData data)
     {
         RoomView r = GlobalHelper.GetRoom();
+        if (r.CheckUnitsLeft()<=0)
+        {
+            return;
+        }
         selected = false;
         //Place the object here 
         if(units.Count > 0)

@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,6 +23,9 @@ public class UIManager : MonoBehaviour
     private GameInfos _gameInfos;
     public GameInfos gameInfosRef { get { if (_gameInfos == null) { _gameInfos = GlobalHelper.GlobalVariables.gameInfos; } return _gameInfos; } set{ } } 
     public Material mainTextMaterial;
+
+    public Reserve reserve;
+    public CaptureTextManager captureManager;
     // Start is called before the first frame update
     void Start()
     {
@@ -70,5 +74,17 @@ public class UIManager : MonoBehaviour
     public void OnEndTurn()
     {
         TurnCount.text = "Turn " + gameInfosRef.currentTurn;
+    }
+    Tween bottomShakeTween;
+    public void ShakeButtonBottomRightText()
+    {
+        if(bottomShakeTween != null)
+        {
+            bottomShakeTween.Kill();
+        }
+        bottomShakeTween = bottomText.transform.DOShakePosition(0.8f, new Vector3(10f, 0, 0), 8).SetEase(Ease.OutBounce);
+        
+        //bottomText.transform.DOPunchScale(bottomText.transform.localScale *1.22f, 1).SetEase(Ease.OutBounce);
+
     }
 }

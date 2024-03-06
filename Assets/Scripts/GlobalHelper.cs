@@ -59,7 +59,10 @@ public class GlobalHelper
         
     }
 
-
+    public static GameManager GetGameManager()
+    {
+        return GlobalVariables.gameManager;
+    }
     /// <summary>
     /// Load all the data in a way that is accessible for other classes.
     /// </summary>

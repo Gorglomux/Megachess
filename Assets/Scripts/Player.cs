@@ -25,33 +25,39 @@ public class Player : MonoBehaviour
     void testInventory()
     {
         // Maybe delay them ? 
-        AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Knight"), false ));
-        AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Knight"), false ));
-        AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Knight"), false ));
-        AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Knight"), false ));
         AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Rook"), false ));
-        AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Rook"), false ));
-        AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Queen"), false ));
-        AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Queen"), false ));
-        AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Queen"), false ));
-        AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Queen"), false ));
-        AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Queen"), false ));
 
-        //TODO : REMOVE THIS AND PUT IT AT THE START OF THE SELECTION PHASE
-        GlobalHelper.GlobalVariables.indicatorManager.ShowSpawnableCells();
+
     }
 
     public void AddUnit(Unit unit)
     {
-        if (!inventory.ContainsKey(unit.unitData))
+        int toAdd = 1;
+        if (unit.isEnemy)
         {
-            inventory[unit.unitData] = new List<Unit>(); 
-            OnNewUnitAdded(unit.unitData);
-            print("Category created");
+
         }
-        inventory[unit.unitData].Add(unit);
-        OnInventoryAdded(unit);
-        print("Unit added");
+        else
+        {
+            toAdd = (int)Mathf.Pow(unit.megaSize, 2);
+        }
+        for(int i= 0; i < toAdd; i++)
+        {
+            Unit u = GlobalHelper.GetRoom().CreateUnit(unit.unitData, false);
+            u.LoadPalette(unit.basePaletteIndex);
+            if (!inventory.ContainsKey(u.unitData))
+            {
+                inventory[u.unitData] = new List<Unit>();
+                OnNewUnitAdded(u.unitData);
+                print("Category created");
+            }
+            inventory[u.unitData].Add(u);
+            OnInventoryAdded(u);
+            u.transform.parent = transform;
+            print("Unit added");
+            Destroy(unit.gameObject);
+        }
+
     }
 
 

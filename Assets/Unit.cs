@@ -36,7 +36,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
     public List<Func<List<Vector3Int>, Tilemap>> movementMethods;
     public List<Func<List<Vector3Int>, Tilemap>> attackMethods;
 
-    private int basePaletteIndex = -1;
+    public  int basePaletteIndex = -1;
 
     public List<EffectData> currentEffects;
     public bool isEnemy = false;
@@ -62,6 +62,9 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         }
     }
 
+    public GameObject bloodEffectPrefab;
+    public List<Texture2D> bloodEffectTextures;
+
     //Drag related variables 
     public Color ColorDragged;
 
@@ -70,13 +73,13 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
     {
 
     }
-    public void Initialize(UnitData ud, bool isEnemy)
+    public void Initialize(UnitData ud, bool isEnemy, int palette = -1)
     {
         unitData = ud;
 
         currentEffects = ud.effectDatas;
         this.isEnemy = isEnemy;
-        LoadPalette();
+        LoadPalette(palette);
         health = occupiedCells.Count;
         UID = GlobalHelper.GetUID();
         megaSize = (int)Mathf.Sqrt(occupiedCells.Count);
@@ -85,22 +88,46 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
             megaSize = 1;
         }
 
-        if (!isEnemy)
-        {
-
-            idleSequence = DOTween.Sequence().SetAutoKill(false).Pause();
-
-            //TODO : REFAIRE CETTE MERDE 
-            //idleSequence.Join(transform.DOScale(0.95f, 2));
-            idleSequence.Append(transform.DORotate(new Vector3(0, 0, -15f), 1f));
-            //idleSequence.Join(transform.DOScale(1.08f,2));
-            idleSequence.Append(transform.DORotate(new Vector3(0, 0, 15),2f));
-            idleSequence.Append(transform.DORotate(new Vector3(0, 0, 0),1f)).SetEase(Ease.Linear);
-            idleSequence.SetLoops(-1,LoopType.Restart);
-            idleSequence.Play();
-        }
     }
-    void LoadPalette(bool megaTransform = false)
+    public Sequence s = null;
+    public Tween tweenIdle = null;
+    public void StartIdle()
+    {
+        if(s != null)
+        {
+            s.Kill();
+        }
+        if(tweenIdle != null)
+        {
+            tweenIdle.Kill();
+        }
+        tweenIdle = spriteRenderer.transform.DORotate(Vector3.zero,0.1f);
+        tweenIdle.onComplete += () =>
+        {
+            s = DOTween.Sequence();
+            float duration = 0.5f;
+            s.PrependInterval(0.3f);
+            Tween t = spriteRenderer.transform.DOShakeRotation(1f, new Vector3(0, 0, 9), 5, 90);
+            s.Append(t);
+            s.AppendInterval(duration);
+            s.SetLoops(-1);
+        };
+
+    }
+    public void EndIdle()
+    {
+        if(s != null)
+        {
+            s.Kill();
+            spriteRenderer.transform.DORotate(Vector3.zero, 0.2f);
+        }if(tweenIdle != null)
+        { 
+            tweenIdle.Kill();
+        }
+
+    }
+
+    public void LoadPalette(int palette = -1, bool megaTransform = false)
     {
         if (isEnemy)
         {
@@ -153,13 +180,15 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
                         Tween t = transform.DOLocalMove(GetProjectedWorldPosition(positions), GlobalHelper.TWEEN_DURATION_MOVE).SetEase(Ease.InBack, GlobalHelper.TWEEN_OVERSHOOT_MOVE);
                         t.onComplete += () =>
                         {
+                            MakeBloodAt(targetedUnit.GetWorldPosition(), (targetedUnit.GetWorldPosition() - GetWorldPosition()).normalized);
+
                             if (!targetedUnit.TakeDamage(occupiedCells.Count))
                             {
                                 Tween t = transform.DOLocalMove(GetWorldPosition(), GlobalHelper.TWEEN_DURATION_MOVE*0.5f).SetEase(Ease.OutCubic);
                             } 
                             GlobalHelper.getCamMovement().ShakeCamera(megaSize * 0.2f * GlobalHelper.CAM_SHAKE_ATTACK);
                         };
-                        attackSequence.Append(t);
+                        attackSequence.Join(t);
                     }
                 }
                 if (!onlySelf && !isEnemy && !roomRef.firstAttackThisRound)
@@ -181,13 +210,39 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
                     Move(positions, !hasMoved);
                     GlobalHelper.getCamMovement().ResetCameraPosition();
                     GlobalHelper.GlobalVariables.indicatorManager.HideAll();
+                    if (actionsLeft > 0 && !isEnemy)
+                    {
+                        StartIdle();
+                    }
+                    else if (!isEnemy)
+                    {
+                        EndIdle();
+                    }
                 }
             };
         }
         attackSequence.Play();
         return attackSequence;
     }
+    public void MakeBloodAt(Vector3 position, Vector3 direction)
+    {
+        GameObject randomBlood = GameObject.Instantiate(bloodEffectPrefab);
+        ParticleSystem ps = randomBlood.GetComponentInChildren<ParticleSystem>();
+        Renderer psRenderer= ps.GetComponentInChildren<Renderer>();
+        psRenderer.material = new Material(GlobalHelper.GlobalVariables.paletteMaterial);
+        psRenderer.material.SetTexture("_MainTex",bloodEffectTextures[UnityEngine.Random.Range(0, bloodEffectTextures.Count)]);
+        psRenderer.material.SetFloat("_PaletteIndex", basePaletteIndex);
+        psRenderer.material.SetFloat("_Lerp", 0);
 
+        var module = ps.main;
+        GlobalHelper.GlobalVariables.bloodSplatManager.splats.Add(randomBlood);
+        // Calculate the angle in radians and convert it to degrees
+        float angle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg;
+        ps.Play();
+        randomBlood.transform.position = position;
+        randomBlood.transform.eulerAngles = new Vector3(0,0,- angle);
+
+    }
 
     public bool Move(List<Vector3Int> positions, bool animate = true)
     {
@@ -365,8 +420,9 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
 
     }
 
-    public void TryMoveOrAttackAtPosition(Vector3 position)
+    public bool TryMoveOrAttackAtPosition(Vector3 position)
     {
+        bool success = false;
         position = new Vector3(position.x,position.y,0);
         //else
         List<Vector3Int> evaluated = EvaluateAroundPosition(position);
@@ -387,7 +443,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
                 if (ConsumeAction())
                 {
                     Attack(evaluated);
-
+                    success = true;
                 }
                 else
                 {
@@ -396,21 +452,37 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
             }
 
         }
+        return success;
     }
     #region interfaces
+    public Tween growTween;
     public void onHoverEnter()
     {
+        if(growTween != null)
+        {
+            growTween.Kill();
+        }
         print(UID + " is hovered !");
         //DoScale if ally? 
         GlobalHelper.GlobalVariables.indicatorManager.DisplayMovement(this);
+        growTween = spriteRenderer.transform.DOScale(1.2f, 0.5f).SetEase(Ease.OutQuint);
 
 
     }
 
     public void onHoverExit()
     {
+        if(spriteRenderer== null)
+        {
+            return;
+        }
+        if (growTween != null)
+        {
+            growTween.Kill();
+        }
         print(UID + " exit hover!");
         GlobalHelper.GlobalVariables.indicatorManager.HideAll();
+        growTween = spriteRenderer.transform.DOScale(1, 0.2f).SetEase(Ease.OutQuint);
     }
 
     public bool onSelect()
@@ -422,9 +494,10 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         }
         else if(actionsLeft > 0)
         {
+            EndIdle();
             print(UID + " is selected");
             GlobalHelper.GlobalVariables.indicatorManager.DisplayMovement(this);
-
+            spriteRenderer.transform.DOScale(1.3f, 0.5f).SetEase(Ease.OutBack);
         }
         return success;
     }
@@ -442,9 +515,13 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         }
         else
         {
-
-            TryMoveOrAttackAtPosition(mousePosition);
+            if (!TryMoveOrAttackAtPosition(mousePosition))
+            {
+                StartIdle();
+            }
+           
         }
+        spriteRenderer.transform.DOScale(1, 0.5f).SetEase(Ease.OutQuint);
 
         GlobalHelper.GlobalVariables.indicatorManager.HideAll();
     }
@@ -467,6 +544,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
 
     public Sprite onDragBegin(Vector3 mousePosition)
     {
+        EndIdle();
         spriteRenderer.color = ColorDragged;
         return unitData.sprite;
     }
@@ -480,9 +558,18 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         }
         else
         {
-
-            TryMoveOrAttackAtPosition(mousePosition);
+            /*
+            if (!TryMoveOrAttackAtPosition(mousePosition))
+            {
+                StartIdle();
+            }
+            else
+            {
+                EndIdle();
+            }*/
         }
+
+
         print("Attack?");
         //Attack or move here
     }

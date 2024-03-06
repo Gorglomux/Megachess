@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7818c817b7df0ec4cbbc34440d52c96f, type: 3}
+  m_Name: A2R3
+  m_EditorClassIdentifier: 
+  roomName: Big Ambitions
+  roomPrefab: {fileID: 7856683090932274919, guid: a8ef94be2071e24498433f2fa331f2d3, type: 3}
+  par: 6
+  isTutorial: 0
+  isBoss: 0
+  maxUnits: 4

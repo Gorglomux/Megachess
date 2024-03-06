@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7818c817b7df0ec4cbbc34440d52c96f, type: 3}
   m_Name: A1R3
   m_EditorClassIdentifier: 
-  roomName: Straight line to murder
+  roomName: Out of Reach
   roomPrefab: {fileID: 7856683090932274919, guid: 7a5e30deecdf5014e9af67db6327b17b, type: 3}
-  par: 4
+  par: 5
   isTutorial: 1
   isBoss: 0
+  maxUnits: 3

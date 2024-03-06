@@ -15,32 +15,44 @@ public class GameManager : MonoBehaviour
     public RoomView currentRoom;
 
     public Queue<Room> roomQueue = new Queue<Room>();
+    
+    //Debug for now, linear exploration 
+    public Queue<Area> areaQueue = new Queue<Area>();
 
     private Coroutine paletteCoroutine;
 
     public GameObject roomRoot;
 
-
+    public bool firstAreaLoaded = false;
     public IState currentState;
     // Start is called before the first frame update
     void Start()
     {
+        GlobalHelper.areaList.ForEach(area => areaQueue.Enqueue(area));
         OnRoomLoaded += GlobalHelper.GlobalVariables.UIManager.OnRoomChange;
         OnAreaLoaded += GlobalHelper.GlobalVariables.UIManager.OnAreaChange;
         if (roomToDebug != null)
         {
+            GlobalHelper.GlobalVariables.gameInfos.currentArea = GlobalHelper.areaList[0];
             print("Debug Initiative launched");
-            LoadRoom(roomToDebug);
+            LoadRoom(roomToDebug).onComplete += () =>
+            {
+
+                ChangeState(new UnitPlaceState());
+            };
         }
         else
         {
-            LoadArea(GlobalHelper.areaList[0]);
-
+            ChangeState(new ChangeRoomState());
         }
-        ChangeState(new UnitPlaceState());
+        //else
+        //{
+        //    LoadArea(GlobalHelper.areaList[0]);
+
+        //}
     }
-    void test() { print("testetste"); }
-    public void LoadArea(Area a)
+
+    public Tween LoadArea(Area a)
     {
         GlobalHelper.GlobalVariables.gameInfos.currentArea = a;
         print("Loading area " + a.name);
@@ -51,10 +63,39 @@ public class GameManager : MonoBehaviour
             StopCoroutine(paletteCoroutine);
         }
         paletteCoroutine = StartCoroutine(LoadPalette(a.paletteIndex, a.colorText));
-        LoadRoom(roomQueue.Dequeue());
         OnAreaLoaded.Invoke();
+        return LoadRoom(roomQueue.Dequeue());
 
     }
+
+    public Tween LoadNextArea()
+    {
+        if(!firstAreaLoaded)
+        {
+            firstAreaLoaded = true;
+        }
+        return LoadArea(areaQueue.Dequeue());
+    }
+    public Tween LoadNextRoom()
+    {
+        if(roomQueue.Count > 0)
+        {
+            CleanPreviousRoom();
+
+            return LoadRoom(roomQueue.Dequeue()); ;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public void CleanPreviousRoom()
+    {
+        Destroy(currentRoom.gameObject);
+
+    }
+
     public IEnumerator LoadPalette(int paletteIndex, Color textColor)
     {
         Material globalMaterial = GlobalHelper.GlobalVariables.paletteMaterial; ;
@@ -75,12 +116,16 @@ public class GameManager : MonoBehaviour
         //Set the material to the room and the floor in the room prefab
         paletteCoroutine = null;
     }
-    public void LoadRoom(Room r)
+    public Tween LoadRoom(Room r)
     {
         currentRoom = GameObject.Instantiate(r.roomPrefab,roomRoot.transform).GetComponent<RoomView>();
         GlobalHelper.GlobalVariables.gameInfos.currentRoom = currentRoom;
-        currentRoom.LoadRoom();
-        OnRoomLoaded();
+        Tween t = currentRoom.LoadRoom();
+        t.onComplete += () =>
+        {
+            OnRoomLoaded();
+        };
+        return t;
     }
 
     public void ChangeState(IState s)
@@ -97,6 +142,10 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        currentState.OnUpdate(this);
+        if(currentState != null)
+        {
+           currentState.OnUpdate(this);
+        }
     }
+     
 }

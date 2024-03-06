@@ -23,7 +23,11 @@ public class GlobalVariables : ScriptableObject
     public GameObject unitPrefab;
     public string TILE_GROUND = "RuleFloor";
     public string TILE_WALL= "RuleWall";
+    public string TILE_EMPTY= "RuleEmpty";
+    public TileBase TileEmpty;
 
     public UIManager UIManager;
     public CameraMovementManager cameraMovement;
+    public GameManager gameManager;
+    public BloodSplatManager bloodSplatManager;
 }

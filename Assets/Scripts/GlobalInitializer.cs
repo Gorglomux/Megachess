@@ -13,8 +13,10 @@ public class GlobalInitializer : MonoBehaviour
     public InputManager inputManager;
     public UIManager uiManager;
     public CameraMovementManager cameraMovement;
-
+    public GameManager gameManager;
     public GameObject playerPrefab;
+
+    public BloodSplatManager bloodSplatManager;
     private void Awake()
     {
         GlobalHelper.GlobalVariables = global;
@@ -25,8 +27,9 @@ public class GlobalInitializer : MonoBehaviour
         global.inputManager = inputManager;
         global.UIManager = uiManager;
         global.cameraMovement = cameraMovement;
+        global.gameManager = gameManager;
         GlobalHelper.LoadGame();
-
+        global.bloodSplatManager = bloodSplatManager;
         global.player = GameObject.Instantiate(playerPrefab).GetComponent<Player>();
     }
 

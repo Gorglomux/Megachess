@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaef5d30ab8397d4898a381aba4f3e7d, type: 3}
   m_Name: A1
   m_EditorClassIdentifier: 
-  areaName: Where it all began
-  paletteIndex: 4
+  areaName: The start of something great
+  paletteIndex: 15
   contrastText: 0
   colorText: {r: 1, g: 1, b: 1, a: 1}
   roomList:

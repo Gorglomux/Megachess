@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7818c817b7df0ec4cbbc34440d52c96f, type: 3}
   m_Name: A2R1
   m_EditorClassIdentifier: 
-  roomName: A Cramped place
-  roomPrefab: {fileID: 0}
-  par: 3
+  roomName: Giant Steps
+  roomPrefab: {fileID: 7856683090932274919, guid: a0dc6552c4861834db974ad4048c36ca, type: 3}
+  par: 6
   isTutorial: 0
   isBoss: 0
+  maxUnits: 2

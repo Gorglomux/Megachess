@@ -53,3 +53,6 @@ TagManager:
   - name: Drag Preview
     uniqueID: 2063369387
     locked: 0
+  - name: Cursor
+    uniqueID: 1169785323
+    locked: 0

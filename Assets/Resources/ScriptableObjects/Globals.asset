@@ -13,3 +13,18 @@ MonoBehaviour:
   m_Name: Globals
   m_EditorClassIdentifier: 
   gameInfos: {fileID: 11400000, guid: 6316c46bd08958846943d19ad42dc0fe, type: 2}
+  GenerateSeed: 1
+  seed: 10350203
+  paletteCount: 17
+  paletteMaterial: {fileID: 2100000, guid: b4c89b2bad8d5c446bb2d370e79fd3ee, type: 2}
+  unitMaterial: {fileID: 2100000, guid: 1d2fbfe72bc279649b81aac59f73da33, type: 2}
+  player: {fileID: 0}
+  indicatorManager: {fileID: 0}
+  inputManager: {fileID: 0}
+  unitPrefab: {fileID: 5056264982835310702, guid: 60de14fda492fb34ab7119203a24e424, type: 3}
+  TILE_GROUND: RuleFloor
+  TILE_WALL: RuleWall
+  TILE_EMPTY: RuleGround
+  TileEmpty: {fileID: 11400000, guid: fb9db47076161464b99819cd313e2d1e, type: 2}
+  UIManager: {fileID: 0}
+  cameraMovement: {fileID: 0}

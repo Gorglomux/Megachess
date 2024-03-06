@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,6 +39,7 @@ public class UnitPlaceState : IState
         //Link the end turn button to there. 
         GlobalHelper.GlobalVariables.indicatorManager.HideSpawnableCells();
         GlobalHelper.UI().OnChangePhase -= EndPlaceState;
+        GlobalHelper.GetRoom().OnBoardUpdate -= CheckUnitsLeft;
     }
 
     public void OnUpdate(GameManager gm)
@@ -45,14 +47,31 @@ public class UnitPlaceState : IState
     }
     public void EndPlaceState()
     {
-        gmRef.ChangeState(new FightState());
+        if(GlobalHelper.GetRoom().GetAllies().Count > 0)
+        {
+            gmRef.ChangeState(new FightState());
+        }
+        else
+        {
+            //GlobalHelper.getCamMovement().ShakeCamera(1, 0.5f);
+            GlobalHelper.UI().ShakeButtonBottomRightText();
+        }
     }
     public void CheckUnitsLeft()
     {
         RoomView r = GlobalHelper.GetRoom();
-        int unitLeft = r.roomData.maxUnits - r.GetAllies().Count;
-        Debug.Log("Todo : check units left");
-        GlobalHelper.UI().SetBottomText("Drag up to "+unitLeft+" units from the reserve to the highlighted cells"); // FAIRE EN SORTE QUE LE X POINTE VERS UN SCRIPTABLEOBJECT? 
+        int unitsLeft = r.CheckUnitsLeft();
+        if (unitsLeft > 0)
+        {
+            GlobalHelper.UI().SetBottomText("Drag up to " + unitsLeft + " units from the reserve to the highlighted cells"); 
+
+        }
+        else
+        {
+            GlobalHelper.UI().ShakeButtonBottomRightText();
+            GlobalHelper.UI().SetBottomText("Press the Fight button to start the fight!");
+
+        }
     }
 }
 
@@ -60,7 +79,7 @@ public class UnitPlaceState : IState
 public class FightState : IState
 {
     public event Action OnEndTurn = delegate { };
-    public Unit capturedThisFight = null;
+    public UnitData capturedThisFight = null;
     public void OnEntry(GameManager gm)
     {
         GlobalHelper.UI().SetButtonBottomRightText("End Turn");
@@ -68,17 +87,32 @@ public class FightState : IState
         GlobalHelper.UI().OnChangePhase += onChangePhase;
         OnEndTurn += GlobalHelper.UI().OnEndTurn;
 
-        CheckGameWinState();
+        //CheckGameWinState();
         GlobalHelper.GetRoom().OnBoardUpdate += CheckGameWinState;
         GlobalHelper.GetRoom().OnKillUnit += TryCapture;
         GlobalHelper.GlobalVariables.gameInfos.currentTurn = 1;
+
+        foreach (Unit u in GlobalHelper.GetRoom().getAllUnits())
+        {
+            if (!u.isEnemy)
+            {
+                u.StartIdle();
+                u.RefreshActions();
+            }
+        }
+
     }
 
     public void OnExit(GameManager gm)
     {
         Debug.Log("Ending fight place phase");
         RoomView r = GlobalHelper.GetRoom();
-        r.destroyedUnitsThisFight.Remove(capturedThisFight);
+
+        OnEndTurn -= GlobalHelper.UI().OnEndTurn;
+        GlobalHelper.UI().OnChangePhase -= onChangePhase;
+        GlobalHelper.GetRoom().OnKillUnit -= TryCapture;
+        GlobalHelper.GetRoom().OnBoardUpdate -= CheckGameWinState;
+
         r.CleanUpFight();
     }
 
@@ -101,6 +135,7 @@ public class FightState : IState
             }
             else
             {
+                u.StartIdle();
                 u.RefreshActions();
             }
         }
@@ -113,7 +148,8 @@ public class FightState : IState
         {
             if(capturedThisFight == null)
             {
-                capturedThisFight = u;
+                capturedThisFight = u.unitData;
+                GlobalHelper.UI().captureManager.CaptureAtPosition(u.GetWorldPosition());
                 //Animation de capture a la position de l'unit. Pour les megas je sais pas
                 GlobalHelper.GlobalVariables.player.AddUnit(u);
             }
@@ -129,6 +165,7 @@ public class FightState : IState
         if (r.GetEnemies().Count == 0)
         {
             GlobalHelper.UI().SetBottomText("Fight won, going to the next fight !");
+            r.StartCoroutine(GoToNextFight());
         }
 
         if (r.GetAllies().Count == 0)
@@ -137,4 +174,85 @@ public class FightState : IState
 
         }
     }
+
+    public IEnumerator GoToNextFight()
+    {
+        RoomView r = GlobalHelper.GetRoom();
+        UIManager ui = GlobalHelper.UI();
+        Sequence s = DOTween.Sequence().Pause(); 
+        //All units go back to their reserve spot 
+        foreach(Unit u in r.getAllUnits())
+        {
+            if (!u.isEnemy)
+            {
+                //sequence with join and prepend = 0.2f
+
+                s.PrependInterval(0.2f);
+                Tween t = u.transform.DOMove(ui.reserve.transform.position, 1f).SetEase(Ease.InBack, 1.5f);
+                t.onComplete += () =>
+                {
+                    //Add unit back
+                    GlobalHelper.GlobalVariables.player.AddUnit(u);
+                };
+                s.Join(t);
+            }
+        }
+        yield return s.Play().WaitForCompletion();
+        yield return new WaitForSeconds(0.5f);
+
+        GlobalHelper.GlobalVariables.bloodSplatManager.Cleanup();
+        //Make the tilemap disappear
+        yield return r.HideTilemap();
+        // Start Down Animation, and display the fight recap
+
+        //Change state HERE to NewFightState
+
+        GlobalHelper.GetGameManager().ChangeState(new ChangeRoomState());
+    }
 }
+
+
+public class ChangeRoomState : IState
+{
+    GameManager gmRef;
+    public void OnEntry(GameManager gm)
+    {
+        gmRef = gm;
+
+
+        gmRef.StartCoroutine(loadGame());
+
+    }
+
+    public void OnExit(GameManager gm)
+    {
+        Debug.Log("Starting Next fight State");
+
+    }
+
+    public void OnUpdate(GameManager gm)
+    {
+    }
+
+    public IEnumerator loadGame()
+    {
+        Debug.Log("Loading next");
+        Tween t = gmRef.LoadNextRoom();
+        if (t!= null)
+        {
+            yield return t.WaitForCompletion();
+        }
+        else
+        {
+            Debug.Log("Out of rooms !");
+            Tween tw = gmRef.LoadNextArea();
+            yield return tw.WaitForCompletion();
+            //Go to shop state 
+            //Go to areaChoiceState
+        }
+
+        yield return null;
+        gmRef.ChangeState(new UnitPlaceState());
+    }
+}
+
