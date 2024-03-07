@@ -2922,7 +2922,7 @@ PrefabInstance:
     - target: {fileID: 496264852170624210, guid: bc42c63c4fc53074286b23d7a5432c4c, type: 3}
       propertyPath: roomData
       value: 
-      objectReference: {fileID: 11400000, guid: 839b9ef43e6ea584dad158cfb061cac9, type: 2}
+      objectReference: {fileID: 11400000, guid: 179290e0b86af084797ec961501eb7d6, type: 2}
     - target: {fileID: 3480354342282569447, guid: bc42c63c4fc53074286b23d7a5432c4c, type: 3}
       propertyPath: m_IsActive
       value: 1

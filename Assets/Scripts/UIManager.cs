@@ -8,6 +8,7 @@ using UnityEngine;
 public class UIManager : MonoBehaviour
 {
     public event Action OnChangePhase = delegate { };
+    public event Action OnResetTurn = delegate { };
 
     public TextMeshProUGUI buttonText;
     public TextMeshProUGUI bottomText;
@@ -85,6 +86,12 @@ public class UIManager : MonoBehaviour
         bottomShakeTween = bottomText.transform.DOShakePosition(0.8f, new Vector3(10f, 0, 0), 8).SetEase(Ease.OutBounce);
         
         //bottomText.transform.DOPunchScale(bottomText.transform.localScale *1.22f, 1).SetEase(Ease.OutBounce);
+
+    }
+    public void OnResetButtonClicked()
+    {
+        OnResetTurn();
+
 
     }
 }

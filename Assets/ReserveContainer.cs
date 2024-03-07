@@ -143,6 +143,7 @@ public class ReserveContainer : MonoBehaviour
                     {
                         RemoveUnit();
                         Unit unit = (Unit)units.Dequeue();
+                        GlobalHelper.GlobalVariables.player.RemoveUnit(unit);
                         unit.gameObject.SetActive(true);
                         //This will break why did you write this 
 

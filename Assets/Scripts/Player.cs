@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -10,6 +11,7 @@ public class Player : MonoBehaviour
     public event Action<Unit> OnInventoryRemoved = delegate { };
 
     public Dictionary<UnitData, List<Unit>> inventory = new Dictionary<UnitData,List<Unit>>();
+    public List<UnitData> inventoryBackup = new List<UnitData>();
     // Start is called before the first frame update
     void Start()
     {
@@ -30,6 +32,31 @@ public class Player : MonoBehaviour
 
     }
 
+    public void BackupInventory()
+    {
+        inventoryBackup.Clear();
+        foreach (var units in inventory.Values)
+        {
+            foreach(Unit u in units)
+            {
+                inventoryBackup.Add(u.unitData);
+            }
+        }
+    }
+    public void RestoreBackup()
+    {
+        foreach(ReserveContainer rc  in GlobalHelper.UI().reserve.containers.Values)
+        {
+            Destroy(rc.gameObject);
+        }
+        GlobalHelper.UI().reserve.containers.Clear();
+        inventory.Clear();
+        foreach (UnitData ud in inventoryBackup.ToList())
+        {
+            AddUnit(GlobalHelper.GetRoom().CreateUnit(ud, false));
+        }
+        inventoryBackup.Clear();
+    }
     public void AddUnit(Unit unit)
     {
         int toAdd = 1;
@@ -44,7 +71,7 @@ public class Player : MonoBehaviour
         for(int i= 0; i < toAdd; i++)
         {
             Unit u = GlobalHelper.GetRoom().CreateUnit(unit.unitData, false);
-            u.LoadPalette(unit.basePaletteIndex);
+            u.LoadPalette(unit.unitData.paletteIndex);
             if (!inventory.ContainsKey(u.unitData))
             {
                 inventory[u.unitData] = new List<Unit>();
@@ -57,8 +84,10 @@ public class Player : MonoBehaviour
             print("Unit added");
             Destroy(unit.gameObject);
         }
-
     }
-
+    public void RemoveUnit(Unit u)
+    {
+        inventory[u.unitData].Remove(u);
+    }
 
 }

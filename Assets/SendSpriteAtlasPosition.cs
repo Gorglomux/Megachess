@@ -30,6 +30,7 @@ public class SendSpriteAtlasPosition : MonoBehaviour
         //Recalculate and send the index to the material 
         m.SetVector("_SpritePosition", positionInAtlas);
         m.SetVector("_SpriteSize", textureSize);
+        m.SetTexture("_Atlas", s.texture);
         //Send the size of the sprite as well
         spriteRenderer.material = m;
     }

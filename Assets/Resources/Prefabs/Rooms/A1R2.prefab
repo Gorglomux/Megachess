@@ -2433,11 +2433,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1753296159, guid: bc42c63c4fc53074286b23d7a5432c4c, type: 3}
       propertyPath: m_TileSpriteArray.Array.data[14].m_RefCount
-      value: 65
+      value: 66
       objectReference: {fileID: 0}
     - target: {fileID: 1753296159, guid: bc42c63c4fc53074286b23d7a5432c4c, type: 3}
       propertyPath: m_TileSpriteArray.Array.data[15].m_RefCount
-      value: 27
+      value: 26
       objectReference: {fileID: 0}
     - target: {fileID: 1753296159, guid: bc42c63c4fc53074286b23d7a5432c4c, type: 3}
       propertyPath: m_Tiles.Array.data[39].second.m_AllTileFlags
@@ -2769,7 +2769,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1753296159, guid: bc42c63c4fc53074286b23d7a5432c4c, type: 3}
       propertyPath: m_Tiles.Array.data[34].second.m_TileSpriteIndex
-      value: 15
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 1753296159, guid: bc42c63c4fc53074286b23d7a5432c4c, type: 3}
       propertyPath: m_Tiles.Array.data[35].second.m_TileMatrixIndex
@@ -3307,6 +3307,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 496264852170624210, guid: bc42c63c4fc53074286b23d7a5432c4c, type: 3}
+      propertyPath: roomData
+      value: 
+      objectReference: {fileID: 11400000, guid: ea8badaa7eba7644ab2bb47e6be35273, type: 2}
     - target: {fileID: 3480354342282569447, guid: bc42c63c4fc53074286b23d7a5432c4c, type: 3}
       propertyPath: m_IsActive
       value: 1

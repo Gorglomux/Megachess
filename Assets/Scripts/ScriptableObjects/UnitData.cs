@@ -15,4 +15,5 @@ public class UnitData : ScriptableObject
 
 
     public List<EffectData> effectDatas;
+    public int paletteIndex = 4;
 }

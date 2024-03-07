@@ -100,6 +100,7 @@ MonoBehaviour:
   m: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   spriteRenderer: {fileID: 5056264981853230970}
   referenceSprite: {fileID: 0}
+  atlas: {fileID: 4343727234628468602, guid: f080dadbb9287664b977b3cf2828c907, type: 2}
 --- !u!1 &5056264982835310702
 GameObject:
   m_ObjectHideFlags: 0
@@ -151,6 +152,7 @@ MonoBehaviour:
   occupiedCells: []
   spriteRenderer: {fileID: 5056264981853230970}
   sendAtlasPosition: {fileID: 8189224300281341721}
+  basePaletteIndex: -1
   currentEffects: []
   isEnemy: 0
   health: 0

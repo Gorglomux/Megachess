@@ -69,7 +69,7 @@ public class RoomView : MonoBehaviour
     {
 
         Tween t = Camera.main.DOShakePosition(1f, Vector3.one * 0.005f, 3, 90).SetLoops(-1);
-        Tween tween = transform.parent.DOScale(Vector3.one,3).SetEase(Ease.OutQuart);
+        Tween tween = transform.parent.DOScale(Vector3.one,2.3f).SetEase(Ease.OutQuart);
         tween.onComplete += () =>
         {
             t.Kill();

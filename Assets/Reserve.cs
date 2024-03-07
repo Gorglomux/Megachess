@@ -8,7 +8,7 @@ public class Reserve : MonoBehaviour
     Player playerRef;
 
     public Transform rootContainers;
-    Dictionary<string,ReserveContainer> containers = new Dictionary<string, ReserveContainer>();
+    public Dictionary<string,ReserveContainer> containers = new Dictionary<string, ReserveContainer>();
     // Start is called before the first frame update
     void Start()
     {

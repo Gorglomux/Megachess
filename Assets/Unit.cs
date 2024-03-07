@@ -129,18 +129,22 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
 
     public void LoadPalette(int palette = -1, bool megaTransform = false)
     {
+        string spriteName = "";
         if (isEnemy)
         {
+            spriteName = unitData.sprite_NB.name;
             sendAtlasPosition.referenceSprite = unitData.sprite_NB;
         }
         else
         {
+            spriteName = unitData.sprite.name;
             sendAtlasPosition.referenceSprite = unitData.sprite;
         }
         sendAtlasPosition.m = new Material(GlobalHelper.GlobalVariables.unitMaterial);
         if (basePaletteIndex == -1 || megaTransform)
         {
             basePaletteIndex = GlobalHelper.GlobalVariables.gameInfos.currentArea.paletteIndex;
+            unitData.paletteIndex = basePaletteIndex;
             sendAtlasPosition.m.SetFloat("_PaletteIndex", basePaletteIndex);
         }
         else

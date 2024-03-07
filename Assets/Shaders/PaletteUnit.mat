@@ -34,7 +34,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _Atlas:
-        m_Texture: {fileID: 2800000, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
+        m_Texture: {fileID: 2800000, guid: 45ce898f66876634dbe0368b19a17627, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _AtlasOutlines:
@@ -89,6 +89,6 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:
-    - _SpritePosition: {r: 0.0625, g: 0.9375, b: 0, a: 0}
-    - _SpriteSize: {r: 0.03125, g: 0.03125, b: 0, a: 0}
+    - _SpritePosition: {r: 0, g: 0, b: 0, a: 0}
+    - _SpriteSize: {r: 1, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
