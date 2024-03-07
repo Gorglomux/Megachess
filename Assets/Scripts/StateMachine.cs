@@ -20,6 +20,8 @@ public class UnitPlaceState : IState
     bool canReset = false;
     public void OnEntry(GameManager gm)
     {
+
+        GlobalHelper.UI().EnableButton(GlobalHelper.UI().endTurnButton);
         gmRef = gm;
         Debug.Log("Starting unit place phase");
         //Select or drag units from the reserve to the spawn cells. 
@@ -105,17 +107,20 @@ public class UnitPlaceState : IState
 
 public class FightState : IState
 {
-    public event Action OnEndTurn = delegate { };
     public UnitData capturedThisFight = null;
     bool canReset = false;
-    public bool canEndTurn = true;
+    public bool enemyTurn = false;
+    public GameManager gmRef;
     public void OnEntry(GameManager gm)
     {
+        GlobalHelper.UI().EnableButton(GlobalHelper.UI().abilityButton);
+        GlobalHelper.UI().EnableButton(GlobalHelper.UI().endTurnButton);
+        gmRef = gm;
+        gmRef.extraTurns = 0; //Not sure if that is a good idea  
         GlobalHelper.UI().SetButtonBottomRightText("End Turn");
         GlobalHelper.UI().SetBottomText("Kill all enemies");
         GlobalHelper.UI().OnChangePhase += onChangePhase;
         GlobalHelper.UI().OnResetTurn += OnResetTurn;
-        OnEndTurn += GlobalHelper.UI().OnEndTurn;
 
         //CheckGameWinState();
         GlobalHelper.GetRoom().OnBoardUpdate += CheckGameWinState;
@@ -165,13 +170,13 @@ public class FightState : IState
         Debug.Log("Ending fight place phase");
         RoomView r = GlobalHelper.GetRoom();
 
-        OnEndTurn -= GlobalHelper.UI().OnEndTurn;
         GlobalHelper.UI().OnChangePhase -= onChangePhase;
         GlobalHelper.GetRoom().OnKillUnit -= TryCapture;
         GlobalHelper.GetRoom().OnBoardUpdate -= CheckGameWinState;
         GlobalHelper.GetRoom().OnBoardUpdate -= AutoEndTurn;
 
         r.CleanUpFight();
+        GlobalHelper.UI().DisableButton(GlobalHelper.UI().abilityButton);
     }
 
     public void OnUpdate(GameManager gm)
@@ -180,7 +185,7 @@ public class FightState : IState
     public void onChangePhase()
     {
         canReset = false;
-        if (canEndTurn)
+        if (!enemyTurn)
         {
             GlobalHelper.GetRoom().StartCoroutine(EndTurn());
 
@@ -188,20 +193,33 @@ public class FightState : IState
     }
     public IEnumerator EndTurn()
     {
+        UIManager ui = GlobalHelper.UI();
+        ui.DisableButton(ui.abilityButton);
+        ui.DisableButton(ui.endTurnButton);
         if (endFight)
         {
             yield break;
         }
-        canEndTurn = false;
+        enemyTurn = true;
         yield return GlobalHelper.UI().nextFight.StopAnimate().WaitForCompletion();
         yield return GlobalHelper.UI().nextFight.StartAnimate("Enemy Turn").WaitForCompletion();
 
         Debug.Log("Ending turn");
-        foreach(Unit u in GlobalHelper.GetRoom().GetEnemies())
-        { 
-            u.RefreshActions();
-            yield return u.StartCoroutine(u.EnemyAttack());
+        if(gmRef.extraTurns > 0)
+        {
+            gmRef.extraTurns--;
+            GlobalHelper.UI().captureManager.DisplayAtPosition(Vector3.zero, "Skipped Enemy turn!");
+
         }
+        else
+        {
+            foreach (Unit u in GlobalHelper.GetRoom().GetEnemies())
+            {
+                u.RefreshActions();
+                yield return u.StartCoroutine(u.EnemyAttack());
+            }
+        }
+
 
         //yield return GlobalHelper.UI().nextFight.AnimateText("Player").WaitForCompletion();
 
@@ -214,9 +232,12 @@ public class FightState : IState
         yield return GlobalHelper.UI().nextFight.StartAnimate("Player Turn").WaitForCompletion();
 
         GlobalHelper.GlobalVariables.gameInfos.currentTurn++;
-        OnEndTurn();
-        canEndTurn = true;
+        GlobalHelper.UI().OnEndTurn();
+        enemyTurn = false;
+        gmRef.OnEndTurn();
         canReset = true;
+        ui.EnableButton(ui.abilityButton);
+        ui.EnableButton(ui.endTurnButton);
     }
     public void TryCapture(Unit u)
     {
@@ -312,6 +333,7 @@ public class FightState : IState
         int moneyEarned =Mathf.Clamp(gf.currentRoom.roomData.par - gf.currentTurn,0,99999)+1;
         GlobalHelper.GlobalVariables.player.money += moneyEarned;
         GlobalHelper.UI().fightWinUI.OnNextPressed += LoadNext;
+        gmRef.OnRoomCleared();
         yield return GlobalHelper.UI().fightWinUI.Show(moneyEarned, capturedThisFight.unitName);
         
     }
@@ -357,6 +379,7 @@ public class ChangeRoomState : IState
         }
         else
         {
+            gmRef.OnAreaCleared();
             Debug.Log("Out of rooms !");
             Tween tw = gmRef.LoadNextArea();
             yield return tw.WaitForCompletion();

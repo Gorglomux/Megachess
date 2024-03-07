@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,18 +7,21 @@ public class BaseAbility
 {
     public AbilityData abilityData;
 
-    public int currentCharge = 0 ;
+    private int _currentCharge = 0 ;
+    public int currentCharge { get { return _currentCharge; } set { if (_currentCharge + value <= 0) { _currentCharge = 0; } else { _currentCharge = value; } } }
     
     public BaseAbility(AbilityData ab)
     {
         abilityData = ab;
+        SetUpRecharge();
     }
-    public virtual void ExecuteAbility(Object target)
+    public virtual void ExecuteAbility(object target)
     {
         if (!isCharged())
         {
             return;
         }
+
         currentCharge = abilityData.cooldownDuration;
     }
 
@@ -26,6 +30,74 @@ public class BaseAbility
         return currentCharge == 0;
     }
 
+    public void SetUpRecharge()
+    {
+        
+        RoomView rv = GlobalHelper.GetRoom();
+        GameManager gm = GlobalHelper.GetGameManager();
+        switch (abilityData.cooldownType)
+        {
+            case COOLDOWN_TYPE.FIGHT_AMOUNT:
+                gm.OnRoomCleared += Discharge;
+                break;
+            case COOLDOWN_TYPE.KILL_AMOUNT:
+                rv.OnKillUnit += DischargeEnemyKill;
+                break;
+            case COOLDOWN_TYPE.AREA_CLEARED:
+                gm.OnAreaCleared += Discharge;
+                break;
+            case COOLDOWN_TYPE.UNIT_LOST_AMOUNT:
+                rv.OnKillUnit += DischargeAllyKill;
+                break;
+            case COOLDOWN_TYPE.TURN_AMOUNT:
+                gm.OnNextTurn += Discharge;
+                break;
+        }
+
+    }
+    private void Discharge()
+    {
+        currentCharge --;
+    }
+    private void DischargeEnemyKill(Unit u)
+    {
+        if (u.isEnemy)
+        {
+            currentCharge -= u.megaSize;
+        }
+    }
+    private void DischargeAllyKill(Unit u)
+    {
+        if (!u.isEnemy)
+        {
+            currentCharge -= u.megaSize;
+        }
+    }
+
+    public void onDestroy()
+    {
+        RoomView rv = GlobalHelper.GetRoom();
+        GameManager gm = GlobalHelper.GetGameManager();
+        switch (abilityData.cooldownType)
+        {
+            case COOLDOWN_TYPE.FIGHT_AMOUNT:
+                gm.OnRoomCleared -= Discharge;
+                break;
+            case COOLDOWN_TYPE.KILL_AMOUNT:
+                rv.OnKillUnit -= DischargeEnemyKill;
+                break;
+            case COOLDOWN_TYPE.AREA_CLEARED:
+                gm.OnAreaCleared -= Discharge;
+                break;
+            case COOLDOWN_TYPE.UNIT_LOST_AMOUNT:
+                rv.OnKillUnit -= DischargeAllyKill;
+                break;
+            case COOLDOWN_TYPE.TURN_AMOUNT:
+                gm.OnNextTurn -= Discharge;
+                break;
+        }
+
+    }
 
     /// <summary>
     /// On lie ça a des events pour recharger 
@@ -34,4 +106,5 @@ public class BaseAbility
     {
         abilityData.cooldownDuration = Mathf.Clamp(--currentCharge ,0, 999);
     }
+
 }

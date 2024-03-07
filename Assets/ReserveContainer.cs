@@ -62,12 +62,16 @@ public class ReserveContainer : MonoBehaviour
     public void OnPointerEnter(BaseEventData data)
     {
         containerImage.sprite = spriteHovered;
-
-        Unit u = (Unit) units.Peek();
-        if(u != null)
+        if(units.Count > 0)
         {
-            GlobalHelper.UI().ShowHoverInfos(u);
+            Unit u = (Unit)units.Peek();
+            if (u != null)
+            {
+                GlobalHelper.UI().ShowHoverInfos(u);
+            }
+
         }
+
     }
 
     public void OnPointerExit(BaseEventData data)

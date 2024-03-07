@@ -42,6 +42,18 @@ public class CaptureTextManager : MonoBehaviour
         };
     }
 
+    public void DisplayAtPosition(Vector3 position, string t)
+    {
+        CaptureText text = getNext();
+        text.gameObject.SetActive(true);
+        text.transform.position = position;
+        text.setText(t);
+        text.AnimateCaptureText().onComplete += () =>
+        {
+            DisableText(text);
+        };
+    }
+
     public void DisableText(CaptureText text)
     {
         text.gameObject.SetActive(false);

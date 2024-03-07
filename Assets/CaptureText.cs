@@ -15,4 +15,9 @@ public class CaptureText : MonoBehaviour
         s.Append(DOTween.To(() => capturedText.alpha, x => capturedText.alpha = x, 0, 1));
         return s;
     }
+
+    public void setText(string text)
+    {
+        capturedText.text = text;
+    }
 }

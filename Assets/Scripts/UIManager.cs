@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -35,12 +36,18 @@ public class UIManager : MonoBehaviour
     public PreviewMove previewMove;
 
     public GameObject rootTopInfos;
+    public EffectContainerManager effectContainerManager;
+
+    public Button endTurnButton;
+    public Button abilityButton;
+    public Button resetFightButton;
     // Start is called before the first frame update
     void Start()
     {
         gameInfosRef = GlobalHelper.GlobalVariables.gameInfos;
         HideTopInfos();
         HideHoverInfos();
+        DisableButton(abilityButton);
     }
 
     // Update is called once per frame
@@ -49,10 +56,34 @@ public class UIManager : MonoBehaviour
 
     }
 
-    public void SetBottomText(string text)
+    string originalBottomText;
+    public void SetBottomText(string text, float duration = -1)
     {
-        //Typewrite here
+        if(duration == -1)
+        {
+            originalBottomText = text;
+            //Typewrite here
+            bottomText.text = text;
+        }
+        if(BottomTextCoroutine == null)
+        {
+            originalBottomText = text;
+            BottomTextCoroutine = StartCoroutine(corBottomTextCoroutine(text, duration));
+        }
+        else
+        {
+            StopCoroutine(BottomTextCoroutine);
+            BottomTextCoroutine = StartCoroutine(corBottomTextCoroutine(text, duration));
+        }
+
+    }
+    Coroutine BottomTextCoroutine = null;
+    IEnumerator corBottomTextCoroutine(string text, float duration)
+    {
         bottomText.text = text;
+        yield return new WaitForSeconds(duration);
+        bottomText.text = originalBottomText;
+    
     }
 
     public void SetButtonBottomRightText(string text)
@@ -134,6 +165,15 @@ public class UIManager : MonoBehaviour
             previewMove.ShowPreview(u);
             SetUnitName(u.unitData.unitName, u.megaSize);
 
+        }if(hoverable is BaseAbility)
+        {
+            BaseAbility ability= (BaseAbility)hoverable;
+
+            UnitNameText.text = ability.abilityData.abilityName;
+            EffectContainer ec = effectContainerManager.getNext();
+            ec.FillInfos(ability);
+            EffectContainer ecCooldown = effectContainerManager.getNext();
+            ecCooldown.FillCooldown(ability);
         }
         //else if is ability, else if is shopitem...
     }
@@ -142,6 +182,7 @@ public class UIManager : MonoBehaviour
     {
         previewMove.HidePreview();
         //EffectsContainer.Hide();
+        effectContainerManager.DisableContainers();
         UnitNameText.gameObject.SetActive(false);
     }
     public TextMeshProUGUI UnitNameText;
@@ -175,5 +216,18 @@ public class UIManager : MonoBehaviour
 
         }
         return output;
+    }
+
+    public void DisableButton(Button b)
+    {
+        b.enabled = false;
+        b.GetComponent<Image>().color = new Color(1, 1, 1, 0.5f);
+
+    }
+
+    public void EnableButton(Button b)
+    {
+        b.enabled = true;
+        b.GetComponent<Image>().color = new Color(1, 1, 1, 1);
     }
 }

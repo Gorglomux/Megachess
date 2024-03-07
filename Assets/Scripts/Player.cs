@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+
 public class Player : MonoBehaviour
 {
     public event Action<UnitData> OnNewUnitAdded = delegate { };
     public event Action<Unit> OnInventoryAdded = delegate { };
     public event Action<Unit> OnInventoryRemoved = delegate { };
+    public event Action OnAbilityChange = delegate { };
 
     public Dictionary<UnitData, List<Unit>> inventory = new Dictionary<UnitData,List<Unit>>();
     public List<UnitData> inventoryBackup = new List<UnitData>();
@@ -26,9 +28,13 @@ public class Player : MonoBehaviour
         money = 3;
         testInventory();
         GlobalHelper.UI().UpdateMoneyCount();
-        ability = GlobalHelper.abilityLookup(GlobalHelper.GetAbilityData("Extra Turn"));
+        ChangeAbility(GlobalHelper.GetAbilityData("ExtraTurn"));
     }
-
+    public void ChangeAbility(AbilityData ab)
+    {
+        ability = GlobalHelper.abilityLookup(ab);
+        OnAbilityChange();
+    }
     // Update is called once per frame
     void Update()
     {
@@ -53,6 +59,7 @@ public class Player : MonoBehaviour
                 inventoryBackup.Add(u.unitData);
             }
         }
+
     }
     public void RestoreBackup()
     {
@@ -101,4 +108,8 @@ public class Player : MonoBehaviour
         inventory[u.unitData].Remove(u);
     }
 
+    public void RestoreData(object data)
+    {
+        throw new NotImplementedException();
+    }
 }

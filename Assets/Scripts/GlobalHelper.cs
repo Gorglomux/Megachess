@@ -112,7 +112,7 @@ public class GlobalHelper
 
     public static AbilityData GetAbilityData(string identifier)
     {
-        return abilityList.FirstOrDefault((x) => x.abilityName == identifier);
+        return abilityList.FirstOrDefault((x) => x.name == identifier);
     }
 
     public static BaseAbility abilityLookup(AbilityData ad)
@@ -120,8 +120,8 @@ public class GlobalHelper
         BaseAbility ability = null;
         switch (ad.name)
         {
-            case "Extra Turn":
-                //ability = new ExtraTurnAbility();
+            case "ExtraTurn":
+                ability = new ExtraTurnAbility(ad);
                 break;
             default:
                 Debug.LogError("Invalid ability lookup");
@@ -165,5 +165,19 @@ public class GlobalHelper
         {
             return plural;
         }
+    }
+    public static bool isPlayerTurn()
+    {
+        IState state = GlobalVariables.gameManager.currentState;
+
+        if(state is FightState)
+        {
+            FightState fightState = (FightState)state;
+            if (fightState.enemyTurn)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }

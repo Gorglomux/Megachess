@@ -15,5 +15,5 @@ MonoBehaviour:
   abilityName: Extra Turn
   targettingType: 2
   cooldownType: 0
-  cooldownDuration: 1
-  description: Skip the ennemies turn.
+  cooldownDuration: 2
+  description: Skip the enemy's turn.

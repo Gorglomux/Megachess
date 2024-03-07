@@ -8,8 +8,14 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public event Action OnAreaLoaded = delegate { };
-    public event Action OnRoomLoaded = delegate { };
+    public Action OnAreaLoaded = delegate { };
+    public Action OnRoomLoaded = delegate { };
+
+
+    public Action OnRoomCleared = delegate { };
+    public Action OnAreaCleared = delegate { };
+    public Action OnNextTurn = delegate { };
+
     public Room roomToDebug;
 
     public RoomView currentRoom;
@@ -26,6 +32,7 @@ public class GameManager : MonoBehaviour
     public bool firstAreaLoaded = false;
     public IState currentState;
     public int roomIndex = 0;
+    public int extraTurns = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -70,7 +77,10 @@ public class GameManager : MonoBehaviour
         return LoadRoom(roomQueue.Dequeue());
 
     }
-
+    public void OnEndTurn()
+    {
+        OnNextTurn();
+    }
     public Tween LoadNextArea()
     {
         roomIndex = 0;
@@ -82,7 +92,7 @@ public class GameManager : MonoBehaviour
     }
     public Tween LoadNextRoom()
     {
-        if(roomQueue.Count > 0)
+        if (roomQueue.Count > 0)
         {
             CleanPreviousRoom();
             roomIndex++;
@@ -96,7 +106,11 @@ public class GameManager : MonoBehaviour
 
     public void CleanPreviousRoom()
     {
-        Destroy(currentRoom.gameObject);
+        if(currentRoom != null)
+        {
+            Destroy(currentRoom.gameObject);
+
+        }
 
     }
 
@@ -122,6 +136,7 @@ public class GameManager : MonoBehaviour
     }
     public Tween LoadRoom(Room r)
     {
+        CleanPreviousRoom();
         currentRoom = GameObject.Instantiate(r.roomPrefab,roomRoot.transform).GetComponent<RoomView>();
         GlobalHelper.GlobalVariables.gameInfos.currentRoom = currentRoom;
         Tween t = currentRoom.LoadRoom();

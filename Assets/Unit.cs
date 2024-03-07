@@ -225,6 +225,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
                 }
             };
         }
+        roomRef.OnBoardUpdate();
         attackSequence.Play();
         return attackSequence;
     }
