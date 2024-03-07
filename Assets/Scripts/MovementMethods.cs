@@ -7,15 +7,15 @@ using UnityEngine;
 public class MovementMethods
 {
 
-    public static Func<RoomView, Unit, List<Vector3Int>> GetMovementMethod(string indice)
+    public static Func<RoomView, Unit, int, List<Vector3Int>> GetMovementMethod(string indice)
     {
         return movementMethods[indice];
     }
 
 
-    public static Dictionary<string, Func<RoomView,Unit,  List<Vector3Int>>> movementMethods = new Dictionary<string, Func<RoomView, Unit, List<Vector3Int>>>()
+    public static Dictionary<string, Func<RoomView, Unit, int, List<Vector3Int>>> movementMethods = new Dictionary<string, Func<RoomView, Unit, int, List<Vector3Int>>>()
     {
-        {"Rook", (room,unit)=>{
+        {"Rook", (room,unit, preview)=>{
             List<Vector3Int> positions = new List<Vector3Int>();
             List<Vector3Int> directions = new List<Vector3Int>
             {
@@ -24,17 +24,28 @@ public class MovementMethods
                 new Vector3Int(1,0),
                 new Vector3Int(-1,0)
             };
-            foreach (Vector3Int direction in directions)
+            if(preview > 1)
             {
-                positions.AddRange(GetCellAlongDirection(unit,room,direction));
+                foreach(Vector3Int direction in directions)
+                {
+                    positions.AddRange(GetCellAlongDirectionPreview(unit,preview,direction));
+                }
+            }
+            else
+            {
+
+                foreach (Vector3Int direction in directions)
+                {
+                    positions.AddRange(GetCellAlongDirection(unit,room,direction));
+                }
             }
             //Filter unique position 
             positions = positions.Distinct().ToList();
 
-            return positions; 
-        
+            return positions;
+
         } },
-        {"Knight", (room,unit)=>{
+        {"Knight", (room,unit, preview)=>{
             List<Vector3Int> positions = new List<Vector3Int>();
             List<Vector3Int> staticMovements = new List<Vector3Int>
             {
@@ -47,26 +58,48 @@ public class MovementMethods
                 new Vector3Int(-1,2),
                 new Vector3Int(-1,-2)
             };
-            foreach (Vector3Int staticMovement in staticMovements)
+            if(preview > 1)
             {
-                positions.AddRange(GetCellFromFixedMovement(unit,room,staticMovement));
+                foreach(Vector3Int staticMovement in staticMovements)
+                {
+                    positions.AddRange(GetCellAlongStaticPreview(unit,staticMovement));
+                }
+            }
+            else
+            {
+                foreach (Vector3Int staticMovement in staticMovements)
+                {
+                    positions.AddRange(GetCellFromFixedMovement(unit,room,staticMovement));
+                }
+
             }
 
             return positions;
 
         } },
-        {"Bishop", (room,unit)=>{
+        {"Bishop", (room,unit, preview)=>{
             List<Vector3Int> positions = new List<Vector3Int>();
             List<Vector3Int> directions = new List<Vector3Int>
             {
                 new Vector3Int(1,1),
                 new Vector3Int(-1,-1),
                 new Vector3Int(1,-1),
-               new Vector3Int(-1,1)
+                new Vector3Int(-1,1)
             };
-            foreach (Vector3Int direction in directions)
+            if(preview > 1)
             {
-                positions.AddRange(GetCellAlongDirection(unit,room,direction));
+                foreach(Vector3Int direction in directions)
+                {
+                    positions.AddRange(GetCellAlongDirectionPreview(unit,preview,direction));
+                }
+            }
+            else
+            {
+
+                foreach (Vector3Int direction in directions)
+                {
+                    positions.AddRange(GetCellAlongDirection(unit,room,direction));
+                }
             }
             //Filter unique position 
             positions = positions.Distinct().ToList();
@@ -74,7 +107,7 @@ public class MovementMethods
             return positions;
 
         } },
-        {"Queen", (room,unit)=>{
+        {"Queen", (room,unit, preview)=>{
             List<Vector3Int> positions = new List<Vector3Int>();
             List<Vector3Int> directions = new List<Vector3Int>
             {
@@ -87,9 +120,20 @@ public class MovementMethods
                 new Vector3Int(1,0),
                 new Vector3Int(-1,0)
             };
-            foreach (Vector3Int direction in directions)
+            if(preview > 1)
             {
-                positions.AddRange(GetCellAlongDirection(unit,room,direction));
+                foreach(Vector3Int direction in directions)
+                {
+                    positions.AddRange(GetCellAlongDirectionPreview(unit,preview,direction));
+                }
+            }
+            else
+            {
+
+                foreach (Vector3Int direction in directions)
+                {
+                    positions.AddRange(GetCellAlongDirection(unit,room,direction));
+                }
             }
             //Filter unique position 
             positions = positions.Distinct().ToList();
@@ -132,6 +176,39 @@ public class MovementMethods
         }
         return output;
     }
+    public static List<Vector3Int> GetCellAlongDirectionPreview(Unit unit, int previewDepth, Vector3Int direction)
+    {
+        List<Vector3Int> output = new List<Vector3Int>();
+        int min = unit.megaSize / 2;
+        int max = unit.megaSize - min;
+        for (int y = -min; y < max; y++)
+        {
+            for (int x = -min; x < max; x++)
+            {
+                for(int i=0; i<= previewDepth; i++)
+                {
+                    output.Add(direction * i + new Vector3Int(x,y) );
+                }
+            }
+        }
+        output = output.Distinct().ToList();
+        return output;
+    }
+    public static List<Vector3Int> GetCellAlongStaticPreview(Unit unit, Vector3Int staticMovement)
+    {
+        List<Vector3Int> output = new List<Vector3Int>();
+        int min = unit.megaSize / 2;
+        int max = unit.megaSize - min;
+        for (int y = -min; y < max; y++)
+        {
+            for (int x = -min; x < max; x++)
+            {
+                output.Add(staticMovement * unit.megaSize + new Vector3Int(x, y));
+            }
+        }
+        output = output.Distinct().ToList();
+        return output;
+    }
     public static List<Vector3Int> GetCellAlongDirection(Unit unit, RoomView room, Vector3Int direction)
     {
         List<Vector3Int> output = new List<Vector3Int>();
@@ -150,11 +227,12 @@ public class MovementMethods
                     if (room.GetTileAt(movement)?.name == GlobalHelper.GlobalVariables.TILE_GROUND)
                     {
                         Unit u = room.GetUnitAt(movement);
-                        if(u != null && (u.isEnemy != unit.isEnemy || u.UID == unit.UID))
+                        if (u != null && (u.isEnemy != unit.isEnemy || u.UID == unit.UID))
                         {
                             temp[tempIndex].Add(movement);
 
-                        }else if(u != null &&  (u.isEnemy == unit.isEnemy))
+                        }
+                        else if (u != null && (u.isEnemy == unit.isEnemy))
                         {
 
                             maxDistance = i;
@@ -210,7 +288,7 @@ public class MovementMethods
         }
         output = output.Distinct().ToList();
         List<Vector3Int> outputCleaned = new List<Vector3Int>();
-        foreach(Vector3Int cell in output)
+        foreach (Vector3Int cell in output)
         {
             List<Vector3Int> toAdd = new List<Vector3Int>();
             bool correctCell = true;
@@ -221,7 +299,7 @@ public class MovementMethods
                     Vector3Int toCheck = cell + new Vector3Int(x, y);
                     if (output.Contains(toCheck) && room.InBounds(toCheck) && room.GetTileAt(toCheck)?.name == GlobalHelper.GlobalVariables.TILE_GROUND)
                     {
-                        
+
                     }
                     else
                     {

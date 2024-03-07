@@ -62,11 +62,18 @@ public class ReserveContainer : MonoBehaviour
     public void OnPointerEnter(BaseEventData data)
     {
         containerImage.sprite = spriteHovered;
+
+        Unit u = (Unit) units.Peek();
+        if(u != null)
+        {
+            GlobalHelper.UI().ShowHoverInfos(u);
+        }
     }
 
     public void OnPointerExit(BaseEventData data)
     {
         containerImage.sprite = spriteNormal;
+        GlobalHelper.UI().HideHoverInfos();
     }
 
     public void OnBeginDrag(BaseEventData data)
@@ -108,6 +115,7 @@ public class ReserveContainer : MonoBehaviour
             if (u != null)
             {
                 spritePreview.material.SetFloat("_PaletteIndex", u.basePaletteIndex);
+                GlobalHelper.UI().ShowHoverInfos(u);
 
             }
 
@@ -160,6 +168,7 @@ public class ReserveContainer : MonoBehaviour
         GlobalHelper.getGlobal().indicatorManager.HideSpawnableCells();
         GlobalHelper.getGlobal().indicatorManager.ShowSpawnableCells();
 
+        GlobalHelper.UI().HideHoverInfos();
 
         GlobalHelper.GlobalVariables.inputManager.spritePreview.gameObject.SetActive(false);
         GlobalHelper.GlobalVariables.inputManager.spritePreview.sprite = null;

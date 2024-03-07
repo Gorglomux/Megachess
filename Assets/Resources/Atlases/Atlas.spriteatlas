@@ -57,6 +57,7 @@ SpriteAtlas:
     - {fileID: 2800000, guid: dabe95e9e7ae15d40b863a7ffb001179, type: 3}
     - {fileID: 2800000, guid: a486ece47cb25e048a3ccca76f5e1cef, type: 3}
     - {fileID: 2800000, guid: 7db7bbedc33681a4a9f68564e40ae216, type: 3}
+    - {fileID: 2800000, guid: e3a73c4c0dd00494ea79271e406c88a7, type: 3}
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -131,6 +132,30 @@ SpriteAtlas:
   - {fileID: 836697146, guid: 891d934c0dd03124283a0470f55e25d3, type: 3}
   - {fileID: -433071377, guid: 891d934c0dd03124283a0470f55e25d3, type: 3}
   - {fileID: 1427058420, guid: 891d934c0dd03124283a0470f55e25d3, type: 3}
+  - {fileID: -1466891590, guid: e3a73c4c0dd00494ea79271e406c88a7, type: 3}
+  - {fileID: 31899800, guid: e3a73c4c0dd00494ea79271e406c88a7, type: 3}
+  - {fileID: -1194076695, guid: e3a73c4c0dd00494ea79271e406c88a7, type: 3}
+  - {fileID: -1318025575, guid: e3a73c4c0dd00494ea79271e406c88a7, type: 3}
+  - {fileID: 503292956, guid: e3a73c4c0dd00494ea79271e406c88a7, type: 3}
+  - {fileID: -1614183535, guid: e3a73c4c0dd00494ea79271e406c88a7, type: 3}
+  - {fileID: -1175013793, guid: e3a73c4c0dd00494ea79271e406c88a7, type: 3}
+  - {fileID: 175680693, guid: e3a73c4c0dd00494ea79271e406c88a7, type: 3}
+  - {fileID: -635966869, guid: e3a73c4c0dd00494ea79271e406c88a7, type: 3}
+  - {fileID: 1744468988, guid: e3a73c4c0dd00494ea79271e406c88a7, type: 3}
+  - {fileID: -1598072738, guid: e3a73c4c0dd00494ea79271e406c88a7, type: 3}
+  - {fileID: -935240160, guid: e3a73c4c0dd00494ea79271e406c88a7, type: 3}
+  - {fileID: -2042158559, guid: e3a73c4c0dd00494ea79271e406c88a7, type: 3}
+  - {fileID: -1637305268, guid: e3a73c4c0dd00494ea79271e406c88a7, type: 3}
+  - {fileID: -1615850196, guid: e3a73c4c0dd00494ea79271e406c88a7, type: 3}
+  - {fileID: 1665721508, guid: e3a73c4c0dd00494ea79271e406c88a7, type: 3}
+  - {fileID: -770853967, guid: e3a73c4c0dd00494ea79271e406c88a7, type: 3}
+  - {fileID: 1247785391, guid: e3a73c4c0dd00494ea79271e406c88a7, type: 3}
+  - {fileID: 927473311, guid: e3a73c4c0dd00494ea79271e406c88a7, type: 3}
+  - {fileID: -1087355832, guid: e3a73c4c0dd00494ea79271e406c88a7, type: 3}
+  - {fileID: -666808003, guid: e3a73c4c0dd00494ea79271e406c88a7, type: 3}
+  - {fileID: -1353786493, guid: e3a73c4c0dd00494ea79271e406c88a7, type: 3}
+  - {fileID: 1294041953, guid: e3a73c4c0dd00494ea79271e406c88a7, type: 3}
+  - {fileID: 338614010, guid: e3a73c4c0dd00494ea79271e406c88a7, type: 3}
   - {fileID: 21300000, guid: 391a436cde68cb043abdef953b879600, type: 3}
   - {fileID: 21300000, guid: 7db7bbedc33681a4a9f68564e40ae216, type: 3}
   - {fileID: 21300000, guid: 734d3d0f5eee1de4d9d00e646c61c1f5, type: 3}
@@ -206,6 +231,30 @@ SpriteAtlas:
   - TileMap_29
   - TileMap_39
   - TileMap_38
+  - Attack
+  - Minimap_21
+  - Minimap_20
+  - Minimap_23
+  - Minimap_22
+  - Empty
+  - Minimap_3
+  - Minimap_5
+  - Minimap_4
+  - Minimap_7
+  - Minimap_6
+  - Minimap_9
+  - Minimap_8
+  - Minimap_10
+  - Minimap_11
+  - Minimap_12
+  - Minimap_13
+  - Minimap_14
+  - Minimap_15
+  - Minimap_16
+  - Minimap_17
+  - Minimap_18
+  - Minimap_19
+  - Move
   - Bishop_NB
   - SpawnableCell
   - Pawn_NB

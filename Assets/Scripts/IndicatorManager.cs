@@ -72,7 +72,7 @@ public class IndicatorManager : MonoBehaviour
 
         print("Displaying movement of " + u.unitData.unitName);
         RoomView r = GlobalHelper.GetRoom();
-        List<Vector3Int> positions = MovementMethods.GetMovementMethod(u.unitData.unitName).Invoke(r,u);
+        List<Vector3Int> positions = MovementMethods.GetMovementMethod(u.unitData.unitName).Invoke(r,u, -1 );
 
         foreach (Vector3Int position in positions)
         {
@@ -192,7 +192,7 @@ public class IndicatorManager : MonoBehaviour
     {
         RoomView r = GlobalHelper.GetRoom();
 
-        List<Vector3Int> validPositions = MovementMethods.GetMovementMethod(u.unitData.unitName).Invoke(r, u);
+        List<Vector3Int> validPositions = MovementMethods.GetMovementMethod(u.unitData.unitName).Invoke(r, u, -1);
         foreach (Vector3Int position in validPositions)
         {
             Indicator indicator = activeIndicators.Find((x) => x.transform.position ==  transform.position + GetIndicatorPosition(position));

@@ -432,7 +432,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         List<Vector3Int> evaluated = EvaluateAroundPosition(position);
         if (Mathf.Sqrt(evaluated.Count) == megaSize)
         {
-            List<Vector3Int> validPositions = MovementMethods.GetMovementMethod(unitData.unitName).Invoke(roomRef, this);
+            List<Vector3Int> validPositions = MovementMethods.GetMovementMethod(unitData.unitName).Invoke(roomRef, this, -1 );
             bool evaluatedCorrect = true;
             foreach (Vector3Int cell in evaluated)
             {
@@ -470,7 +470,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         //DoScale if ally? 
         GlobalHelper.GlobalVariables.indicatorManager.DisplayMovement(this);
         growTween = spriteRenderer.transform.DOScale(1.2f, 0.5f).SetEase(Ease.OutQuint);
-
+        GlobalHelper.UI().ShowHoverInfos(this);
 
     }
 
@@ -487,10 +487,14 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         print(UID + " exit hover!");
         GlobalHelper.GlobalVariables.indicatorManager.HideAll();
         growTween = spriteRenderer.transform.DOScale(1, 0.2f).SetEase(Ease.OutQuint);
+        GlobalHelper.UI().HideHoverInfos();
+
     }
 
     public bool onSelect()
     {
+
+        GlobalHelper.UI().ShowHoverInfos(this);
         bool success = true;
         if (isEnemy || actionsLeft <= 0)
         {
@@ -620,7 +624,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
     {
         //Foreach cells in attackPattern
         //Evaluate around position 
-        List<Vector3Int> validPositions = MovementMethods.GetMovementMethod(unitData.unitName).Invoke(roomRef, this);
+        List<Vector3Int> validPositions = MovementMethods.GetMovementMethod(unitData.unitName).Invoke(roomRef, this, -1);
         foreach (Vector3Int validPosition in validPositions)
         {
             List<Vector3Int> evaluated = EvaluateAroundCellPosition(validPosition);

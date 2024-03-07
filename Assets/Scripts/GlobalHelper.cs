@@ -16,6 +16,7 @@ public class GlobalHelper
     public static Dictionary<string, List<Room>> roomDatas;
 
     public static List<Area> areaList;
+    public static List<AbilityData> abilityList;
     public static System.Random rand;
     public static List<UnitData> unitDataList;
 
@@ -97,6 +98,7 @@ public class GlobalHelper
         }
         Debug.Log("Sucessfully loaded" + roomDatas.Keys.Count + " Areas");
         unitDataList = Resources.LoadAll<UnitData>("Data/Units").ToList();
+        abilityList = Resources.LoadAll<AbilityData>("Data/Abilities").ToList();
     }
     public static GameObject GetRoomPrefab(string roomIndex)
     {
@@ -106,6 +108,26 @@ public class GlobalHelper
     public static UnitData GetUnitData(string identifier)
     {
         return unitDataList.FirstOrDefault((x)=> x.unitName == identifier);
+    }
+
+    public static AbilityData GetAbilityData(string identifier)
+    {
+        return abilityList.FirstOrDefault((x) => x.abilityName == identifier);
+    }
+
+    public static BaseAbility abilityLookup(AbilityData ad)
+    {
+        BaseAbility ability = null;
+        switch (ad.name)
+        {
+            case "Extra Turn":
+                //ability = new ExtraTurnAbility();
+                break;
+            default:
+                Debug.LogError("Invalid ability lookup");
+                break;
+        }
+        return ability;
     }
 
     public static Vector3 GetMouseWorldPosition()
@@ -131,5 +153,17 @@ public class GlobalHelper
     public static IState GetGameState()
     {
         return GlobalVariables.gameInfos.gameState;
+    }
+
+    public static string PluralOrSingular(string singular, string plural, int value)
+    {
+        if (value == 1)
+        {
+            return singular;
+        }
+        else
+        {
+            return plural;
+        }
     }
 }

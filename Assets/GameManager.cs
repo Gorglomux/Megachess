@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
 
     public bool firstAreaLoaded = false;
     public IState currentState;
+    public int roomIndex = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -64,13 +65,16 @@ public class GameManager : MonoBehaviour
         }
         paletteCoroutine = StartCoroutine(LoadPalette(a.paletteIndex, a.colorText));
         OnAreaLoaded.Invoke();
+        GlobalHelper.GlobalVariables.gameInfos.areaSize = roomQueue.Count;
+        GlobalHelper.UI().UpdateRoomCount(roomIndex + 1, GlobalHelper.GlobalVariables.gameInfos.areaSize);
         return LoadRoom(roomQueue.Dequeue());
 
     }
 
     public Tween LoadNextArea()
     {
-        if(!firstAreaLoaded)
+        roomIndex = 0;
+        if (!firstAreaLoaded)
         {
             firstAreaLoaded = true;
         }
@@ -81,7 +85,7 @@ public class GameManager : MonoBehaviour
         if(roomQueue.Count > 0)
         {
             CleanPreviousRoom();
-
+            roomIndex++;
             return LoadRoom(roomQueue.Dequeue()); ;
         }
         else

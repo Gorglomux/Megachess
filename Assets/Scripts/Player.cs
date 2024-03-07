@@ -12,10 +12,21 @@ public class Player : MonoBehaviour
 
     public Dictionary<UnitData, List<Unit>> inventory = new Dictionary<UnitData,List<Unit>>();
     public List<UnitData> inventoryBackup = new List<UnitData>();
+
+    public BaseAbility ability;
+    private int _money;
+    public int money { get { return _money; } set{
+            _money = value;
+            GlobalHelper.UI().UpdateMoneyCount();
+        } }
+
     // Start is called before the first frame update
     void Start()
     {
+        money = 3;
         testInventory();
+        GlobalHelper.UI().UpdateMoneyCount();
+        ability = GlobalHelper.abilityLookup(GlobalHelper.GetAbilityData("Extra Turn"));
     }
 
     // Update is called once per frame
