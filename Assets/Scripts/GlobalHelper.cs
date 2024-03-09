@@ -19,7 +19,8 @@ public class GlobalHelper
 {
 
     public static GlobalVariables GlobalVariables;
-
+    
+    public Transform root;
 
     public static int gridCount = -1;
 
@@ -31,6 +32,7 @@ public class GlobalHelper
     public static System.Random rand;
     public static List<UnitData> unitDataList;
     public static List<EffectData> effectDataList;
+    public static List<PlayerData> playerDataList;
 
     public static int NEXT_UID = 50;
 
@@ -112,6 +114,7 @@ public class GlobalHelper
         unitDataList = Resources.LoadAll<UnitData>("Data/Units").ToList();
         abilityList = Resources.LoadAll<AbilityData>("Data/Abilities").ToList();
         effectDataList = Resources.LoadAll<EffectData>("Data/Effects").ToList();
+        playerDataList = Resources.LoadAll<PlayerData>("Data/Players").ToList();
     }
     public static GameObject GetRoomPrefab(string roomIndex)
     {
@@ -127,7 +130,10 @@ public class GlobalHelper
     {
         return abilityList.FirstOrDefault((x) => x.name == identifier);
     }
-
+    public static PlayerData GetPlayerData(string identifier)
+    {
+        return playerDataList.FirstOrDefault((x) => x.name == identifier);
+    }
     public static EffectData GetEffectData(string identifier)
     {
         return effectDataList.FirstOrDefault((x) => x.name == identifier);
@@ -143,6 +149,18 @@ public class GlobalHelper
                 break;
             case "Thirst":
                 ability = new ThirstAbility(ad);
+                break;
+            case "Guardian":
+                ability = new GuardianAbility(ad);
+                break;
+            case "TripleCharge":
+                ability = new TripleChargeAbility(ad);
+                break;
+            case "Clone":
+                ability = new CloneAbility(ad);
+                break;
+            case "Promote":
+                ability = new PromoteAbility(ad);
                 break;
             default:
                 Debug.LogError("Invalid ability lookup");
@@ -251,5 +269,6 @@ public class GlobalHelper
         GameManager gm = GetGameManager();
         return gm.currentState is FightState || gm.currentState is UnitPlaceState || gm.currentState is TutorialFightState || gm.currentState is TutorialUnitPlaceState;
     }
+
 
 }

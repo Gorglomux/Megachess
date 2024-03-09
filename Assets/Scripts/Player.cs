@@ -29,7 +29,7 @@ public class Player : MonoBehaviour
     {
         money = 3;
         //testInventory();
-        testMegaInventory();
+        //testMegaInventory();
         GlobalHelper.UI().UpdateMoneyCount();
         //ChangeAbility(GlobalHelper.GetAbilityData("ExtraTurn"));
         //ChangeAbility(GlobalHelper.GetAbilityData("Thirst"));
@@ -165,5 +165,27 @@ public class Player : MonoBehaviour
     public void Buy(int cost)
     {
         money -= cost;
+    }
+
+    public void LoadPlayerData(PlayerData data)
+    {
+        StartCoroutine(corLoadPlayerData(data));
+
+
+    }
+    public IEnumerator corLoadPlayerData(PlayerData data)
+    {
+        ClearInventory();
+
+        while (GlobalHelper.GetRoom() == null)
+        {
+            yield return null;
+            
+        }
+        foreach (UnitData u in data.startingUnits)
+        {
+            AddUnit(GlobalHelper.GetRoom().CreateUnit(u, false));
+        }
+        ChangeAbility(data.startingAbilityData);
     }
 }

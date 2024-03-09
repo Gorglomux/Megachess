@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dea91b4c0d6fa6b47b40d5b2d3b6f985, type: 3}
+  m_Name: VampirePlayer
+  m_EditorClassIdentifier: 
+  playerName: The Vampire
+  sprite: {fileID: 21300000, guid: f610ebb5ceff8e14389af9355d49ad56, type: 3}
+  description: Looking to quench their thirst
+  startingUnits:
+  - {fileID: 11400000, guid: adc3a75680b102d49863cd3ba86d1d0d, type: 2}
+  - {fileID: 11400000, guid: adc3a75680b102d49863cd3ba86d1d0d, type: 2}
+  - {fileID: 11400000, guid: adc3a75680b102d49863cd3ba86d1d0d, type: 2}
+  - {fileID: 11400000, guid: 22ffdd022e549434182fd356d4af910f, type: 2}
+  - {fileID: 11400000, guid: d73847c211a98854d84e9fa9697f6056, type: 2}
+  startingAbilityData: {fileID: 11400000, guid: 133ee04bce1e9f14fba22278c130adea, type: 2}
+  difficulty: 1

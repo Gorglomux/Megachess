@@ -23,22 +23,23 @@ public class CameraMovementManager : MonoBehaviour
     }
     private void Update()
     {
-        if(tweenActive.Count == 0 && cam.transform.position != initialCameraPosition)
+        if(tweenActive.Count == 0 && cam.transform.position != initialCameraPosition && camToZeroTween == null)
         {
             camToZero();
         }
     }
+    Tween camToZeroTween;
     public Tween camToZero()
     {
-        Tween t = cameraMovementTransform.transform.DOMove(initialCameraPosition, 0.2f).SetEase(Ease.OutQuint);
-
-        tweenActive.Add(t);
-        t.onComplete += () =>
+        Tween camToZeroTween = cameraMovementTransform.transform.DOMove(initialCameraPosition, 0.5f).SetEase(Ease.Linear);
+        print("ToZero");
+        tweenActive.Add(camToZeroTween);
+        camToZeroTween.onComplete += () =>
         {
             cam.transform.position = initialCameraPosition;
-            tweenActive.Remove(t);
+            camToZeroTween = null;
         };
-        return t;
+        return camToZeroTween;
     }
 
     public Tween ResetCameraPosition(bool instant = false)

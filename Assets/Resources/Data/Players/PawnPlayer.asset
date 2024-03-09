@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dea91b4c0d6fa6b47b40d5b2d3b6f985, type: 3}
+  m_Name: PawnPlayer
+  m_EditorClassIdentifier: 
+  playerName: The Pawn
+  sprite: {fileID: 21300000, guid: f6b462c03c9ecbe449533a8480893ac5, type: 3}
+  description: Keeps trying and hopes to be the one
+  startingUnits:
+  - {fileID: 11400000, guid: cc307878337bfb74b8a6a0e98bdccf7a, type: 2}
+  - {fileID: 11400000, guid: cc307878337bfb74b8a6a0e98bdccf7a, type: 2}
+  - {fileID: 11400000, guid: cc307878337bfb74b8a6a0e98bdccf7a, type: 2}
+  - {fileID: 11400000, guid: cc307878337bfb74b8a6a0e98bdccf7a, type: 2}
+  - {fileID: 11400000, guid: cc307878337bfb74b8a6a0e98bdccf7a, type: 2}
+  - {fileID: 11400000, guid: cc307878337bfb74b8a6a0e98bdccf7a, type: 2}
+  - {fileID: 11400000, guid: cc307878337bfb74b8a6a0e98bdccf7a, type: 2}
+  - {fileID: 11400000, guid: cc307878337bfb74b8a6a0e98bdccf7a, type: 2}
+  startingAbilityData: {fileID: 11400000, guid: 45c4523db373a81408c344c9ab7eea12, type: 2}
+  difficulty: 1

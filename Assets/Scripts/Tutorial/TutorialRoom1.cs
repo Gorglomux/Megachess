@@ -30,6 +30,11 @@ public class TutorialRoom1 : TutorialRoomBase
         titleScreen.material.SetFloat("_PaletteIndex",king.basePaletteIndex);
         titleScreen.material.SetFloat("_Dither",12);
     }
+
+    public void OnDestroy()
+    {
+        king.OnHit -= FadeInScreen;
+    }
     public IEnumerator startTutorial()
     {
         yield return new WaitForSeconds(2);

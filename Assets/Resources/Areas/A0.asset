@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aaef5d30ab8397d4898a381aba4f3e7d, type: 3}
-  m_Name: A9
+  m_Name: A0
   m_EditorClassIdentifier: 
   areaName: Tutorial
   paletteIndex: 11

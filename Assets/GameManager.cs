@@ -34,7 +34,7 @@ public class GameManager : MonoBehaviour
     //Debug for now, linear exploration 
     public Queue<Area> areaQueue = new Queue<Area>();
 
-    private Coroutine paletteCoroutine;
+    public  Coroutine paletteCoroutine;
 
     public GameObject roomRoot;
 
@@ -60,7 +60,16 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            ChangeState(new ChangeRoomState());
+            if (!CheckTutorial())
+            {
+                print("Skipping tutorial !");
+                areaQueue.Dequeue();
+                ChangeState(new TitleScreenState());
+            }
+            else
+            {
+                ChangeState(new ChangeRoomState());
+            }
         }
         //else
         //{
@@ -68,7 +77,21 @@ public class GameManager : MonoBehaviour
 
         //}
     }
+    public bool CheckTutorial()
+    {
 
+        return PlayerPrefs.GetInt("PlayTutorial", 1) == 1? true:false ;
+    }
+
+    public void StartGame()
+    {
+        StartCoroutine(corStartGame());
+    }
+    public IEnumerator corStartGame()
+    {
+        yield return new WaitForSeconds(1f);
+        ChangeState(new ChangeRoomState()); // SelectAreaState? 
+    }
     public Tween LoadArea(Area a)
     {
         GlobalHelper.GlobalVariables.gameInfos.currentArea = a;
@@ -167,12 +190,18 @@ public class GameManager : MonoBehaviour
         GlobalHelper.GlobalVariables.gameInfos.gameState = currentState;
         currentState.OnEntry(this);
     }
-
+    public bool clearPlayerPrefs = false;
     private void Update()
     {
         if(currentState != null)
         {
            currentState.OnUpdate(this);
+        }
+
+        if (clearPlayerPrefs)
+        {
+            clearPlayerPrefs = false;
+            PlayerPrefs.DeleteAll();
         }
     }
      

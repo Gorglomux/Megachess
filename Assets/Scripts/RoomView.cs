@@ -351,7 +351,6 @@ public class RoomView : MonoBehaviour
             }
         }
 
-        print(" Mega size is " + megaToCheck);
         //Foreach dans les unités
         //Si l'unité est déjà dans un mega avec une taille similaire on le fait pas 
 
@@ -360,7 +359,6 @@ public class RoomView : MonoBehaviour
             Unit u = GetUnitAt(v);
             if (u.occupiedCells.Count >= megaToCheck * megaToCheck)
             {
-                print("Mega is already bigger than what is attempted to create, aborting;");
                 return null;
             }
             else

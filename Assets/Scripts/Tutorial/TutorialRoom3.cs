@@ -16,12 +16,13 @@ public class TutorialRoom3 : TutorialRoomBase
         r = GetComponent<RoomView>();
 
 
+        p = GlobalHelper.GlobalVariables.player;
+        p.ClearInventory();
         r.PlaceUnitOnMap(r.CreateUnit(GlobalHelper.GetUnitData("Knight"), false), new Vector3Int(-5, 3));
         r.PlaceUnitOnMap(r.CreateUnit(GlobalHelper.GetUnitData("Knight"), false), new Vector3Int(-4, 3));
         r.PlaceUnitOnMap(r.CreateUnit(GlobalHelper.GetUnitData("Knight"), false), new Vector3Int(-5, 2));
        
 
-        p = GlobalHelper.GlobalVariables.player;
         p.AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Rook"), false));
         p.AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Rook"), false));
         p.AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Rook"), false));
@@ -34,6 +35,11 @@ public class TutorialRoom3 : TutorialRoomBase
         r.OnBoardUpdate += showNextStage;
 
         StartCoroutine(startTutorial());
+    }
+
+    public void OnDestroy()
+    {
+        r.OnBoardUpdate -= showNextStage;
     }
     public IEnumerator startTutorial()
     {

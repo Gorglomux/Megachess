@@ -16,13 +16,24 @@ public class TutorialRoom4 : TutorialRoomBase
 
 
         p = GlobalHelper.GlobalVariables.player;
-        p.ClearInventory();
         p.AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Rook"), false));
         GlobalHelper.UI().abilityButton.gameObject.SetActive(true);
         GlobalHelper.UI().endTurnButton.gameObject.SetActive(true);
         GlobalHelper.UI().resetFightButton.gameObject.SetActive(true);
+        GlobalHelper.GetGameManager().OnRoomCleared += SetTutoPlayed;
         p.ChangeAbility(GlobalHelper.GetAbilityData("ExtraTurn"));
         StartCoroutine(startTutorial());
+    }
+
+    public void OnDestroy()
+    {
+
+        GlobalHelper.GetGameManager().OnRoomCleared -= SetTutoPlayed;
+    }
+    public void SetTutoPlayed(object o)
+    {
+        PlayerPrefs.SetInt("PlayTutorial", 0);
+        print("will skip tuto from now on");
     }
     public IEnumerator startTutorial()
     {

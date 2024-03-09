@@ -28,6 +28,11 @@ public class TutorialRoom2 : TutorialRoomBase
         StartCoroutine(startTutorial());
         EnableFogOfWar(3);
     }
+
+    public void OnDestroy()
+    {
+        r.OnBoardUpdate -= showNextStage;
+    }
     public void FirstKill(object o)
     {
         if (!firstKill)

@@ -27,12 +27,25 @@ public class EffectContainer : MonoBehaviour
         }if(objectType is BaseEffect)
         {
             FillEffect((BaseEffect)objectType);
+        }if(objectType is PlayerData)
+        {
+            FillPlayerData((PlayerData)objectType);
         }
 
     }
-    public void FillAbility(BaseAbility ab)
+    public void FillPlayerData(PlayerData playerData)
     {
-        text.text = RegexReplace(ab.abilityData.description); 
+        text.text = RegexReplace(playerData.description);
+    }
+    public void FillAbility(BaseAbility ab, bool displayName = false)
+    {
+        string t = "";
+        if (displayName)
+        {
+            t += ab.abilityData.abilityName.ToUpper() + " : ";
+        }
+        t += ab.abilityData.description;
+        text.text = RegexReplace(t); 
 
     }
     public void FillEffect(BaseEffect eb, bool displayName = true)

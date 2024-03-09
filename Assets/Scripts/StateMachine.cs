@@ -313,7 +313,7 @@ public class ChangeRoomState : IState
     public void OnEntry(GameManager gm)
     {
         gmRef = gm;
-
+        GlobalHelper.UI().ShowRoot();
 
         gmRef.StartCoroutine(loadGame());
 
@@ -331,6 +331,8 @@ public class ChangeRoomState : IState
 
     public IEnumerator loadGame()
     {
+        RoomView previousRoom = GlobalHelper.GetRoom();
+        bool previousRoomIsTutorial = previousRoom!=null && previousRoom.roomData.isTutorial;
         Debug.Log("Loading next");
         Tween t = gmRef.LoadNextRoom();
         if (t!= null)
@@ -341,10 +343,18 @@ public class ChangeRoomState : IState
         }
         else
         {
-            gmRef.OnAreaCleared(GlobalHelper.GlobalVariables.gameInfos.currentArea);
-            Debug.Log("Out of rooms !");
-            Tween tw = gmRef.LoadNextArea();
-            yield return tw.WaitForCompletion();
+            if (previousRoomIsTutorial)
+            {
+                gmRef.ChangeState(new TitleScreenState());
+            }
+            else
+            {
+                gmRef.OnAreaCleared(GlobalHelper.GlobalVariables.gameInfos.currentArea);
+                Debug.Log("Out of rooms !");
+                Tween tw = gmRef.LoadNextArea();
+                yield return tw.WaitForCompletion();
+
+            }
             //Go to shop state 
             //Go to areaChoiceState
         }
@@ -369,5 +379,31 @@ public class ChangeRoomState : IState
             gmRef.ChangeState(new UnitPlaceState());
         }
     }
+}
+
+
+public class TitleScreenState : IState
+{
+    GameManager gmRef;
+    public void OnEntry(GameManager gm)
+    {
+        gmRef = gm;
+
+        GlobalHelper.UI().LoadTitleScreen();
+
+        gm.paletteCoroutine = gm.StartCoroutine(gm.LoadPalette(UnityEngine.Random.Range(0, 15),Color.white));
+
+    }
+
+    public void OnExit(GameManager gm)
+    {
+        Debug.Log("Starting Change Room State");
+
+    }
+
+    public void OnUpdate(GameManager gm)
+    {
+    }
+
 }
 

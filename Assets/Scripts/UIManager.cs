@@ -8,6 +8,10 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+
+    public Transform root;
+    public Transform rootTitle;
+
     public event Action OnChangePhase = delegate { };
     public event Action OnResetTurnActivated = delegate { };
 
@@ -47,7 +51,9 @@ public class UIManager : MonoBehaviour
         gameInfosRef = GlobalHelper.GlobalVariables.gameInfos;
         HideTopInfos();
         HideHoverInfos();
+        //HideTitleScreen();
         DisableButton(abilityButton.button);
+        SetBottomText("");
     }
 
     // Update is called once per frame
@@ -181,6 +187,15 @@ public class UIManager : MonoBehaviour
             EffectContainer ecCooldown = effectContainerManager.getNext();
             ecCooldown.FillCooldown(ability);
         }
+        if(hoverable is PlayerContainer)
+        {
+            PlayerContainer playerContainer = (PlayerContainer) hoverable;
+            UnitNameText.text = playerContainer.playerData.playerName.ToUpper();
+            EffectContainer ec = effectContainerManager.getNext();
+            ec.FillInfos(playerContainer.playerData);
+            EffectContainer ecAbility = effectContainerManager.getNext();
+            ecAbility.FillAbility(GlobalHelper.abilityLookup(playerContainer.playerData.startingAbilityData), true);
+        }
         //else if is ability, else if is shopitem...
     }
 
@@ -225,6 +240,10 @@ public class UIManager : MonoBehaviour
 
     public void DisableButton(Button b)
     {
+        if(b == null)
+        {
+            return;
+        }
         b.enabled = false;
         b.GetComponent<Image>().color = new Color(1, 1, 1, 0.5f);
 
@@ -281,5 +300,26 @@ public class UIManager : MonoBehaviour
         bool isCorrectState = GlobalHelper.CheckUnitFightState();
         bool canBuy = GlobalHelper.GlobalVariables.player.CanBuy(GlobalHelper.RESET_COST);
         return isCorrectState && !isResetting && canBuy;
+    }
+
+
+    
+    public void LoadTitleScreen()
+    {
+        HideRoot();
+        rootTitle.gameObject.SetActive(true);
+    }
+
+    public void HideRoot()
+    {
+        root.gameObject.SetActive(false);
+    }
+    public void ShowRoot()
+    {
+        root.gameObject.SetActive(true);
+    }
+    public void HideTitleScreen()
+    {
+        rootTitle.gameObject.SetActive(false);
     }
 }

@@ -252,6 +252,9 @@ public class TutorialFightState : IState
             }
             else
             {
+
+                GlobalHelper.getCamMovement().ShakeCamera(2f, 0.5f);
+                GlobalHelper.UI().resetFightButton.gameObject.SetActive(true);
                 GlobalHelper.UI().SetBottomText("You can reset a fight by pressing the button at the bottom left, at the cost of 1 $.");
             }
 

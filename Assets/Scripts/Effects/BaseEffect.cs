@@ -46,7 +46,7 @@ public class BaseEffect
             case EFFECT_ACTIVATION_TIME.AFTER_ATTACK:
                 if (UnitHavingEffect != null)
                 {
-                    UnitHavingEffect.OnBeforeAttack += TriggerEffect;
+                    UnitHavingEffect.OnAfterAttack += TriggerEffect;
                 }
                 break;
             case EFFECT_ACTIVATION_TIME.ON_END_TURN:
