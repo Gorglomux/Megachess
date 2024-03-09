@@ -23,7 +23,7 @@ public class GlobalHelper
 
     public static int gridCount = -1;
 
-
+    public static int RESET_COST = 1;
     public static Dictionary<string, List<Room>> roomDatas;
 
     public static List<Area> areaList;
@@ -212,6 +212,16 @@ public class GlobalHelper
                 return false;
             }
         }
+
+        if (state is TutorialFightState)
+        {
+            TutorialFightState fightState = (TutorialFightState)state;
+            if (fightState.enemyTurn)
+            {
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -235,6 +245,11 @@ public class GlobalHelper
                 break;
         }
         return action;
+    }
+    public static bool CheckUnitFightState()
+    {
+        GameManager gm = GetGameManager();
+        return gm.currentState is FightState || gm.currentState is UnitPlaceState || gm.currentState is TutorialFightState || gm.currentState is TutorialUnitPlaceState;
     }
 
 }

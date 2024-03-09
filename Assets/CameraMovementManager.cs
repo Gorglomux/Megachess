@@ -21,9 +21,36 @@ public class CameraMovementManager : MonoBehaviour
         initialCameraPosition = cam.transform.position;
         initialOrthoSize = cam.orthographicSize;
     }
+    private void Update()
+    {
+        if(tweenActive.Count == 0 && cam.transform.position != initialCameraPosition)
+        {
+            camToZero();
+        }
+    }
+    public Tween camToZero()
+    {
+        Tween t = cameraMovementTransform.transform.DOMove(initialCameraPosition, 0.2f).SetEase(Ease.OutQuint);
+
+        tweenActive.Add(t);
+        t.onComplete += () =>
+        {
+            cam.transform.position = initialCameraPosition;
+            tweenActive.Remove(t);
+        };
+        return t;
+    }
+
     public Tween ResetCameraPosition(bool instant = false)
     {
-        return cameraMovementTransform.transform.DOMove(initialCameraPosition, 0.2f).SetEase(Ease.OutQuint);
+        Tween t = cameraMovementTransform.transform.DOMove(initialCameraPosition, 0.2f).SetEase(Ease.OutQuint);
+
+        tweenActive.Add(t);
+        t.onComplete += () =>
+        {
+            tweenActive.Remove(t);
+        };
+        return t;
 
 
     }
@@ -49,6 +76,12 @@ public class CameraMovementManager : MonoBehaviour
         {
             zoomTween = null;
         };
+        tweenActive.Add(zoomTween);
+        zoomTween.onComplete += () =>
+        {
+            tweenActive.Remove(zoomTween);
+        };
+
         return zoomTween;
 
     }
@@ -79,7 +112,7 @@ public class CameraMovementManager : MonoBehaviour
         };
 
     }
-
+    List<Tween> tweenActive = new List<Tween>();
     public Tween ShakeCamera(float speedMultiplier, float delay =-1f)
     {
         if (delay <= 0)
@@ -88,7 +121,13 @@ public class CameraMovementManager : MonoBehaviour
         }
 
         float value = speedMultiplier / 300f;
-        return cam.DOShakePosition(delay, Vector3.one * value).SetEase(Ease.OutBounce);
+        Tween t = cam.DOShakePosition(delay*0.8f, Vector3.one * value).SetEase(Ease.OutBounce);
+        tweenActive.Add(t);
+        t.onComplete += () =>
+        {
+            tweenActive.Remove(t);
+        };
+        return t;
     }
 
 }

@@ -16,7 +16,20 @@ public class Reserve : MonoBehaviour
 
         playerRef = GlobalHelper.GlobalVariables.player;
         playerRef.OnInventoryAdded += AddPiece;
+        playerRef.OnInventoryRemoved += RemovePiece;
         playerRef.OnNewUnitAdded += AddContainer;
+    }
+    void RemovePiece(Unit u)
+    {
+        if (containers.ContainsKey(u.unitData.unitName))
+        {
+            containers[u.unitData.unitName].RemoveUnit();
+            if (containers[u.unitData.unitName].unitCount <= 0)
+            {
+                RemoveContainer(u.unitData.unitName);
+            }
+        }
+
     }
     void AddPiece(Unit u)
     {
@@ -30,6 +43,24 @@ public class Reserve : MonoBehaviour
 
         containers[ud.unitName]= container;
 
+    }
+
+    void RemoveContainer(string id)
+    {
+        if (containers.ContainsKey(id))
+        {
+            Destroy(containers[id].gameObject);
+        }
+
+    }
+
+    public void DeleteReserve()
+    {
+        foreach(string id in containers.Keys)
+        {
+            RemoveContainer(id);
+        }
+        containers.Clear();
     }
 
 }

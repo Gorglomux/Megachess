@@ -121,5 +121,7 @@ public class TutorialRoom1 : TutorialRoomBase
         yield return new WaitForSeconds(3);
         //This is where we change scenes
 
+        GlobalHelper.GlobalVariables.bloodSplatManager.Cleanup();
+        GlobalHelper.GetGameManager().ChangeState(new ChangeRoomState());
     }
 }

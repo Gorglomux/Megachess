@@ -8,27 +8,28 @@ using UnityEngine;
 public class TutorialFightState : IState
 {
     public UnitData capturedThisFight = null;
-    bool canReset = false;
     public bool enemyTurn = false;
     public GameManager gmRef;
 
     public int tutorialCount;
     public bool dramaticTutorialDelay = false;
+
+    public TutorialFightState(int count)
+    {
+        tutorialCount = count;
+    }
     public void OnEntry(GameManager gm)
     {
-        if(tutorialCount == 0)
+        gmRef = gm;
+        if (tutorialCount == 0)
         {
-            GlobalHelper.UI().EnableButton(GlobalHelper.UI().abilityButton.button);
-            GlobalHelper.UI().EnableButton(GlobalHelper.UI().endTurnButton);
-            gmRef = gm;
+
             gmRef.extraTurns = 0; //Not sure if that is a good idea  
-            GlobalHelper.UI().SetButtonBottomRightText("End Turn");
             GlobalHelper.GetGameManager().OnKillUnit += DramaticDelay;
         }
         else
         {
-            GlobalHelper.UI().OnResetTurn += OnResetTurn;
-
+            GlobalHelper.UI().SetButtonBottomRightText("End Turn");
             gmRef.extraTurns = 0; //Not sure if that is a good idea  
             //CheckGameWinState();
             GlobalHelper.GetRoom().OnBoardUpdate += CheckGameWinState;
@@ -52,8 +53,6 @@ public class TutorialFightState : IState
                 u.RefreshActions();
             }
         }
-        canReset = true;
-
 
     }
     public void DramaticDelay(object o)
@@ -64,31 +63,9 @@ public class TutorialFightState : IState
     {
         Debug.Log("board update");
     }
-    public void OnResetTurn()
-    {
-        if (!canReset)
-        {
-            return;
-        }
-        GameManager gm = GlobalHelper.GetGameManager();
-        if (gm.currentState is FightState || gm.currentState is UnitPlaceState)
-        {
-
-            gm.CleanPreviousRoom();
-            gm.LoadRoom(gm.currentRoom.roomData).onComplete += () => {
-
-                GlobalHelper.GlobalVariables.player.RestoreBackup();
-                gm.ChangeState(new UnitPlaceState());
-            };
-
-        }
-    }
-
     public void OnExit(GameManager gm)
     {
         GlobalHelper.UI().nextFight.StopAnimate();
-        GlobalHelper.UI().OnResetTurn -= OnResetTurn;
-        canReset = false;
         RoomView r = GlobalHelper.GetRoom();
 
         GlobalHelper.UI().OnChangePhase -= onChangePhase;
@@ -105,7 +82,6 @@ public class TutorialFightState : IState
     }
     public void onChangePhase()
     {
-        canReset = false;
         if (!enemyTurn)
         {
             GlobalHelper.GetRoom().StartCoroutine(EndTurn());
@@ -193,7 +169,6 @@ public class TutorialFightState : IState
         GlobalHelper.UI().OnEndTurn();
         enemyTurn = false;
         gmRef.OnEndTurn();
-        canReset = true;
         if(tutorialCount > 0)
         {
             ui.EnableButton(ui.abilityButton.button);
@@ -253,7 +228,7 @@ public class TutorialFightState : IState
         RoomView r = GlobalHelper.GetRoom();
         List<Unit> units = r.getAllUnits();
 
-        GlobalHelper.UI().SetBottomText(r.GetEnemies().Count + GlobalHelper.PluralOrSingular(" enemy", " enemies", r.GetEnemies().Count) + " remaining");
+        //GlobalHelper.UI().SetBottomText(r.GetEnemies().Count + GlobalHelper.PluralOrSingular(" enemy", " enemies", r.GetEnemies().Count) + " remaining");
         if (r.GetEnemies().Count == 0)
         {
             GlobalHelper.UI().nextFight.StopAnimate();
@@ -271,7 +246,14 @@ public class TutorialFightState : IState
                 //Change scene to Tut 2 
 
             }
-            GlobalHelper.UI().SetBottomText("GAME OVER. Close the game I didn't implement this.");
+            if(GlobalHelper.GlobalVariables.player.money <= 0)
+            {
+                GlobalHelper.GlobalVariables.player.money = 1;
+            }
+            else
+            {
+                GlobalHelper.UI().SetBottomText("You can reset a fight by pressing the button at the bottom left, at the cost of 1 $.");
+            }
 
             endFight = true;
         }
@@ -314,6 +296,7 @@ public class TutorialFightState : IState
         GlobalHelper.UI().fightWinUI.OnNextPressed += LoadNext;
         gmRef.OnRoomCleared(GlobalHelper.GetGameManager().currentRoom);
         yield return GlobalHelper.UI().fightWinUI.Show(moneyEarned, capturedThisFight.unitName);
+        GlobalHelper.GlobalVariables.player.ClearInventory();
 
     }
     public void LoadNext()
@@ -324,3 +307,73 @@ public class TutorialFightState : IState
     }
 }
 
+
+public class TutorialUnitPlaceState : IState
+{
+    GameManager gmRef;
+    public int tutorialCount;
+    public TutorialUnitPlaceState(int count)
+    {
+        tutorialCount = count;
+    }
+    public void OnEntry(GameManager gm)
+    {
+
+        //GlobalHelper.UI().EnableButton(GlobalHelper.UI().endTurnButton);
+        gmRef = gm;
+        Debug.Log("Starting unit place phase");
+        //Select or drag units from the reserve to the spawn cells. 
+        GlobalHelper.UI().SetButtonBottomRightText("Fight !");
+        //Change bottom button to "Validate placement"
+
+        //GlobalHelper.GlobalVariables.indicatorManager.ShowSpawnableCells();
+        GlobalHelper.UI().OnChangePhase += EndPlaceState;
+        GlobalHelper.GetRoom().OnBoardUpdate += CheckUnitsLeft;
+        //GlobalHelper.GlobalVariables.player.BackupInventory();
+        CheckUnitsLeft();
+        GlobalHelper.UI().ShowTopInfos();
+        GlobalHelper.UI().nextFight.StartAnimate("Selection Phase");
+        gm.OnStartFight(null);
+    }
+
+    public void OnExit(GameManager gm)
+    {
+
+        //Link the end turn button to there. 
+        GlobalHelper.GlobalVariables.indicatorManager.HideSpawnableCells();
+        GlobalHelper.UI().OnChangePhase -= EndPlaceState;
+        GlobalHelper.GetRoom().OnBoardUpdate -= CheckUnitsLeft;
+    }
+
+    public void OnUpdate(GameManager gm)
+    {
+    }
+    public void EndPlaceState()
+    {
+        if (GlobalHelper.GetRoom().GetAllies().Count > 0)
+        {
+            gmRef.ChangeState(new TutorialFightState(tutorialCount));
+        }
+        else
+        {
+            //GlobalHelper.getCamMovement().ShakeCamera(1, 0.5f);
+            GlobalHelper.UI().ShakeButtonBottomRightText();
+        }
+    }
+    public void CheckUnitsLeft()
+    {
+        RoomView r = GlobalHelper.GetRoom();
+        int unitsLeft = r.CheckUnitsLeft();
+        if (unitsLeft > 0)
+        {
+            //GlobalHelper.UI().SetBottomText("Drag up to " + unitsLeft + GlobalHelper.PluralOrSingular(" unit", " units", unitsLeft) + " from the reserve to the highlighted cells");
+
+        }
+        else
+        {
+            //GlobalHelper.UI().ShakeButtonBottomRightText();
+           // GlobalHelper.UI().SetBottomText("Press the Fight button to start the fight!");
+
+        }
+    }
+}

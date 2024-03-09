@@ -559,7 +559,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
 
         GlobalHelper.UI().ShowHoverInfos(this);
         bool success = true;
-        if (isEnemy || actionsLeft <= 0)
+        if (isEnemy || actionsLeft <= 0 || GlobalHelper.GetGameManager().currentState is TutorialUnitPlaceState)
         {
             success = false;
         }

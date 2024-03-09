@@ -164,7 +164,6 @@ public class ReserveContainer : MonoBehaviour,ISelectable
                 {
                     if (r.SpawnableCells.Contains(r.CellToTilemap(point)) && r.GetUnitAt(point) == null)
                     {
-                        RemoveUnit();
                         Unit unit = (Unit)units.Dequeue();
                         GlobalHelper.GlobalVariables.player.RemoveUnit(unit);
                         unit.gameObject.SetActive(true);
@@ -208,7 +207,8 @@ public class ReserveContainer : MonoBehaviour,ISelectable
     public bool canSelect()
     {
 
-        return (units.Count > 0 && GlobalHelper.GlobalVariables.gameInfos.gameState is UnitPlaceState || GlobalHelper.GlobalVariables.gameInfos.gameState is FightState && GlobalHelper.UI().abilityButton.shouldLookForTarget);
+        return (units.Count > 0 && (GlobalHelper.GlobalVariables.gameInfos.gameState is UnitPlaceState|| GlobalHelper.GlobalVariables.gameInfos.gameState is TutorialUnitPlaceState) ||
+            GlobalHelper.GlobalVariables.gameInfos.gameState is FightState && GlobalHelper.UI().abilityButton.shouldLookForTarget);
     }
     public bool isAbilitySelect()
     {

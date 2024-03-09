@@ -479,8 +479,11 @@ public class RoomView : MonoBehaviour
             //u.transform.DOShakeRotation(0.5f, new Vector3(0,0,5)).SetEase(Ease.OutBounce);
             u.transform.DOPunchScale(transform.localScale * 0.5f, 0.5f).SetEase(Ease.OutQuint);
             u.gameObject.SetActive(true);
+            if(!u.isEnemy && (GlobalHelper.GetGameManager().currentState is FightState || GlobalHelper.GetGameManager().currentState is TutorialFightState)){
+                u.StartIdle();
+            }
+
         };
-        List<Unit> debug = getAllUnits();
 
     }
 

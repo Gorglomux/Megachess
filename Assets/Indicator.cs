@@ -21,13 +21,14 @@ public class Indicator : MonoBehaviour
     public bool isEnemy;
     public bool isSelected = false;
     private Coroutine desactivateCoroutine;
+    public Vector3Int targetedCell;
     // Start is called before the first frame update
     void Start()
     {
     }
 
 
-    public void SetState(INDICATOR_STATE state, bool isEnemy, bool isActive )
+    public void SetState(INDICATOR_STATE state, bool isEnemy, bool isActive, Vector3Int targetCell )
     {
         if(currentState != state)
         {
@@ -74,6 +75,11 @@ public class Indicator : MonoBehaviour
                 spriteRendererActive.color = colorAlly;
                 spriteRenderer.color = colorAlly;
             }
+            targetedCell = targetCell;
+        }
+        else
+        {
+            targetedCell = new Vector3Int(9999,9999);
         }
         
     }

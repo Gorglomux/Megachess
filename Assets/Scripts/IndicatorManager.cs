@@ -15,6 +15,8 @@ public class IndicatorManager : MonoBehaviour
 
     public Unit selectedUnit;
     // Start is called before the first frame update
+
+    private Vector3Int inactiveVector = new Vector3Int(9999,9999);
     void Start()
     {
         Initialize();
@@ -26,7 +28,7 @@ public class IndicatorManager : MonoBehaviour
         for(int i = 0; i< pooledIndicators; i++)
         {
             indicators[i] = GameObject.Instantiate(indicatorPrefab, this.transform).GetComponent<Indicator>();
-            indicators[i].SetState(INDICATOR_STATE.INACTIVE, false, false);
+            indicators[i].SetState(INDICATOR_STATE.INACTIVE, false, false,inactiveVector);
             indicators[i].gameObject.SetActive(false);
         }
         print("Pooling done !");
@@ -84,6 +86,7 @@ public class IndicatorManager : MonoBehaviour
     }
     public void DisplayPositions(List<Vector3Int> positions, Unit u, INDICATOR_STATE overrideState = INDICATOR_STATE.INACTIVE)
     {
+        bool isAttack = (MovementMethods.HasAttackMethod(u.unitData.unitName) && overrideState == INDICATOR_STATE.ATTACK) || !MovementMethods.HasAttackMethod(u.unitData.unitName);
         RoomView r = GlobalHelper.GetRoom();
         foreach (Vector3Int position in positions)
         {
@@ -96,9 +99,9 @@ public class IndicatorManager : MonoBehaviour
             //Show
             indicator.gameObject.SetActive(true);
 
-            indicator.SetState(INDICATOR_STATE.MOVE, u.isEnemy, isSelected);
+            indicator.SetState(INDICATOR_STATE.MOVE, u.isEnemy, isSelected, position);
 
-            if (selectedUnit == null || isSelected)
+            if ((selectedUnit == null || isSelected) && isAttack)
             {
                 //If there is a unit at this position
                 Unit uToBlink = r.GetUnitAt(position);
@@ -111,7 +114,7 @@ public class IndicatorManager : MonoBehaviour
                     }
                     uToBlink.ToggleBlink(true, blinkSpeed);
                     blinkingUnits.Add(uToBlink);
-                    indicator.SetState(INDICATOR_STATE.ATTACK, u.isEnemy, isSelected);
+                    indicator.SetState(INDICATOR_STATE.ATTACK, u.isEnemy, isSelected, position);
                 }
                 //If ally do nothing
                 //If enemy make the sprite blink? 
@@ -120,7 +123,7 @@ public class IndicatorManager : MonoBehaviour
             if(overrideState != INDICATOR_STATE.INACTIVE)
             {
 
-                indicator.SetState(overrideState, u.isEnemy, isSelected);
+                indicator.SetState(overrideState, u.isEnemy, isSelected, position);
             }
         }
     }
@@ -130,7 +133,7 @@ public class IndicatorManager : MonoBehaviour
     {
         foreach(Indicator go in activeIndicators)
         {
-            go.SetState(INDICATOR_STATE.INACTIVE,false,false);
+            go.SetState(INDICATOR_STATE.INACTIVE,false,false,inactiveVector);
         }
 
 
@@ -164,7 +167,7 @@ public class IndicatorManager : MonoBehaviour
             indicator.gameObject.SetActive(true);
             //Set it at the position
             indicator.transform.position = transform.position + GetIndicatorPosition(r.TilemapToCell(cell));
-            indicator.SetState(INDICATOR_STATE.PLACE_FROM_RESERVE,false,false);
+            indicator.SetState(INDICATOR_STATE.PLACE_FROM_RESERVE,false,false, cell);
         }
 
     }
@@ -176,17 +179,17 @@ public class IndicatorManager : MonoBehaviour
 
         foreach (Vector3Int position in r.SpawnableCells)
         {
-            Indicator indicator = spawnableCellIndicators.Find((x) => x.transform.position == transform.position + GetIndicatorPosition(r.TilemapToCell(position)));
+            Indicator indicator = spawnableCellIndicators.Find((x) => x.targetedCell == position);
             if (positions.Contains(r.TilemapToCell( position)))
             {
                 if (indicator != null && indicator.currentState == INDICATOR_STATE.PLACE_FROM_RESERVE)
                 {
-                    indicator.SetState(INDICATOR_STATE.TARGETED,false,true);
+                    indicator.SetState(INDICATOR_STATE.TARGETED,false,true, position);
                 }
             }
             else if(indicator != null && indicator.currentState == INDICATOR_STATE.TARGETED)
             {
-                indicator.SetState((INDICATOR_STATE.PLACE_FROM_RESERVE),false,false);
+                indicator.SetState((INDICATOR_STATE.PLACE_FROM_RESERVE),false,false, position);
             }
         }
     }
@@ -196,7 +199,7 @@ public class IndicatorManager : MonoBehaviour
     {
         foreach (Indicator go in spawnableCellIndicators)
         {
-            go.SetState(INDICATOR_STATE.INACTIVE,false,false);
+            go.SetState(INDICATOR_STATE.INACTIVE,false,false,inactiveVector);
         }
         spawnableCellIndicators.Clear();
     }
@@ -214,7 +217,7 @@ public class IndicatorManager : MonoBehaviour
                 
                 if (indicator != null)
                 {
-                    indicator.SetState(INDICATOR_STATE.TARGETED,false, indicator.isSelected);
+                    indicator.SetState(INDICATOR_STATE.TARGETED,false, indicator.isSelected, position);
                 }
             }
             else if(indicator != null)
@@ -222,11 +225,11 @@ public class IndicatorManager : MonoBehaviour
                 Unit enemy = r.GetUnitAt(position);
                 if (enemy != null && enemy.UID != u.UID && enemy.isEnemy)
                 {
-                    indicator.SetState(INDICATOR_STATE.ATTACK, false, indicator.isSelected);
+                    indicator.SetState(INDICATOR_STATE.ATTACK, false, indicator.isSelected, position);
                 }
                 else
                 {
-                    indicator.SetState(INDICATOR_STATE.MOVE, false, indicator.isSelected);
+                    indicator.SetState(INDICATOR_STATE.MOVE, false, indicator.isSelected, position);
                 }
             }
         }

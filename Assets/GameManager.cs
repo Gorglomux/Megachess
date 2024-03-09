@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviour
         GlobalHelper.GlobalVariables.gameInfos.currentArea = a;
         print("Loading area " + a.name);
         a.GetRooms().ForEach(r => roomQueue.Enqueue(r));
-
+        
         if (paletteCoroutine != null)
         {
             StopCoroutine(paletteCoroutine);

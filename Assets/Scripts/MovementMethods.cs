@@ -212,7 +212,7 @@ public class MovementMethods
             {
                 foreach (Vector3Int staticMovement in staticMovements)
                 {
-                    positions.AddRange(GetCellFromFixedMovement(unit,room,staticMovement, false));
+                    positions.AddRange(GetCellFromFixedMovement(unit,room,staticMovement));
                 }
 
             }
@@ -386,22 +386,23 @@ public class MovementMethods
                         isAttackingEnemy = true;
                     }
                 }
-                temp.Add(movement);
-                //if (unitAt != null && unitAt.UID == unit.UID && unitAt.isEnemy == unit.isEnemy)
-                //{
-                //}
-                //else 
-                //{
-                //    if (canAttack || (!canAttack && unitAt == null)|| (!canAttack && unitAt != null && unitAt.UID == unit.UID))
-                //    {
-                //        temp.Add(movement);
-                //    }
-                //    else
-                //    {
-                //        obstructed = true;
-                //        break;
-                //    }
-                //}
+                //temp.Add(movement);
+                if (unitAt != null && unitAt.UID == unit.UID && unitAt.isEnemy == unit.isEnemy)
+                {
+                }
+                else
+                {
+                    if (canAttack || (!canAttack && unitAt == null) || (!canAttack && unitAt != null && unitAt.UID == unit.UID))
+                    {
+                        temp.Add(movement);
+                    }
+                    else
+                    {
+                        
+                        obstructed = true;
+                        break;
+                    }
+                }
             }
             else
             {

@@ -144,7 +144,7 @@ public class AbilityButton : MonoBehaviour
             ToggleBlink(false);
             return;
         }
-        if(GlobalHelper.GlobalVariables.gameManager.currentState is FightState && GlobalHelper.isPlayerTurn())
+        if((GlobalHelper.GlobalVariables.gameManager.currentState is FightState || GlobalHelper.GlobalVariables.gameManager.currentState is TutorialFightState) && GlobalHelper.isPlayerTurn())
         {
             if (ability.isCharged() && !shouldLookForTarget)
             {
@@ -177,7 +177,7 @@ public class AbilityButton : MonoBehaviour
                 IncorrectAnimation();
             }
         }
-        else if(GlobalHelper.GlobalVariables.gameManager.currentState is FightState && !GlobalHelper.isPlayerTurn())
+        else if((GlobalHelper.GlobalVariables.gameManager.currentState is FightState || GlobalHelper.GlobalVariables.gameManager.currentState is TutorialFightState) && !GlobalHelper.isPlayerTurn())
         {
 
             GlobalHelper.UI().SetBottomText("Can only use abilities during your turn!", 3);

@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
     public event Action OnChangePhase = delegate { };
-    public event Action OnResetTurn = delegate { };
+    public event Action OnResetTurnActivated = delegate { };
 
     public TextMeshProUGUI buttonText;
     public TextMeshProUGUI bottomText;
@@ -234,5 +234,52 @@ public class UIManager : MonoBehaviour
     {
         b.enabled = true;
         b.GetComponent<Image>().color = new Color(1, 1, 1, 1);
+    }
+
+    public bool isResetting = false;
+    public void OnResetTurn()
+    {
+        if (!GlobalHelper.CheckUnitFightState())
+        {
+            GlobalHelper.UI().ShakeButtonBottomRightText(); 
+            SetBottomText("Can only reset turn while in a fight.");
+        }
+        if (!GlobalHelper.GlobalVariables.player.CanBuy(GlobalHelper.RESET_COST))
+        {
+            GlobalHelper.UI().ShakeButtonBottomRightText();
+            SetBottomText("Not enough money !");
+        }
+        if (!canReset())
+        {
+            return;
+        }
+
+        isResetting = true;
+        GameManager gm = GlobalHelper.GetGameManager();
+        OnResetTurnActivated();
+        GlobalHelper.GlobalVariables.bloodSplatManager.Cleanup();
+        gm.CleanPreviousRoom();
+        gm.LoadRoom(gm.currentRoom.roomData).onComplete += () => {
+
+            if (gm.currentRoom.roomData.isTutorial)
+            {
+                gm.ChangeState(new TutorialUnitPlaceState(int.Parse(gm.currentRoom.roomData.name.Substring(3))));
+
+            }
+            else
+            {
+                GlobalHelper.GlobalVariables.player.RestoreBackup();
+                gm.ChangeState(new UnitPlaceState());
+
+            }
+
+            isResetting = false;
+        };
+    }
+    public bool canReset()
+    {
+        bool isCorrectState = GlobalHelper.CheckUnitFightState();
+        bool canBuy = GlobalHelper.GlobalVariables.player.CanBuy(GlobalHelper.RESET_COST);
+        return isCorrectState && !isResetting && canBuy;
     }
 }

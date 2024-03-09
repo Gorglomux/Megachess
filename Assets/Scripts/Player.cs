@@ -17,6 +17,8 @@ public class Player : MonoBehaviour
 
     public BaseAbility ability;
     private int _money;
+
+    private int backupStartAbilityCharge = 0;
     public int money { get { return _money; } set{
             _money = value;
             GlobalHelper.UI().UpdateMoneyCount();
@@ -30,7 +32,7 @@ public class Player : MonoBehaviour
         testMegaInventory();
         GlobalHelper.UI().UpdateMoneyCount();
         //ChangeAbility(GlobalHelper.GetAbilityData("ExtraTurn"));
-        ChangeAbility(GlobalHelper.GetAbilityData("Thirst"));
+        //ChangeAbility(GlobalHelper.GetAbilityData("Thirst"));
     }
     public void ChangeAbility(AbilityData ab)
     {
@@ -73,7 +75,11 @@ public class Player : MonoBehaviour
                 inventoryBackup.Add(u.unitData);
             }
         }
+        if(ability != null)
+        {
+            backupStartAbilityCharge = ability.currentCharge;
 
+        }
     }
     public void RestoreBackup()
     {
@@ -88,9 +94,14 @@ public class Player : MonoBehaviour
             AddUnit(GlobalHelper.GetRoom().CreateUnit(ud, false));
         }
         inventoryBackup.Clear();
+        if (ability != null)
+        {
+            ability.currentCharge = backupStartAbilityCharge;
+        }
     }
     public void AddUnit(Unit unit)
     {
+        unit.gameObject.SetActive(false);
         int toAdd = 1;
         if (unit.isEnemy)
         {
@@ -120,10 +131,39 @@ public class Player : MonoBehaviour
     public void RemoveUnit(Unit u)
     {
         inventory[u.unitData].Remove(u);
+        if(inventory[u.unitData].Count == 0)
+        {
+            inventory.Remove(u.unitData);
+        }
+        OnInventoryRemoved(u);
     }
 
     public void RestoreData(object data)
     {
         throw new NotImplementedException();
+    }
+
+    public void ClearInventory()
+    {
+        var dict = new Dictionary<UnitData, List<Unit>>(inventory);
+        for(int i = 0; i < dict.Keys.Count; i++)
+        {
+
+            foreach (Unit u in dict[dict.Keys.ToList()[i]].ToList())
+            {
+                RemoveUnit(u);
+            }
+        }
+
+        inventory.Clear();
+    }
+
+    public bool CanBuy(int cost)
+    {
+        return money >= cost;
+    }
+    public void Buy(int cost)
+    {
+        money -= cost;
     }
 }

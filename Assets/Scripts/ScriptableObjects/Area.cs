@@ -27,6 +27,10 @@ public class Area : ScriptableObject
             roomList = roomList.OrderBy( x => GlobalHelper.rand.Next()).ToList();
             areaShuffled = true;
         }
+        else
+        {
+            roomList = roomList.OrderBy(x => int.Parse(x.name.Split('R')[1])).ToList();
+        }
 
         return roomList;
     }
