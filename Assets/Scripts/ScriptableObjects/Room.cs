@@ -11,5 +11,5 @@ public class Room : ScriptableObject
     public bool isTutorial = false;
     public bool isBoss = false;
     public int maxUnits = 3;
-
+    public bool animateLevel = true;
 }

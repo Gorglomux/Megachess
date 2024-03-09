@@ -7,10 +7,95 @@ using UnityEngine;
 public class MovementMethods
 {
 
+    public static bool HasAttackMethod(string indice)
+    {
+        return attackMethods.ContainsKey(indice);
+    }
+    public static Func<RoomView, Unit, int, List<Vector3Int>> GetAttackMethod(string indice)
+    {
+        if(HasAttackMethod(indice)){
+
+           return attackMethods[indice];
+        }
+        else
+        {
+
+            return movementMethods[indice];
+        }
+    }
+
+
     public static Func<RoomView, Unit, int, List<Vector3Int>> GetMovementMethod(string indice)
     {
         return movementMethods[indice];
     }
+
+    public static Dictionary<string, Func<RoomView, Unit, int, List<Vector3Int>>> attackMethods = new Dictionary<string, Func<RoomView, Unit, int, List<Vector3Int>>>()
+    {
+        {"Pawn", (room,unit, preview)=>{
+            List<Vector3Int> positions = new List<Vector3Int>();
+            List<Vector3Int> staticMovements = new List<Vector3Int>
+            {
+                new Vector3Int(1,1),
+                new Vector3Int(1,-1),
+                new Vector3Int(-1,-1),
+                new Vector3Int(-1,1),
+            };
+            if(preview > 1)
+            {
+                foreach(Vector3Int staticMovement in staticMovements)
+                {
+                    positions.AddRange(GetCellAlongStaticPreview(unit,staticMovement));
+                }
+            }
+            else
+            {
+                foreach (Vector3Int staticMovement in staticMovements)
+                {
+                    positions.AddRange(GetCellFromFixedMovement(unit,room,staticMovement,true,true));
+                }
+
+            }
+
+            return positions;
+
+        } },
+            {"Assassin", (room,unit, preview)=>{
+            List<Vector3Int> positions = new List<Vector3Int>();
+            List<Vector3Int> directionsMovement = new List<Vector3Int>
+            {
+                new Vector3Int(2,1),
+                new Vector3Int(2,-1),
+                new Vector3Int(-2,1),
+                new Vector3Int(-2,-1),
+                new Vector3Int(1,2),
+                new Vector3Int(1,-2),
+                new Vector3Int(-1,2),
+                new Vector3Int(-1,-2)
+            };
+            if(preview > 1)
+            {
+                foreach(Vector3Int staticMovement in directionsMovement)
+                {
+                    positions.AddRange(GetCellAlongStaticPreview(unit,staticMovement));
+                }
+            }
+            else
+            {
+                foreach (Vector3Int staticMovement in directionsMovement)
+                {
+                    positions.AddRange(GetCellFromFixedMovement(unit,room,staticMovement,true,true));
+                }
+
+            }
+            //Filter unique position 
+            positions = positions.Distinct().ToList();
+
+            return positions;
+
+        } },
+
+    };
 
 
     public static Dictionary<string, Func<RoomView, Unit, int, List<Vector3Int>>> movementMethods = new Dictionary<string, Func<RoomView, Unit, int, List<Vector3Int>>>()
@@ -70,6 +155,64 @@ public class MovementMethods
                 foreach (Vector3Int staticMovement in staticMovements)
                 {
                     positions.AddRange(GetCellFromFixedMovement(unit,room,staticMovement));
+                }
+
+            }
+
+            return positions;
+
+        } }, {"Pawn", (room,unit, preview)=>{
+            List<Vector3Int> positions = new List<Vector3Int>();
+            List<Vector3Int> staticMovements = new List<Vector3Int>
+            {
+                new Vector3Int(0,1),
+                new Vector3Int(1,0),
+                new Vector3Int(0,-1),
+                new Vector3Int(-1,0),
+            };
+            if(preview > 1)
+            {
+                foreach(Vector3Int staticMovement in staticMovements)
+                {
+                    positions.AddRange(GetCellAlongStaticPreview(unit,staticMovement));
+                }
+            }
+            else
+            {
+                foreach (Vector3Int staticMovement in staticMovements)
+                {
+                    positions.AddRange(GetCellFromFixedMovement(unit,room,staticMovement, false));
+                }
+
+            }
+
+            return positions;
+
+        } }, {"King", (room,unit, preview)=>{
+            List<Vector3Int> positions = new List<Vector3Int>();
+            List<Vector3Int> staticMovements = new List<Vector3Int>
+            {
+                new Vector3Int(1,1),
+                new Vector3Int(-1,-1),
+                new Vector3Int(1,-1),
+                new Vector3Int(-1,1),
+                new Vector3Int(0,1),
+                new Vector3Int(0,-1),
+                new Vector3Int(1,0),
+                new Vector3Int(-1,0)
+            };
+            if(preview > 1)
+            {
+                foreach(Vector3Int staticMovement in staticMovements)
+                {
+                    positions.AddRange(GetCellAlongStaticPreview(unit,staticMovement));
+                }
+            }
+            else
+            {
+                foreach (Vector3Int staticMovement in staticMovements)
+                {
+                    positions.AddRange(GetCellFromFixedMovement(unit,room,staticMovement, false));
                 }
 
             }
@@ -141,28 +284,124 @@ public class MovementMethods
             return positions;
 
         } },
+        {"Vampire", (room,unit, preview)=>{
+            List<Vector3Int> positions = new List<Vector3Int>();
+            List<Vector3Int> staticMovements = new List<Vector3Int>
+            {
+            };
+
+            List<Vector3Int> directions = new List<Vector3Int>
+            {
+                new Vector3Int(1,1),
+                new Vector3Int(-1,-1),
+                new Vector3Int(1,-1),
+                new Vector3Int(-1,1),
+                new Vector3Int(0,1),
+                new Vector3Int(0,-1),
+                new Vector3Int(1,0),
+                new Vector3Int(-1,0)
+            };
+            foreach(Vector3Int direction in directions)
+            {
+                for(int i=0; i<8; i++)
+                {
+                    staticMovements.Add(2*direction*i);
+                }
+            }
+            if(preview > 1)
+            {
+                foreach(Vector3Int staticMovement in staticMovements)
+                {
+                    positions.AddRange(GetCellAlongStaticPreview(unit,staticMovement));
+                }
+            }
+            else
+            {
+                foreach (Vector3Int staticMovement in staticMovements)
+                {
+                    positions.AddRange(GetCellFromFixedMovement(unit,room,staticMovement));
+                }
+
+            }
+
+            return positions;
+
+        } }, 
+        {"Assassin", (room,unit, preview)=>{
+            List<Vector3Int> positions = new List<Vector3Int>();
+            List<Vector3Int> directionsMovement = new List<Vector3Int>
+            {
+                new Vector3Int(1,1),
+                new Vector3Int(-1,-1),
+                new Vector3Int(1,-1),
+                new Vector3Int(-1,1),
+                new Vector3Int(0,1),
+                new Vector3Int(0,-1),
+                new Vector3Int(1,0),
+                new Vector3Int(-1,0)
+            };
+            if(preview > 1)
+            {
+                foreach(Vector3Int direction in directionsMovement)
+                {
+                    positions.AddRange(GetCellAlongDirectionPreview(unit,preview,direction));
+                }
+               
+            }
+            else
+            {
+                foreach (Vector3Int direction in directionsMovement)
+                {
+                    positions.AddRange(GetCellAlongDirection(unit,room,direction,false));
+                }
+
+            }
+            //Filter unique position 
+            positions = positions.Distinct().ToList();
+
+            return positions;
+
+        } },
+
     };
 
     #region Movement method
-    public static List<Vector3Int> GetCellFromFixedMovement(Unit unit, RoomView room, Vector3Int staticMovement)
+    public static List<Vector3Int> GetCellFromFixedMovement(Unit unit, RoomView room, Vector3Int staticMovement, bool canAttack = true, bool onlyReturnAttack = false)
     {
         List<Vector3Int> output = new List<Vector3Int>();
         bool obstructed = false;
         List<Vector3Int> temp = new List<Vector3Int>();
+        bool isAttackingEnemy = false;
         foreach (Vector3Int cell in unit.occupiedCells)
         {
-
             Vector3Int movement = cell + staticMovement * unit.megaSize;
             if (room.InBounds(movement) && cell != movement && room.GetTileAt(movement)?.name == GlobalHelper.GlobalVariables.TILE_GROUND)
             {
                 Unit unitAt = room.GetUnitAt(movement);
-                if (unitAt != null && unitAt.UID == unit.UID)
+
+                if (onlyReturnAttack)
                 {
+                    if(unitAt != null && unitAt.isEnemy != unit.isEnemy)
+                    {
+                        isAttackingEnemy = true;
+                    }
                 }
-                else
-                {
-                    temp.Add(movement);
-                }
+                temp.Add(movement);
+                //if (unitAt != null && unitAt.UID == unit.UID && unitAt.isEnemy == unit.isEnemy)
+                //{
+                //}
+                //else 
+                //{
+                //    if (canAttack || (!canAttack && unitAt == null)|| (!canAttack && unitAt != null && unitAt.UID == unit.UID))
+                //    {
+                //        temp.Add(movement);
+                //    }
+                //    else
+                //    {
+                //        obstructed = true;
+                //        break;
+                //    }
+                //}
             }
             else
             {
@@ -170,9 +409,18 @@ public class MovementMethods
                 break;
             }
         }
-        if (!obstructed)
+        if (!obstructed )
         {
-            output.AddRange(temp);
+            if (onlyReturnAttack && isAttackingEnemy)
+            {
+
+                output.AddRange(temp);
+            }
+            else if(!onlyReturnAttack)
+            {
+
+                output.AddRange(temp);
+            }
         }
         return output;
     }
@@ -209,7 +457,7 @@ public class MovementMethods
         output = output.Distinct().ToList();
         return output;
     }
-    public static List<Vector3Int> GetCellAlongDirection(Unit unit, RoomView room, Vector3Int direction)
+    public static List<Vector3Int> GetCellAlongDirection(Unit unit, RoomView room, Vector3Int direction, bool canAttack = true)
     {
         List<Vector3Int> output = new List<Vector3Int>();
         int maxDistance = 999;
@@ -227,10 +475,14 @@ public class MovementMethods
                     if (room.GetTileAt(movement)?.name == GlobalHelper.GlobalVariables.TILE_GROUND)
                     {
                         Unit u = room.GetUnitAt(movement);
-                        if (u != null && (u.isEnemy != unit.isEnemy || u.UID == unit.UID))
+                        if (u != null && (u.isEnemy != unit.isEnemy || u.UID == unit.UID) && canAttack)
                         {
                             temp[tempIndex].Add(movement);
 
+                        }else if(!canAttack && u != null && ( u.UID == unit.UID))
+                        {
+
+                            temp[tempIndex].Add(movement);
                         }
                         else if (u != null && (u.isEnemy == unit.isEnemy))
                         {

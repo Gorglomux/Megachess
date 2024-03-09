@@ -27,6 +27,8 @@ public class AbilityButton : MonoBehaviour
     }
 
     public Button button;
+    public bool shouldLookForTarget = false;
+    public object target;
     // Start is called before the first frame update
     void Start()
     {
@@ -96,16 +98,79 @@ public class AbilityButton : MonoBehaviour
     {
 
         GlobalHelper.UI().HideHoverInfos();
+
+        StartCoroutine(FindTarget());
+
+    }
+    public IEnumerator FindTarget()
+    {
+        yield return null;
+        if (shouldLookForTarget)
+        {
+            ISelectable selectable = GlobalHelper.GlobalVariables.gameInfos.selected;
+            print(selectable is ReserveContainer);
+            if (GlobalHelper.GlobalVariables.gameInfos.selected != null)
+            {
+                if (selectable is ReserveContainer && ability.abilityData.targettingType == TARGETTING_TYPE.RESERVE)
+                {
+                    print("Found reserve targetr");
+                    ability.ExecuteAbility(GlobalHelper.GlobalVariables.gameInfos.selected);
+                    selectable.onDeselect(Vector3.negativeInfinity);
+                }
+                else if (selectable is Unit && ability.abilityData.targettingType == TARGETTING_TYPE.UNIT)
+                {
+
+                    print("Found unit targetr");
+                    ability.ExecuteAbility(GlobalHelper.GlobalVariables.gameInfos.selected);
+
+                }
+
+            }
+
+            print("Looking for target;");
+
+            shouldLookForTarget = false;
+            ToggleBlink(false);
+
+            GlobalHelper.UI().SetBottomText("", 0);
+        }
     }
     Tween incorrectTween;
     public void UseAbility()
     {
+        if (shouldLookForTarget)
+        {
+            shouldLookForTarget = false;
+            ToggleBlink(false);
+            return;
+        }
         if(GlobalHelper.GlobalVariables.gameManager.currentState is FightState && GlobalHelper.isPlayerTurn())
         {
-            
-            if (ability.isCharged())
+            if (ability.isCharged() && !shouldLookForTarget)
             {
-                ability.ExecuteAbility(null);
+            
+                //Enter targetting mode 
+                switch (ability.abilityData.targettingType)
+                {
+                    case TARGETTING_TYPE.RESERVE:
+                        shouldLookForTarget = true;
+                        GlobalHelper.UI().SetBottomText("Select a unit in the reserve",999);
+                        ToggleBlink(true);
+
+                        break;
+                    case TARGETTING_TYPE.UNIT:
+                        shouldLookForTarget = true;
+                        GlobalHelper.UI().SetBottomText("Select a unit in the room.",999);
+                        ToggleBlink(true);
+
+                        break;
+                    case TARGETTING_TYPE.GLOBAL:
+                        ability.ExecuteAbility(null);
+
+                        break;
+                }
+
+
             }
             else
             {
@@ -138,4 +203,41 @@ public class AbilityButton : MonoBehaviour
             transform.DOMove(startPosition, 0.2f);
         };
     }
+
+
+    public bool blinking = false;
+    public Coroutine tweenBlink;
+    public void ToggleBlink(bool enabled, float blinkspeed = 1)
+    {
+        if (blinking && !enabled)
+        {
+            blinking = false;
+            button.image.color = new Color(1, 1, 1, 1);
+            StopCoroutine(tweenBlink);
+        }
+        else if (!blinking && enabled)
+        {
+            tweenBlink = StartCoroutine(corBlink(0.17f / blinkspeed,0.44f/ blinkspeed));
+            //tweenBlink = spriteRenderer.DOColor(new Color(1, 1, 1, 0.7f), 0.5f).SetEase(Ease.Flash,20,0).SetLoops(-1, LoopType.Restart);
+            blinking = true;
+        }
+
+    }
+
+    public IEnumerator corBlink(float outDelay, float inDelay)
+    {
+
+        while (true)
+        {
+            button.image.color = new Color(1, 1, 1, 1);
+            yield return new WaitForSeconds(inDelay);
+            button.image.color = new Color(1, 1, 1, 0);
+            yield return new WaitForSeconds(outDelay);
+
+        }
+
+
+    }
+     
+
 }

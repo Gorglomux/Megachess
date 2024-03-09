@@ -37,6 +37,7 @@ public class UnitPlaceState : IState
         CheckUnitsLeft();
         GlobalHelper.UI().ShowTopInfos();
         GlobalHelper.UI().nextFight.StartAnimate("Selection Phase");
+        gm.OnStartFight(null);
     }
 
     public void OnResetTurn()
@@ -113,7 +114,7 @@ public class FightState : IState
     public GameManager gmRef;
     public void OnEntry(GameManager gm)
     {
-        GlobalHelper.UI().EnableButton(GlobalHelper.UI().abilityButton);
+        GlobalHelper.UI().EnableButton(GlobalHelper.UI().abilityButton.button);
         GlobalHelper.UI().EnableButton(GlobalHelper.UI().endTurnButton);
         gmRef = gm;
         gmRef.extraTurns = 0; //Not sure if that is a good idea  
@@ -125,7 +126,7 @@ public class FightState : IState
         //CheckGameWinState();
         GlobalHelper.GetRoom().OnBoardUpdate += CheckGameWinState;
         GlobalHelper.GetRoom().OnBoardUpdate += AutoEndTurn;
-        GlobalHelper.GetRoom().OnKillUnit += TryCapture;
+        gmRef.OnKillUnit += TryCapture;
         GlobalHelper.GlobalVariables.gameInfos.currentTurn = 1;
         foreach (Unit u in GlobalHelper.GetRoom().getAllUnits())
         {
@@ -171,12 +172,12 @@ public class FightState : IState
         RoomView r = GlobalHelper.GetRoom();
 
         GlobalHelper.UI().OnChangePhase -= onChangePhase;
-        GlobalHelper.GetRoom().OnKillUnit -= TryCapture;
+        gmRef.OnKillUnit -= TryCapture;
         GlobalHelper.GetRoom().OnBoardUpdate -= CheckGameWinState;
         GlobalHelper.GetRoom().OnBoardUpdate -= AutoEndTurn;
 
         r.CleanUpFight();
-        GlobalHelper.UI().DisableButton(GlobalHelper.UI().abilityButton);
+        GlobalHelper.UI().DisableButton(GlobalHelper.UI().abilityButton.button);
     }
 
     public void OnUpdate(GameManager gm)
@@ -194,7 +195,7 @@ public class FightState : IState
     public IEnumerator EndTurn()
     {
         UIManager ui = GlobalHelper.UI();
-        ui.DisableButton(ui.abilityButton);
+        ui.DisableButton(ui.abilityButton.button);
         ui.DisableButton(ui.endTurnButton);
         if (endFight)
         {
@@ -218,6 +219,9 @@ public class FightState : IState
                 u.RefreshActions();
                 yield return u.StartCoroutine(u.EnemyAttack());
             }
+            GlobalHelper.getCamMovement().ResetCameraPosition();
+            GlobalHelper.getCamMovement().ResetZoomPosition();
+
         }
 
 
@@ -229,18 +233,25 @@ public class FightState : IState
             u.StartIdle();
             u.RefreshActions();
         }
-        yield return GlobalHelper.UI().nextFight.StartAnimate("Player Turn").WaitForCompletion();
-
         GlobalHelper.GlobalVariables.gameInfos.currentTurn++;
         GlobalHelper.UI().OnEndTurn();
         enemyTurn = false;
         gmRef.OnEndTurn();
         canReset = true;
-        ui.EnableButton(ui.abilityButton);
+        ui.EnableButton(ui.abilityButton.button);
         ui.EnableButton(ui.endTurnButton);
+
+        yield return GlobalHelper.UI().nextFight.StartAnimate("Player Turn").WaitForCompletion();
+
+
     }
-    public void TryCapture(Unit u)
+    public void TryCapture(object o)
     {
+        if(!(o is Unit))
+        {
+            return;
+        }
+        Unit u = (Unit)o;
         if (u.isEnemy)
         {
             if(capturedThisFight == null)
@@ -333,7 +344,8 @@ public class FightState : IState
         int moneyEarned =Mathf.Clamp(gf.currentRoom.roomData.par - gf.currentTurn,0,99999)+1;
         GlobalHelper.GlobalVariables.player.money += moneyEarned;
         GlobalHelper.UI().fightWinUI.OnNextPressed += LoadNext;
-        gmRef.OnRoomCleared();
+        gmRef.OnRoomCleared(GlobalHelper.GetGameManager().currentRoom);
+        //gmRef.OnRoomCleared(GlobalHelper.GetGameManager().currentRoom);
         yield return GlobalHelper.UI().fightWinUI.Show(moneyEarned, capturedThisFight.unitName);
         
     }
@@ -375,11 +387,12 @@ public class ChangeRoomState : IState
         if (t!= null)
         {
             yield return t.WaitForCompletion();
-            GlobalHelper.UI().UpdateRoomCount(gmRef.roomIndex+1 ,GlobalHelper.GlobalVariables.gameInfos.areaSize);
+
+                GlobalHelper.UI().UpdateRoomCount(gmRef.roomIndex+1 ,GlobalHelper.GlobalVariables.gameInfos.areaSize);
         }
         else
         {
-            gmRef.OnAreaCleared();
+            gmRef.OnAreaCleared(GlobalHelper.GlobalVariables.gameInfos.currentArea);
             Debug.Log("Out of rooms !");
             Tween tw = gmRef.LoadNextArea();
             yield return tw.WaitForCompletion();
@@ -388,7 +401,23 @@ public class ChangeRoomState : IState
         }
 
         yield return null;
-        gmRef.ChangeState(new UnitPlaceState());
+        if (GlobalHelper.GetRoom().roomData.isTutorial )
+        {
+            RoomView r = GlobalHelper.GetRoom();
+            if (r.roomData.name == "A0R0")
+            {
+                gmRef.ChangeState(new TutorialFightState());
+            }
+            else
+            {
+                //gmRef.ChangeState(new TutorialUnitPlaceState());
+            }
+
+        }
+        else
+        {
+            gmRef.ChangeState(new UnitPlaceState());
+        }
     }
 }
 

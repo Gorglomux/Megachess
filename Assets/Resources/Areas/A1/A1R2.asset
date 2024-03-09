@@ -15,6 +15,6 @@ MonoBehaviour:
   roomName: Long Face
   roomPrefab: {fileID: 7856683090932274919, guid: 00d56b23f4808fb44a2aefa8e750a333, type: 3}
   par: 3
-  isTutorial: 1
+  isTutorial: 0
   isBoss: 0
   maxUnits: 2

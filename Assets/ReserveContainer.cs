@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ReserveContainer : MonoBehaviour
+public class ReserveContainer : MonoBehaviour,ISelectable
 {
     public Sprite spriteNormal;
     public Sprite spriteHovered;
@@ -85,7 +85,6 @@ public class ReserveContainer : MonoBehaviour
         if (canSelect())
         {
             EventSystem.current.SetSelectedGameObject(gameObject);
-
         }
         //Dequeue unit 
 
@@ -107,7 +106,13 @@ public class ReserveContainer : MonoBehaviour
     }
     public void OnSelect(BaseEventData data)
     {
+        GlobalHelper.GlobalVariables.gameInfos.selected = this;
+        if (isAbilitySelect())
+        {
+            return;
+        }
         RoomView room = GlobalHelper.GetRoom();
+
         if (room.CheckUnitsLeft()>0)
         {
             selected = true;
@@ -125,6 +130,7 @@ public class ReserveContainer : MonoBehaviour
 
 
             unitImage.color = new Color(1, 1, 1, 0.5f);
+
         }
         else
         {
@@ -136,6 +142,11 @@ public class ReserveContainer : MonoBehaviour
 
     public void OnDeselect(BaseEventData data)
     {
+        GlobalHelper.GlobalVariables.gameInfos.selected = null;
+        if (isAbilitySelect())
+        {
+            return;
+        }
         RoomView r = GlobalHelper.GetRoom();
         if (r.CheckUnitsLeft()<=0)
         {
@@ -197,6 +208,22 @@ public class ReserveContainer : MonoBehaviour
     public bool canSelect()
     {
 
-        return units.Count > 0 && GlobalHelper.GlobalVariables.gameInfos.gameState is UnitPlaceState;
+        return (units.Count > 0 && GlobalHelper.GlobalVariables.gameInfos.gameState is UnitPlaceState || GlobalHelper.GlobalVariables.gameInfos.gameState is FightState && GlobalHelper.UI().abilityButton.shouldLookForTarget);
+    }
+    public bool isAbilitySelect()
+    {
+        return GlobalHelper.GlobalVariables.gameInfos.gameState is FightState && GlobalHelper.UI().abilityButton.shouldLookForTarget;
+    }
+    public bool onSelect()
+    {
+        return false;
+    }
+
+    public void onSelectTick(Vector3 mousePosition)
+    {
+    }
+
+    public void onDeselect(Vector3 mousePosition)
+    {
     }
 }

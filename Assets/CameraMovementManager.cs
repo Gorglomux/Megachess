@@ -27,9 +27,13 @@ public class CameraMovementManager : MonoBehaviour
 
 
     }
-
+    Tween zoomTween = null;
     public Tween ZoomToPosition(Vector3 position, float strength = -1f, float duration = -2f )
     {
+        if(zoomTween != null)
+        {
+            return transform.DOMove(transform.position, 0);
+        }
         if (duration <= 0)
         {
             duration = GlobalHelper.DEFAULT_CAMERA_ZOOM_DURATION;
@@ -38,12 +42,20 @@ public class CameraMovementManager : MonoBehaviour
         {
             strength = GlobalHelper.DEFAULT_CAMERA_ZOOM_STRENGTH;
         }
-        print("Move to " + position);
-        cam.DOOrthoSize(strength, duration *.8f).SetEase(Ease.OutQuint);
-        return cameraMovementTransform.transform.DOMove(position + new Vector3(0, 0, -10), duration).SetEase(Ease.OutQuart);
+
+        cameraMovementTransform.transform.DOScale(new Vector3(strength, strength,1), duration *.8f).SetEase(Ease.OutQuint);
+        zoomTween = cameraMovementTransform.transform.DOMove(position + new Vector3(0, 0, -10), duration).SetEase(Ease.OutQuart);
+        zoomTween.onComplete += () =>
+        {
+            zoomTween = null;
+        };
+        return zoomTween;
 
     }
-
+    public void ResetZoomPosition()
+    {
+        cameraMovementTransform.transform.DOScale(new Vector3(1, 1, 1), 0.5f).SetEase(Ease.OutQuint);
+    }
     public void FlashCamera(float strength = -1f, float duration = -2f)
     {
         if (duration <= 0)

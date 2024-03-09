@@ -9,7 +9,6 @@ using UnityEngine.Tilemaps;
 public class RoomView : MonoBehaviour
 {
     public Action OnBoardUpdate = delegate {}; 
-    public Action<Unit> OnKillUnit = delegate {}; 
     public Room roomData;
 
 
@@ -40,9 +39,7 @@ public class RoomView : MonoBehaviour
         arrayUnits = new Unit[tilemapFloorWalls.size.x, tilemapFloorWalls.size.y];
         LoadEntities();
         LoadSpawnableCells();
-        //StartCoroutine(testMoveUnitsRight());
-        //StartCoroutine(testInstantiateAllyUnitAndFight());
-        return AnimateLevel();
+        return AnimateLevel(roomData.animateLevel);
     }
     public void LoadSpawnableCells()
     {
@@ -65,18 +62,27 @@ public class RoomView : MonoBehaviour
     #endregion
 
     //doscale to 1, screen shake , pop the name in the UI (typewriter?), after 1 second load the text
-    public Tween AnimateLevel()
+    public Tween AnimateLevel(bool animate = true)
     {
-
-        Tween t = Camera.main.DOShakePosition(1f, Vector3.one * 0.005f, 3, 90).SetLoops(-1);
-        Tween tween = transform.parent.DOScale(Vector3.one,2.3f).SetEase(Ease.OutQuart);
-        tween.onComplete += () =>
+        if (animate)
         {
-            t.Kill();
-            GlobalHelper.getCamMovement().ShakeCamera(5f, 1);
+
+            Tween t = Camera.main.DOShakePosition(1f, Vector3.one * 0.005f, 3, 90).SetLoops(-1);
+            Tween tween = transform.parent.DOScale(Vector3.one, 2.3f).SetEase(Ease.OutQuart);
+            tween.onComplete += () =>
+            {
+                t.Kill();
+                GlobalHelper.getCamMovement().ShakeCamera(5f, 1);
+                transform.parent.localScale = Vector3.one;
+            };
+            return tween;
+        }
+        else
+        {
+
             transform.parent.localScale = Vector3.one;
-        };
-        return tween;
+            return GlobalHelper.getCamMovement().ShakeCamera(0, 0.01f); ;
+        }
     }
     public Vector3 GetCenter(Vector3Int tilePosition)
     {
@@ -146,6 +152,7 @@ public class RoomView : MonoBehaviour
                 }
             }
         }
+        units = units.OrderBy(x => x.unitData.attackOrder).ToList();
         return units;
     }
 
@@ -302,7 +309,8 @@ public class RoomView : MonoBehaviour
 
             }
         }
-        OnKillUnit(u);
+        u.onUnitDestroyed();
+        GlobalHelper.GetGameManager().OnKillUnit(u);
         u.gameObject.SetActive(false);
         //Destroy(u.gameObject);
     }
@@ -417,11 +425,19 @@ public class RoomView : MonoBehaviour
 
         List<Unit> toDestroy = new List<Unit>();
         Sequence s = DOTween.Sequence().Pause();
+
         //Put it in the cell to world position 
         foreach (Vector3Int position in positions)
         {
             Unit unit = GetUnitAt(position);
+            foreach(BaseEffect effect in unit.currentEffects)
+            {
+                if (effect.effectData.transferOnMega)
+                {
+                    u.AddEffect(effect);
 
+                }
+            }
             toDestroy.Add(unit);
             if (animate)
             {

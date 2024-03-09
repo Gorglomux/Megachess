@@ -3,18 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public enum INDICATOR_STATE { ENEMY_ACTIVE,ALLY_INACTIVE, ALLY_ACTIVE, ALLY_TARGETED, INACTIVE,PLACE_FROM_RESERVE}
+public enum INDICATOR_STATE { INACTIVE, MOVE, TARGETED,ATTACK ,PLACE_FROM_RESERVE}
 public class Indicator : MonoBehaviour
 {
-    public Sprite spriteEnemy;
-    public Sprite spriteAllyInactive;
-    public Sprite spriteAllyActive;
-    public Sprite spriteAllyTargeted;
+    public Sprite spriteMove;
+    public Sprite spriteTargeted;
+    public Sprite spriteAttack;
     public Sprite spritePlaceFromReserve;
     public INDICATOR_STATE currentState;
 
     public SpriteRenderer spriteRenderer;
+    public SpriteRenderer spriteRendererActive;
 
+    public Color colorAlly;
+    public Color colorEnemy;
+
+    public bool isEnemy;
+    public bool isSelected = false;
     private Coroutine desactivateCoroutine;
     // Start is called before the first frame update
     void Start()
@@ -22,7 +27,7 @@ public class Indicator : MonoBehaviour
     }
 
 
-    public void SetState(INDICATOR_STATE state )
+    public void SetState(INDICATOR_STATE state, bool isEnemy, bool isActive )
     {
         if(currentState != state)
         {
@@ -36,26 +41,41 @@ public class Indicator : MonoBehaviour
             currentState = state;
             switch (currentState)
             {
-                case INDICATOR_STATE.ENEMY_ACTIVE:
-                    spriteRenderer.sprite = spriteEnemy;
+                case INDICATOR_STATE.MOVE:
+                    spriteRenderer.sprite = spriteMove;
                     break;
-                case INDICATOR_STATE.ALLY_ACTIVE:
-                    spriteRenderer.sprite = spriteAllyActive;
-                    break;
-                case INDICATOR_STATE.ALLY_INACTIVE:
-                    spriteRenderer.sprite = spriteAllyInactive;
-                    break;
-                case INDICATOR_STATE.ALLY_TARGETED:
-                    spriteRenderer.sprite = spriteAllyTargeted;
+                case INDICATOR_STATE.TARGETED:
+                    spriteRenderer.sprite = spriteTargeted;
                     break;
                 case INDICATOR_STATE.INACTIVE:
                     desactivateCoroutine = StartCoroutine(corDesactivate());
+                    break;
+                case INDICATOR_STATE.ATTACK:
+                    spriteRenderer.sprite = spriteAttack;
                     break;
                 case INDICATOR_STATE.PLACE_FROM_RESERVE:
                     spriteRenderer.sprite = spritePlaceFromReserve;
                     break;
             }
         }
+        isSelected = isActive;
+        spriteRendererActive.gameObject.SetActive(isSelected);
+
+
+        if(state != INDICATOR_STATE.INACTIVE)
+        {
+            if (isEnemy)
+            {
+                spriteRendererActive.color = colorEnemy;
+                spriteRenderer.color = colorEnemy;
+            }
+            else
+            {
+                spriteRendererActive.color = colorAlly;
+                spriteRenderer.color = colorAlly;
+            }
+        }
+        
     }
 
     public IEnumerator corDesactivate()

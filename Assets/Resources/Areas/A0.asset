@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaef5d30ab8397d4898a381aba4f3e7d, type: 3}
+  m_Name: A0
+  m_EditorClassIdentifier: 
+  areaName: 'What is going on here? '
+  paletteIndex: 11
+  contrastText: 0
+  colorText: {r: 1, g: 1, b: 1, a: 1}
+  roomList:
+  - {fileID: 11400000, guid: b3ed9d2c4ecc25347b688f6c09ae0573, type: 2}
+  shuffleArea: 0

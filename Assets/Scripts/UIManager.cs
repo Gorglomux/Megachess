@@ -39,7 +39,7 @@ public class UIManager : MonoBehaviour
     public EffectContainerManager effectContainerManager;
 
     public Button endTurnButton;
-    public Button abilityButton;
+    public AbilityButton abilityButton;
     public Button resetFightButton;
     // Start is called before the first frame update
     void Start()
@@ -47,7 +47,7 @@ public class UIManager : MonoBehaviour
         gameInfosRef = GlobalHelper.GlobalVariables.gameInfos;
         HideTopInfos();
         HideHoverInfos();
-        DisableButton(abilityButton);
+        DisableButton(abilityButton.button);
     }
 
     // Update is called once per frame
@@ -158,12 +158,18 @@ public class UIManager : MonoBehaviour
     /// <param name="u"></param>
     public void ShowHoverInfos(object hoverable)
     {
+        HideHoverInfos();
         UnitNameText.gameObject.SetActive(true);
         if (hoverable is Unit)
         {
             Unit u = (Unit)hoverable;
             previewMove.ShowPreview(u);
             SetUnitName(u.unitData.unitName, u.megaSize);
+            foreach(BaseEffect e in u.currentEffects)
+            {
+                EffectContainer ec = effectContainerManager.getNext();
+                ec.FillInfos(e);
+            }
 
         }if(hoverable is BaseAbility)
         {
@@ -181,7 +187,6 @@ public class UIManager : MonoBehaviour
     public void HideHoverInfos()
     {
         previewMove.HidePreview();
-        //EffectsContainer.Hide();
         effectContainerManager.DisableContainers();
         UnitNameText.gameObject.SetActive(false);
     }

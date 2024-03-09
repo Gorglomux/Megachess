@@ -15,6 +15,6 @@ MonoBehaviour:
   roomName: Double kill
   roomPrefab: {fileID: 7856683090932274919, guid: 7a5e30deecdf5014e9af67db6327b17b, type: 3}
   par: 3
-  isTutorial: 1
+  isTutorial: 0
   isBoss: 0
   maxUnits: 3

@@ -9,6 +9,7 @@ public class Reserve : MonoBehaviour
 
     public Transform rootContainers;
     public Dictionary<string,ReserveContainer> containers = new Dictionary<string, ReserveContainer>();
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,9 +32,4 @@ public class Reserve : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

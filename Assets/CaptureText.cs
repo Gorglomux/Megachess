@@ -10,8 +10,9 @@ public class CaptureText : MonoBehaviour
 
     public Sequence AnimateCaptureText()
     {
+        capturedText.alpha = 1;
         Sequence s = DOTween.Sequence();
-        s.Append(transform.DOMoveY(0.15f, 0.5f).SetEase(Ease.OutQuart));
+        s.Append(transform.DOMoveY(transform.position.y + 0.05f, 0.5f).SetEase(Ease.OutQuart));
         s.Append(DOTween.To(() => capturedText.alpha, x => capturedText.alpha = x, 0, 1));
         return s;
     }

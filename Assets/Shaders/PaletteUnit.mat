@@ -80,6 +80,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Dither: 0
+    - _DitherAmplitude: 0.06
     - _DitherOffset: 0.5
     - _DitherSize: 6.09
     - _IndexToLerpTo: 17
@@ -89,6 +90,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:
+    - _DitherTiling: {r: 1, g: 1, b: 0, a: 0}
     - _SpritePosition: {r: 0, g: 0, b: 0, a: 0}
     - _SpriteSize: {r: 1, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []

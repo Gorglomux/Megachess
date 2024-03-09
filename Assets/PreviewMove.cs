@@ -30,16 +30,15 @@ public class PreviewMove : MonoBehaviour
     public void ShowPreview(Unit u)
     {
         HidePreview();
-        print("Showing preview  of unit "+u.unitData.unitName);
         int squareSize = spritesToShow*2 + u.megaSize;
         Vector3Int bottomLeft = tilemapPreview.WorldToCell(tilemapBottomLeft.transform.position);
 
 
-        List<Vector3Int> cells = MovementMethods.GetMovementMethod(u.unitData.unitName).Invoke(GlobalHelper.GetRoom(), u, spritesToShow);
+        List<Vector3Int> movementCells = MovementMethods.GetMovementMethod(u.unitData.unitName).Invoke(GlobalHelper.GetRoom(), u, spritesToShow);
         int spread = 0;
         int minCellX = 99999;
         int maxCellX = -999999;
-        foreach (Vector3Int cell in cells)
+        foreach (Vector3Int cell in movementCells)
         {
             if(cell.x < minCellX)
             {
@@ -51,7 +50,10 @@ public class PreviewMove : MonoBehaviour
             }
         }
         spread = maxCellX - minCellX+1;
-
+        if(spread > squareSize * 2-u.megaSize)
+        {
+            spread = squareSize * 2- u.megaSize;
+        }
 
         smallFactor = spread * grid.cellSize.x ;
         ratio = bigFactor / smallFactor;
@@ -66,11 +68,35 @@ public class PreviewMove : MonoBehaviour
         }
         Vector3Int center = bottomLeft + new Vector3Int(spread / 2, spread / 2);
 
-        foreach (Vector3Int cell in cells)
+        bool hasAttack = false;
+        TileBase tileMovement = tileAttack;
+        if (MovementMethods.HasAttackMethod(u.unitData.unitName))
         {
+            tileMovement = tileMove;
+            hasAttack = true;
 
-            tilemapPreview.SetTile(cell + center, tileAttack);
         }
+        foreach (Vector3Int cell in movementCells)
+        {
+            if (tilemapPreview.GetTile(cell + center) == tileEmpty)
+            {
+                tilemapPreview.SetTile(cell + center, tileMovement);
+
+            }
+        }
+        if (hasAttack)
+        {
+            List<Vector3Int> attackCells = MovementMethods.GetAttackMethod(u.unitData.unitName).Invoke(GlobalHelper.GetRoom(), u, spritesToShow);
+            foreach (Vector3Int cell in attackCells)
+            {
+                if (tilemapPreview.GetTile(cell + center) != null)
+                {
+                    tilemapPreview.SetTile(cell + center, tileAttack);
+
+                }
+            }
+        }
+
         int min = u.megaSize / 2;
         int max = u.megaSize - min;
         for (int y = -min; y < max; y++)
@@ -78,7 +104,6 @@ public class PreviewMove : MonoBehaviour
             for (int x = -min; x < max; x++)
             {
                 Vector3Int v = center + new Vector3Int(x, y);
-                print(" V " + v);
                 tilemapPreview.SetTile(v, tileUnit);
             }
         }

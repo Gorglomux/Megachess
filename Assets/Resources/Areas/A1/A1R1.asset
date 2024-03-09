@@ -15,6 +15,6 @@ MonoBehaviour:
   roomName: Warm Welcome
   roomPrefab: {fileID: 7856683090932274919, guid: 60e555f7015cf8740990a889e03fe82c, type: 3}
   par: 2
-  isTutorial: 1
+  isTutorial: 0
   isBoss: 0
   maxUnits: 1

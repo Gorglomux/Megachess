@@ -12,9 +12,18 @@ public class GameManager : MonoBehaviour
     public Action OnRoomLoaded = delegate { };
 
 
-    public Action OnRoomCleared = delegate { };
-    public Action OnAreaCleared = delegate { };
-    public Action OnNextTurn = delegate { };
+    public Action<object> OnRoomCleared = delegate { };
+    public Action<object> OnAreaCleared = delegate { };
+
+
+
+    //public Action<object> OnBeforeAttack = delegate { };
+    //public Action<object> OnAfterAttack = delegate { };
+    public Action<object> OnPlayerEndTurn = delegate { };
+    public Action<object> OnStartTurn = delegate { };
+    public Action<object> OnStartFight= delegate { };
+    public Action<object> OnKillUnit = delegate { };
+
 
     public Room roomToDebug;
 
@@ -79,7 +88,7 @@ public class GameManager : MonoBehaviour
     }
     public void OnEndTurn()
     {
-        OnNextTurn();
+        OnPlayerEndTurn(null);
     }
     public Tween LoadNextArea()
     {

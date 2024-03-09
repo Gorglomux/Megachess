@@ -26,7 +26,7 @@ public class IndicatorManager : MonoBehaviour
         for(int i = 0; i< pooledIndicators; i++)
         {
             indicators[i] = GameObject.Instantiate(indicatorPrefab, this.transform).GetComponent<Indicator>();
-            indicators[i].SetState(INDICATOR_STATE.INACTIVE);
+            indicators[i].SetState(INDICATOR_STATE.INACTIVE, false, false);
             indicators[i].gameObject.SetActive(false);
         }
         print("Pooling done !");
@@ -65,59 +65,72 @@ public class IndicatorManager : MonoBehaviour
     }
     public void DisplayMovement(Unit u)
     {
-        if (GlobalHelper.GlobalVariables.gameInfos.selected != null)
+        if (GlobalHelper.GlobalVariables.gameInfos.selected != null && GlobalHelper.GlobalVariables.gameInfos.selected is Unit)
         {
             selectedUnit = GlobalHelper.GlobalVariables.gameInfos.selected as Unit;
         }
+        RoomView r = GlobalHelper.GetRoom();
 
         print("Displaying movement of " + u.unitData.unitName);
-        RoomView r = GlobalHelper.GetRoom();
         List<Vector3Int> positions = MovementMethods.GetMovementMethod(u.unitData.unitName).Invoke(r,u, -1 );
+        DisplayPositions(positions, u);
+        if (MovementMethods.HasAttackMethod(u.unitData.unitName))
+        {
+            List<Vector3Int> attacks = MovementMethods.GetAttackMethod(u.unitData.unitName).Invoke(r, u, -1);
+            DisplayPositions(attacks, u, INDICATOR_STATE.ATTACK);
 
+        }
+
+    }
+    public void DisplayPositions(List<Vector3Int> positions, Unit u, INDICATOR_STATE overrideState = INDICATOR_STATE.INACTIVE)
+    {
+        RoomView r = GlobalHelper.GetRoom();
         foreach (Vector3Int position in positions)
         {
+            bool isSelected = (selectedUnit != null && selectedUnit.UID == u.UID);
+
             //Pool an indicator
             Indicator indicator = getNext();
             //Set it at the position
             indicator.transform.position = transform.position + GetIndicatorPosition(position);
             //Show
             indicator.gameObject.SetActive(true);
-            if (u.isEnemy)
-            {
-                indicator.SetState(INDICATOR_STATE.ENEMY_ACTIVE);
 
-            }
-            else
-            {
-                indicator.SetState(INDICATOR_STATE.ALLY_INACTIVE);
+            indicator.SetState(INDICATOR_STATE.MOVE, u.isEnemy, isSelected);
 
-            }
-            if (selectedUnit == null ||( selectedUnit != null && selectedUnit.UID == u.UID) )
+            if (selectedUnit == null || isSelected)
             {
                 //If there is a unit at this position
                 Unit uToBlink = r.GetUnitAt(position);
                 if (uToBlink != null && u.UID != uToBlink.UID && u.isEnemy != uToBlink.isEnemy)
                 {
                     float blinkSpeed = 1;
-                    if(selectedUnit != null && u.actionsLeft > 0 )
+                    if (selectedUnit != null && u.actionsLeft > 0)
                     {
                         blinkSpeed = 3;
                     }
                     uToBlink.ToggleBlink(true, blinkSpeed);
                     blinkingUnits.Add(uToBlink);
+                    indicator.SetState(INDICATOR_STATE.ATTACK, u.isEnemy, isSelected);
                 }
                 //If ally do nothing
                 //If enemy make the sprite blink? 
             }
 
+            if(overrideState != INDICATOR_STATE.INACTIVE)
+            {
+
+                indicator.SetState(overrideState, u.isEnemy, isSelected);
+            }
         }
     }
+
     List<Unit> blinkingUnits = new List<Unit>();
     public void HideAll()
     {
         foreach(Indicator go in activeIndicators)
         {
-            go.SetState(INDICATOR_STATE.INACTIVE);
+            go.SetState(INDICATOR_STATE.INACTIVE,false,false);
         }
 
 
@@ -128,7 +141,7 @@ public class IndicatorManager : MonoBehaviour
         blinkingUnits.Clear();
         activeIndicators.Clear();
 
-        if (GlobalHelper.GlobalVariables.gameInfos.selected != null)
+        if (GlobalHelper.GlobalVariables.gameInfos.selected != null && GlobalHelper.GlobalVariables.gameInfos.selected is Unit)
         {
             selectedUnit = GlobalHelper.GlobalVariables.gameInfos.selected as Unit;
             //Toggle back the indicators 
@@ -151,7 +164,7 @@ public class IndicatorManager : MonoBehaviour
             indicator.gameObject.SetActive(true);
             //Set it at the position
             indicator.transform.position = transform.position + GetIndicatorPosition(r.TilemapToCell(cell));
-            indicator.SetState(INDICATOR_STATE.PLACE_FROM_RESERVE);
+            indicator.SetState(INDICATOR_STATE.PLACE_FROM_RESERVE,false,false);
         }
 
     }
@@ -168,12 +181,12 @@ public class IndicatorManager : MonoBehaviour
             {
                 if (indicator != null && indicator.currentState == INDICATOR_STATE.PLACE_FROM_RESERVE)
                 {
-                    indicator.SetState(INDICATOR_STATE.ALLY_TARGETED);
+                    indicator.SetState(INDICATOR_STATE.TARGETED,false,true);
                 }
             }
-            else if(indicator != null && indicator.currentState == INDICATOR_STATE.ALLY_TARGETED)
+            else if(indicator != null && indicator.currentState == INDICATOR_STATE.TARGETED)
             {
-                indicator.SetState((INDICATOR_STATE.PLACE_FROM_RESERVE));
+                indicator.SetState((INDICATOR_STATE.PLACE_FROM_RESERVE),false,false);
             }
         }
     }
@@ -183,7 +196,7 @@ public class IndicatorManager : MonoBehaviour
     {
         foreach (Indicator go in spawnableCellIndicators)
         {
-            go.SetState(INDICATOR_STATE.INACTIVE);
+            go.SetState(INDICATOR_STATE.INACTIVE,false,false);
         }
         spawnableCellIndicators.Clear();
     }
@@ -201,18 +214,19 @@ public class IndicatorManager : MonoBehaviour
                 
                 if (indicator != null)
                 {
-                    indicator.SetState(INDICATOR_STATE.ALLY_TARGETED);
+                    indicator.SetState(INDICATOR_STATE.TARGETED,false, indicator.isSelected);
                 }
             }
             else if(indicator != null)
             {
-                if (GlobalHelper.GetGameState() is FightState)
+                Unit enemy = r.GetUnitAt(position);
+                if (enemy != null && enemy.UID != u.UID && enemy.isEnemy)
                 {
-                    indicator.SetState((INDICATOR_STATE.ALLY_ACTIVE));
+                    indicator.SetState(INDICATOR_STATE.ATTACK, false, indicator.isSelected);
                 }
                 else
                 {
-                    indicator.SetState((INDICATOR_STATE.ALLY_INACTIVE));
+                    indicator.SetState(INDICATOR_STATE.MOVE, false, indicator.isSelected);
                 }
             }
         }

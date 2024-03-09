@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
 
@@ -23,13 +24,31 @@ public class EffectContainer : MonoBehaviour
         if (objectType is BaseAbility)
         {
             FillAbility((BaseAbility) objectType);
+        }if(objectType is BaseEffect)
+        {
+            FillEffect((BaseEffect)objectType);
         }
 
     }
     public void FillAbility(BaseAbility ab)
     {
-        text.text = ab.abilityData.description; 
+        text.text = RegexReplace(ab.abilityData.description); 
 
+    }
+    public void FillEffect(BaseEffect eb, bool displayName = true)
+    {
+        string finalString = "";
+        if (displayName)
+        {
+            finalString += eb.effectData.name;
+            if (eb.effectData.stackable)
+            {
+                finalString += " "+eb.effectStrength;
+            }
+            finalString += " - ";
+        }
+        finalString += eb.effectData.effectDescription;
+        text.text = RegexReplace(finalString);
     }
     public void FillCooldown(BaseAbility ab)
     {
@@ -56,5 +75,29 @@ public class EffectContainer : MonoBehaviour
         }
         string s =string.Format("Cooldown : {0}/{1} {2}", chargeAmount,ab.abilityData.cooldownDuration,suffix);
         text.text = s;
+    }
+
+    public string RegexReplace(string input)
+    {
+        string output = input;
+        string regexPattern = @"<.+>";
+        MatchCollection matches = Regex.Matches(input, regexPattern);
+        foreach (Match match in matches)
+        {
+            string s = match.Value.Trim('<').Trim('>');
+            if(GlobalHelper.GetEffectData(s))
+            {
+                EffectContainer effectContainer = GlobalHelper.UI().effectContainerManager.getNext();
+                effectContainer.FillInfos( GlobalHelper.effectLookup(GlobalHelper.GetEffectData(s)));
+
+            }
+            else if (GlobalHelper.GetAbilityData(s))
+            {
+                EffectContainer effectContainer = GlobalHelper.UI().effectContainerManager.getNext();
+                effectContainer.FillInfos(GlobalHelper.abilityLookup(GlobalHelper.GetAbilityData(s)));
+            }
+            output = Regex.Replace(input, regexPattern, s);
+        }
+        return output;
     }
 }

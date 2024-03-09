@@ -26,9 +26,11 @@ public class Player : MonoBehaviour
     void Start()
     {
         money = 3;
-        testInventory();
+        //testInventory();
+        testMegaInventory();
         GlobalHelper.UI().UpdateMoneyCount();
-        ChangeAbility(GlobalHelper.GetAbilityData("ExtraTurn"));
+        //ChangeAbility(GlobalHelper.GetAbilityData("ExtraTurn"));
+        ChangeAbility(GlobalHelper.GetAbilityData("Thirst"));
     }
     public void ChangeAbility(AbilityData ab)
     {
@@ -45,6 +47,18 @@ public class Player : MonoBehaviour
     {
         // Maybe delay them ? 
         AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Rook"), false ));
+
+
+    }
+    void testMegaInventory()
+    {
+        for(int i=0; i<5; i++)
+        {
+            foreach(UnitData ud in GlobalHelper.unitDataList)
+            {
+                AddUnit(GlobalHelper.GetRoom().CreateUnit(ud, false));
+            }
+        }
 
 
     }

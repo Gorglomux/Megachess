@@ -83,8 +83,9 @@ public class InputManager : MonoBehaviour
                     infos.selected = selectable;
                     if (!currentSelected.onSelect()) {
 
-                        infos.selected = null;
-                        currentSelected = null;
+                        infos.selected = selectable;
+                        StartCoroutine(corDeselectAfterAFrame());
+
                     }
                     else
                     {
@@ -203,5 +204,11 @@ public class InputManager : MonoBehaviour
             currentSelected.onDeselect(new Vector3(position.x, position.y, 0));
             currentSelected = null;
         }
+    }
+    public IEnumerator corDeselectAfterAFrame()
+    {
+        yield return null;
+        infos.selected = null;
+        currentSelected = null;
     }
 }

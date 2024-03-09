@@ -41,33 +41,35 @@ public class BaseAbility
                 gm.OnRoomCleared += Discharge;
                 break;
             case COOLDOWN_TYPE.KILL_AMOUNT:
-                rv.OnKillUnit += DischargeEnemyKill;
+                gm.OnKillUnit += DischargeEnemyKill;
                 break;
             case COOLDOWN_TYPE.AREA_CLEARED:
                 gm.OnAreaCleared += Discharge;
                 break;
             case COOLDOWN_TYPE.UNIT_LOST_AMOUNT:
-                rv.OnKillUnit += DischargeAllyKill;
+                gm.OnKillUnit += DischargeAllyKill;
                 break;
             case COOLDOWN_TYPE.TURN_AMOUNT:
-                gm.OnNextTurn += Discharge;
+                gm.OnPlayerEndTurn += Discharge;
                 break;
         }
 
     }
-    private void Discharge()
+    private void Discharge(object o)
     {
         currentCharge --;
     }
-    private void DischargeEnemyKill(Unit u)
+    private void DischargeEnemyKill(object o)
     {
+        Unit u = (Unit)o;
         if (u.isEnemy)
         {
             currentCharge -= u.megaSize;
         }
     }
-    private void DischargeAllyKill(Unit u)
+    private void DischargeAllyKill(object o)
     {
+        Unit u = (Unit)o;
         if (!u.isEnemy)
         {
             currentCharge -= u.megaSize;
@@ -84,16 +86,16 @@ public class BaseAbility
                 gm.OnRoomCleared -= Discharge;
                 break;
             case COOLDOWN_TYPE.KILL_AMOUNT:
-                rv.OnKillUnit -= DischargeEnemyKill;
+                gm.OnKillUnit -= DischargeEnemyKill;
                 break;
             case COOLDOWN_TYPE.AREA_CLEARED:
                 gm.OnAreaCleared -= Discharge;
                 break;
             case COOLDOWN_TYPE.UNIT_LOST_AMOUNT:
-                rv.OnKillUnit -= DischargeAllyKill;
+                gm.OnKillUnit -= DischargeAllyKill;
                 break;
             case COOLDOWN_TYPE.TURN_AMOUNT:
-                gm.OnNextTurn -= Discharge;
+                gm.OnPlayerEndTurn -= Discharge;
                 break;
         }
 
