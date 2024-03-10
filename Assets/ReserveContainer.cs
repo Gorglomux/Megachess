@@ -61,6 +61,7 @@ public class ReserveContainer : MonoBehaviour,ISelectable
 
     public void OnPointerEnter(BaseEventData data)
     {
+        AudioManager.instance.PlaySound("sfx_tap", 1, UnityEngine.Random.Range(0.7f, 0.9f));
         containerImage.sprite = spriteHovered;
         if(units.Count > 0)
         {
@@ -106,6 +107,7 @@ public class ReserveContainer : MonoBehaviour,ISelectable
     }
     public void OnSelect(BaseEventData data)
     {
+        AudioManager.instance.PlaySound("sfx_chess_move", 1, UnityEngine.Random.Range(1.1f, 1.2f));
         GlobalHelper.GlobalVariables.gameInfos.selected = this;
         if (isAbilitySelect())
         {
@@ -170,6 +172,7 @@ public class ReserveContainer : MonoBehaviour,ISelectable
                         //This will break why did you write this 
 
                         r.PlaceUnitOnMap(unit, r.CellToTilemap(point));
+                        GlobalHelper.GetGameManager().OnUnitPlayed(unit);
                     }
                     else
                     {
@@ -184,6 +187,7 @@ public class ReserveContainer : MonoBehaviour,ISelectable
 
         GlobalHelper.UI().HideHoverInfos();
 
+        AudioManager.instance.PlaySound("sfx_chess_move", 0.8f, 0.98f);
         GlobalHelper.GlobalVariables.inputManager.spritePreview.gameObject.SetActive(false);
         GlobalHelper.GlobalVariables.inputManager.spritePreview.sprite = null;
         unitImage.color = new Color(1, 1, 1, 1f);

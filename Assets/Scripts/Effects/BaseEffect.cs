@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class BaseEffect
 {
     public Action<object> OnApply = delegate { };
@@ -11,8 +12,11 @@ public class BaseEffect
     public int effectStrength;
 
     public Unit UnitHavingEffect;
+
+    public int id;
     public BaseEffect(EffectData ed)
     {
+        id = GlobalHelper.GetUID();
         effectData = ed;
         SetUpTargetting();
         effectStrength = ed.defaultValue;

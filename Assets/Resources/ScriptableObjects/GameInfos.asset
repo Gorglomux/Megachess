@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 551e2acd69d82884db553b25863272e9, type: 3}
   m_Name: GameInfos
   m_EditorClassIdentifier: 
-  currentArea: {fileID: 0}
+  currentArea: {fileID: 11400000, guid: 4e2fa53a2d168ad49a8fec37f681a8f5, type: 2}
   currentRoom: {fileID: 0}
   currentGlobalPaletteIndex: 0
-  currentTurn: 0
-  areaSize: 0
-  shouldClearPlayerPrefs: 1
+  currentTurn: 2
+  areaSize: 11
+  shouldClearPlayerPrefs: 0
+  shopPassiveChoiceAmount: 3
+  shopUnitChoiceAmount: 6
+  roomToClearBaseAmount: 5

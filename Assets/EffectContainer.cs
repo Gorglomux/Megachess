@@ -21,6 +21,14 @@ public class EffectContainer : MonoBehaviour
 
     public void FillInfos(object objectType)
     {
+        if (objectType is AbilityData)
+        {
+            FillAbilityData((AbilityData)objectType);
+        }
+        if (objectType is EffectData)
+        {
+            FillEffectData((EffectData)objectType);
+        }
         if (objectType is BaseAbility)
         {
             FillAbility((BaseAbility) objectType);
@@ -31,7 +39,15 @@ public class EffectContainer : MonoBehaviour
         {
             FillPlayerData((PlayerData)objectType);
         }
+        if(objectType is PassiveData)
+        {
+            FillPassiveData((PassiveData)objectType);
+        }
 
+    }
+    public void FillPassiveData(PassiveData data)
+    {
+        text.text = RegexReplace(data.passiveDescription);
     }
     public void FillPlayerData(PlayerData playerData)
     {
@@ -48,6 +64,19 @@ public class EffectContainer : MonoBehaviour
         text.text = RegexReplace(t); 
 
     }
+
+    public void FillAbilityData(AbilityData ab, bool displayName = false)
+    {
+        string t = "";
+        if (displayName)
+        {
+            t += ab.abilityName.ToUpper() + " : ";
+        }
+        t += ab.description;
+        text.text = RegexReplace(t);
+
+    }
+
     public void FillEffect(BaseEffect eb, bool displayName = true)
     {
         string finalString = "";
@@ -62,6 +91,23 @@ public class EffectContainer : MonoBehaviour
         }
         finalString += eb.effectData.effectDescription;
         text.text = RegexReplace(finalString);
+    }
+
+    public void FillEffectData(EffectData eb, bool displayName = true)
+    {
+        string finalString = "";
+        if (displayName)
+        {
+            finalString += eb.name;
+            if (eb.stackable)
+            {
+                finalString += " " + 1;
+            }
+            finalString += " - ";
+        }
+        finalString += eb.effectDescription;
+        text.text = RegexReplace(finalString);
+
     }
     public void FillCooldown(BaseAbility ab)
     {
@@ -101,13 +147,13 @@ public class EffectContainer : MonoBehaviour
             if(GlobalHelper.GetEffectData(s))
             {
                 EffectContainer effectContainer = GlobalHelper.UI().effectContainerManager.getNext();
-                effectContainer.FillInfos( GlobalHelper.effectLookup(GlobalHelper.GetEffectData(s)));
+                effectContainer.FillInfos(GlobalHelper.GetEffectData(s));
 
             }
             else if (GlobalHelper.GetAbilityData(s))
             {
                 EffectContainer effectContainer = GlobalHelper.UI().effectContainerManager.getNext();
-                effectContainer.FillInfos(GlobalHelper.abilityLookup(GlobalHelper.GetAbilityData(s)));
+                effectContainer.FillInfos(GlobalHelper.GetAbilityData(s));
             }
             output = Regex.Replace(input, regexPattern, s);
         }

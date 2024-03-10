@@ -26,5 +26,7 @@ public class GameInfos : ScriptableObject
     public int currentTurn = 0;
     public int areaSize = 0;
     public bool shouldClearPlayerPrefs = false;
-
+    public int shopPassiveChoiceAmount = 3;
+    public int shopUnitChoiceAmount = 6;
+    public int roomToClearBaseAmount = 5;
 }

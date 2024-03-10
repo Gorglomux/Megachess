@@ -19,7 +19,8 @@ public class InputManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        infos = GlobalHelper.GlobalVariables.gameInfos;
+        currentHoverDelay = maxHoverDelay;
+           infos = GlobalHelper.GlobalVariables.gameInfos;
     }
     IHoverable currentHovered;
 
@@ -33,9 +34,15 @@ public class InputManager : MonoBehaviour
     private Vector3 startDragPosition = Vector3.positiveInfinity;
     // Update is called once per frame
 
+    public float maxHoverDelay = 0.2f;
+    public float currentHoverDelay = 0f;
     void Update()
     {
+        if(currentHovered != null)
+        {
+            currentHoverDelay += Time.deltaTime;
 
+        }
 
         //Get the mouse position
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -49,7 +56,7 @@ public class InputManager : MonoBehaviour
 
 
             IHoverable hovered = nextCollider.GetComponent<IHoverable>();
-            if (hovered != null && currentHovered != hovered && hovered != currentSelected)
+            if (hovered != null && currentHovered != hovered && hovered != currentSelected &&(currentHovered == null || currentHoverDelay > maxHoverDelay))
             {
                 if(currentHovered != null)
                 {
@@ -58,6 +65,7 @@ public class InputManager : MonoBehaviour
                 currentHovered = hovered;
                 hovered.onHoverEnter();
                 infos.hovered = hovered;
+                currentHoverDelay = 0;
             }
 
 

@@ -15,5 +15,5 @@ MonoBehaviour:
   abilityName: Triple Charge
   targettingType: 1
   cooldownType: 4
-  cooldownDuration: 2
+  cooldownDuration: 4
   description: Target unit gain 3 actions until the end of the turn.

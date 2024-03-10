@@ -7,6 +7,10 @@ using UnityEngine.Tilemaps;
 
 public enum EFFECT_ACTIVATION_TIME
 {
+    ON_BEGIN_FIGHT,
+    ON_END_FIGHT,
+    ON_UNIT_PLAYED,
+    ON_UNIT_KILLED,
     ON_APPLY,
     BEFORE_ATTACK,
     AFTER_ATTACK,
@@ -32,6 +36,7 @@ public class GlobalHelper
     public static System.Random rand;
     public static List<UnitData> unitDataList;
     public static List<EffectData> effectDataList;
+    public static List<PassiveData> passiveDataList;
     public static List<PlayerData> playerDataList;
 
     public static int NEXT_UID = 50;
@@ -115,6 +120,7 @@ public class GlobalHelper
         abilityList = Resources.LoadAll<AbilityData>("Data/Abilities").ToList();
         effectDataList = Resources.LoadAll<EffectData>("Data/Effects").ToList();
         playerDataList = Resources.LoadAll<PlayerData>("Data/Players").ToList();
+        passiveDataList = Resources.LoadAll<PassiveData>("Data/Passives").ToList();
     }
     public static GameObject GetRoomPrefab(string roomIndex)
     {
@@ -137,6 +143,11 @@ public class GlobalHelper
     public static EffectData GetEffectData(string identifier)
     {
         return effectDataList.FirstOrDefault((x) => x.name == identifier);
+    }
+
+    public static PassiveData GetPassiveData(string identifier)
+    {
+        return passiveDataList.FirstOrDefault((x) => x.name == identifier);
     }
 
     public static BaseAbility abilityLookup(AbilityData ad)
@@ -188,6 +199,41 @@ public class GlobalHelper
         }
         return effect;
     }
+    public static BasePassive passiveLookup(PassiveData passiveData)
+    {
+        BasePassive bp = null;
+        switch (passiveData.name)
+        {
+            case ("BloodShield"):
+                bp = new BloodShieldPassive(passiveData);
+                break;
+            case ("CaptureMaster"):
+                bp = new CaptureMasterPassive(passiveData);
+                break;
+            case ("EarlyStep"):
+                bp = new EarlyStepPassive(passiveData);
+                break;
+            case ("Easygoing"):
+                bp = new EasygoingPassive(passiveData);
+                break;
+            case ("Martyr"):
+                bp = new MartyrPassive(passiveData);
+                break;
+            case ("PassiveIncome"):
+                bp = new PassiveIncomePassive(passiveData);
+                break;
+            case ("Pawnception"):
+                bp = new PawnceptionPassive(passiveData);
+                break;
+            case ("Shortcut"):
+                bp = new ShortcutPassive(passiveData);
+                break;
+        }
+        return bp;
+
+
+    }
+
     public static Vector3 GetMouseWorldPosition()
     {
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);

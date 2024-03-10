@@ -45,15 +45,34 @@ public class UIManager : MonoBehaviour
     public Button endTurnButton;
     public AbilityButton abilityButton;
     public Button resetFightButton;
+
+    public PassiveShop passiveShop;
+    public PassivesMenu passivesMenu;
     // Start is called before the first frame update
     void Start()
     {
         gameInfosRef = GlobalHelper.GlobalVariables.gameInfos;
         HideTopInfos();
         HideHoverInfos();
+        HideShop();
+        HidePassivesMenu();
         //HideTitleScreen();
         DisableButton(abilityButton.button);
         SetBottomText("");
+    }
+    public void HidePassivesMenu()
+    {
+        passivesMenu.gameObject.SetActive(false);
+
+    }
+    public void ShowPassivesMenu()
+    {
+        passivesMenu.gameObject.SetActive(true);
+    }
+    public void AddPassiveItem(PassiveData data)
+    {
+        ShowPassivesMenu();
+        passivesMenu.AddPassive(data);
     }
 
     // Update is called once per frame
@@ -63,7 +82,7 @@ public class UIManager : MonoBehaviour
     }
 
     string originalBottomText;
-    public void SetBottomText(string text, float duration = -1)
+    public void SetBottomText(string text, float duration = -1, bool playSound = false)
     {
         if(duration == -1)
         {
@@ -74,18 +93,23 @@ public class UIManager : MonoBehaviour
         if(BottomTextCoroutine == null)
         {
             originalBottomText = text;
-            BottomTextCoroutine = StartCoroutine(corBottomTextCoroutine(text, duration));
+            BottomTextCoroutine = StartCoroutine(corBottomTextCoroutine(text, duration, playSound));
         }
         else
         {
             StopCoroutine(BottomTextCoroutine);
-            BottomTextCoroutine = StartCoroutine(corBottomTextCoroutine(text, duration));
+            BottomTextCoroutine = StartCoroutine(corBottomTextCoroutine(text, duration, playSound));
         }
 
     }
     Coroutine BottomTextCoroutine = null;
-    IEnumerator corBottomTextCoroutine(string text, float duration)
+    IEnumerator corBottomTextCoroutine(string text, float duration, bool playSound = false)
     {
+        if(text != "" && playSound)
+        {
+            AudioManager.instance.PlaySound("dialogue", 1f, UnityEngine.Random.Range(0.9f, 1f));
+
+        }
         bottomText.text = text;
         yield return new WaitForSeconds(duration);
         bottomText.text = originalBottomText;
@@ -100,6 +124,7 @@ public class UIManager : MonoBehaviour
 
     public void OnButtonBottomRightClicked()
     {
+        AudioManager.instance.PlaySound("sfx_drum_lowpitch", 1f, UnityEngine.Random.Range(0.9f, 1f));
         OnChangePhase();
     }
     public void HideTopInfos()
@@ -115,7 +140,7 @@ public class UIManager : MonoBehaviour
     {
         RoomView r = gameInfosRef.currentRoom;
         RoomName.text = r.roomData.roomName;
-        ParCount.text = "Par " + r.roomData.par.ToString();
+        ParCount.text = "Par " + r.parAfterEffects.ToString();
         TurnCount.text = "Turn 1";
         //RoomCount = String.Format("Room {0} / {1}",gameInfosRef.currentArea. TODO 
     }
@@ -145,11 +170,17 @@ public class UIManager : MonoBehaviour
     }
     public void OnResetButtonClicked()
     {
+
+        AudioManager.instance.PlaySound("sfx_tap", 1.2f, UnityEngine.Random.Range(0.8f, 0.9f));
         OnResetTurn();
 
 
     }
+    public void OnUIButtonHovered()
+    {
+        AudioManager.instance.PlaySound("sfx_tap", 1.2f, UnityEngine.Random.Range(1.1f, 1f));
 
+    }
     public void UpdateRoomCount(int currentCount, int maxCount)
     {
         RoomCount.text = "Room " + currentCount.ToString() + " / " + maxCount.ToString();
@@ -166,6 +197,13 @@ public class UIManager : MonoBehaviour
     {
         HideHoverInfos();
         UnitNameText.gameObject.SetActive(true);
+        if (hoverable is PassiveData)
+        {
+            PassiveData p = (PassiveData)hoverable;
+            UnitNameText.text = p.passiveName;
+            EffectContainer ec = effectContainerManager.getNext();
+            ec.FillInfos(p);
+        }
         if (hoverable is Unit)
         {
             Unit u = (Unit)hoverable;
@@ -335,5 +373,18 @@ public class UIManager : MonoBehaviour
     public void HideBlackScreen()
     {
         blackScreen.gameObject.SetActive(false);
+    }
+
+
+    public void LoadShop()
+    {
+        passiveShop.gameObject.SetActive(true);
+        passiveShop.FillPassives();
+    }
+
+    public void HideShop()
+    {
+        passiveShop.gameObject.SetActive(false);
+
     }
 }

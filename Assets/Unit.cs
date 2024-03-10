@@ -55,6 +55,9 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
 
     public Sequence idleSequence;
     public RoomView _room;
+    public Unit lastAttacker = null;
+
+    public int placedOrder = 0;
     public RoomView roomRef { get
         {
             if(_room == null)
@@ -202,8 +205,8 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
                         Tween t = transform.DOLocalMove(GetProjectedWorldPosition(positions), GlobalHelper.TWEEN_DURATION_MOVE).SetEase(Ease.InBack, GlobalHelper.TWEEN_OVERSHOOT_MOVE);
                         t.onComplete += () =>
                         {
-                            MakeBloodAt(targetedUnit.GetWorldPosition(), (targetedUnit.GetWorldPosition() - GetWorldPosition()).normalized);
-
+                            targetedUnit.MakeBloodAt(targetedUnit.GetWorldPosition(), (targetedUnit.GetWorldPosition() - GetWorldPosition()).normalized);
+                            targetedUnit.lastAttacker = this;
                             if (!targetedUnit.TakeDamage(occupiedCells.Count))
                             {
                                 Tween t = transform.DOLocalMove(GetWorldPosition(), GlobalHelper.TWEEN_DURATION_MOVE*0.5f).SetEase(Ease.OutCubic);
@@ -225,10 +228,11 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
                         attackSequence.Join(t);
                     }
                 }
-                if (!onlySelf && !isEnemy && !roomRef.firstAttackThisRound)
+                if (!onlySelf && !isEnemy && !GlobalHelper.GetGameManager().firstAttackThisArea && !roomRef.roomData.isTutorial)
                 {
-                    roomRef.firstAttackThisRound = true;
+                    GlobalHelper.GetGameManager().firstAttackThisArea = true;
                     attackSequence.Prepend(GlobalHelper.getCamMovement().ZoomToPosition(GetWorldPosition() + (targeted[0].GetWorldPosition() - GetWorldPosition()) / 2));
+                    AudioManager.instance.PlayFightMusic();
                 }
                 else if (isEnemy)
                 {
@@ -298,6 +302,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
             if (animate)
             {
                 Tween t = transform.DOLocalMove(GetProjectedWorldPosition(positions), GlobalHelper.TWEEN_DURATION_MOVE*0.4f).SetEase(Ease.OutQuint);
+                //AudioManager.instance.PlaySound("sfx_chess_move", 1, UnityEngine.Random.Range(0.95f, 0.9f));
             }
             else
             {
@@ -361,13 +366,15 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         OnHit(this);
         if (health <= 0)
         {
+            AudioManager.instance.PlaySound("piece_capture_noReverb", 1, UnityEngine.Random.Range(1.1f, 1.15f));
             //Destroy me 
             roomRef.DestroyUnit(this);
             return true;
         }
         else
         {
-            float f = Mathf.Lerp(2, 16, 1- ((float)health / (float)startingHealth));
+            AudioManager.instance.PlaySound("piece_capture_low", 1, UnityEngine.Random.Range(0.8f, 0.9f));
+            float f = Mathf.Lerp(4, 18, 1- ((float)health / (float)startingHealth));
             spriteRenderer.material.SetFloat("_Dither",f);
             return false;
         }
@@ -560,6 +567,8 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         }
         print(UID + " is hovered !");
         //DoScale if ally? 
+        AudioManager.instance.PlaySound("sfx_tap", 1, UnityEngine.Random.Range(0.8f, 1f));
+        
         GlobalHelper.GlobalVariables.indicatorManager.DisplayMovement(this);
         growTween = spriteRenderer.transform.DOScale(1.2f, 0.5f).SetEase(Ease.OutQuint);
         GlobalHelper.UI().ShowHoverInfos(this);
@@ -594,6 +603,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         }
         else if(actionsLeft > 0)
         {
+            AudioManager.instance.PlaySound("sfx_chess_move",1, UnityEngine.Random.Range(1.1f,1.2f));
             EndIdle();
             print(UID + " is selected");
             GlobalHelper.GlobalVariables.indicatorManager.DisplayMovement(this);
@@ -612,12 +622,18 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         if (GlobalHelper.GlobalVariables.gameInfos.gameState is UnitPlaceState)
         {
             MoveInUnitPlace();
+            AudioManager.instance.PlaySound("sfx_chess_move", 0.8f, 0.95f);
         }
         else
         {
             if (!TryMoveOrAttackAtPosition(mousePosition))
             {
                 StartIdle();
+            }
+            else
+            {
+
+                AudioManager.instance.PlaySound("sfx_chess_move", 0.8f, 0.95f);
             }
            
         }

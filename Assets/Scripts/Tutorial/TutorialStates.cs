@@ -41,6 +41,7 @@ public class TutorialFightState : IState
 
         }
 
+        GlobalHelper.UI().EnableButton(GlobalHelper.UI().endTurnButton);
         GlobalHelper.UI().OnChangePhase += onChangePhase;
         GlobalHelper.GetRoom().OnBoardUpdate += AutoEndTurn;
         GlobalHelper.GetRoom().OnBoardUpdate += OnbD;
@@ -124,7 +125,6 @@ public class TutorialFightState : IState
             List<Unit> enemies = GlobalHelper.GetRoom().GetEnemies();
             for (int i = 0; i < enemies.Count; i++)
             {
-                Debug.Log(enemies.Count);
                 enemies = GlobalHelper.GetRoom().GetEnemies();
                 Unit u = enemies[i];
                 u.RefreshActions();
@@ -138,6 +138,7 @@ public class TutorialFightState : IState
                     {
                         GlobalHelper.getCamMovement().ShakeCamera(3f, 1);
                         GlobalHelper.UI().SetBottomText("Don't worry, they will forget you after a while.");
+                        AudioManager.instance.PlaySound("sfx_drum_lowpitch", 1f, UnityEngine.Random.Range(0.9f, 1f));
                     };
                     GlobalHelper.TWEEN_OVERSHOOT_MOVE = 20;
                     yield return t.WaitForCompletion();
@@ -215,6 +216,11 @@ public class TutorialFightState : IState
         }
         if (endTurn)
         {
+            if (r.roomData.name != "A0R0")
+            {
+            AudioManager.instance.PlaySound("dialogue", 1f, UnityEngine.Random.Range(0.9f, 1f));
+
+            }
             onChangePhase();
         }
     }
@@ -223,6 +229,10 @@ public class TutorialFightState : IState
     public bool endFight = false;
     public void CheckGameWinState()
     {
+        if (endFight)
+        {
+            return;
+        }
         endFight = false;
         RoomView r = GlobalHelper.GetRoom();
         List<Unit> units = r.getAllUnits();
@@ -294,10 +304,11 @@ public class TutorialFightState : IState
         GameInfos gf = GlobalHelper.GlobalVariables.gameInfos;
 
         int moneyEarned = Mathf.Clamp(gf.currentRoom.roomData.par - gf.currentTurn, 0, 99999) + 1;
-        GlobalHelper.GlobalVariables.player.money += moneyEarned;
         GlobalHelper.UI().fightWinUI.OnNextPressed += LoadNext;
         gmRef.OnRoomCleared(GlobalHelper.GetGameManager().currentRoom);
-        yield return GlobalHelper.UI().fightWinUI.Show(moneyEarned, capturedThisFight.unitName);
+        List<UnitData> cap = new List<UnitData>();
+        cap.Add(capturedThisFight);
+        yield return GlobalHelper.UI().fightWinUI.Show(-1,-1,moneyEarned, cap);
         GlobalHelper.GlobalVariables.player.ClearInventory();
 
     }

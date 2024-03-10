@@ -16,6 +16,6 @@ MonoBehaviour:
   sprite: {fileID: 0}
   stackable: 1
   effectDescription: +1 action per charge.
-  effectActivationTime: 0
+  effectActivationTime: 8
   defaultValue: 1
   transferOnMega: 1

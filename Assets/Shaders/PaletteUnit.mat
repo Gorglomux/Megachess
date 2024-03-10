@@ -79,7 +79,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Dither: 0
+    - _Dither: 12
     - _DitherAmplitude: 0.06
     - _DitherOffset: 0.5
     - _DitherSize: 6.09

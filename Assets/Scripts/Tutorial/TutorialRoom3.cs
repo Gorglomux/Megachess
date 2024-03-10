@@ -44,7 +44,7 @@ public class TutorialRoom3 : TutorialRoomBase
     public IEnumerator startTutorial()
     {
         yield return new WaitForSeconds(2);
-        GlobalHelper.UI().SetBottomText("Play the 4 rooks in the highlighted cells.");
+        GlobalHelper.UI().SetBottomText("Play the 4 rooks in the highlighted cells.", -1, true);
         GlobalHelper.getCamMovement().ShakeCamera(4f, 0.8f);
         r.SpawnableCells.Add(new Vector3Int(-6,-3));
         r.SpawnableCells.Add(new Vector3Int(-5,-3));
@@ -76,7 +76,7 @@ public class TutorialRoom3 : TutorialRoomBase
     {
         p.AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Knight"), false));
         GlobalHelper.getCamMovement().ShakeCamera(2f, 0.3f);
-        GlobalHelper.UI().SetBottomText("Now do the same with the Knight.");
+        GlobalHelper.UI().SetBottomText("Now do the same with the Knight.", -1, true);
 
         GlobalHelper.GlobalVariables.indicatorManager.HideSpawnableCells();
         r.SpawnableCells.Clear();
@@ -87,7 +87,7 @@ public class TutorialRoom3 : TutorialRoomBase
     public void part3()
     {
         GlobalHelper.getCamMovement().ShakeCamera(2f, 0.3f);
-        GlobalHelper.UI().SetBottomText("Press the Fight button to start the combat.");
+        GlobalHelper.UI().SetBottomText("Press the Fight button to start the combat.", -1, true);
         GlobalHelper.UI().endTurnButton.gameObject.SetActive(true);
         GlobalHelper.UI().EnableButton(GlobalHelper.UI().endTurnButton);
 
@@ -114,17 +114,17 @@ public class TutorialRoom3 : TutorialRoomBase
         switch (identifier)
         {
             case 1:
-                GlobalHelper.UI().SetBottomText("Mega units are tougher than their smaller variants.");
+                GlobalHelper.UI().SetBottomText("Mega units are tougher than their smaller variants.", -1, true);
                 //GlobalHelper.UI().ShakeButtonBottomRightText();
                 GlobalHelper.getCamMovement().ShakeCamera(3f, 0.8f);
                 break;
             case 2:
-                GlobalHelper.UI().SetBottomText("You and the enemy can form mega units with ally units already present in the room.");
+                GlobalHelper.UI().SetBottomText("You and the enemy can form mega units with ally units already present in the room.", -1, true);
                 GlobalHelper.getCamMovement().ShakeCamera(3f, 0.8f);
                 break;
 
             case 3:
-                GlobalHelper.UI().SetBottomText("You earn extra gold at the end of the fight by clearing rooms quickly.");
+                GlobalHelper.UI().SetBottomText("You earn extra gold at the end of the fight by clearing rooms quickly.", -1, true);
                 GlobalHelper.getCamMovement().ShakeCamera(3f, 0.8f);
                 break;
             case 4:

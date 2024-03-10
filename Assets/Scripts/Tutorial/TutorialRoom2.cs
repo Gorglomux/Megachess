@@ -38,18 +38,18 @@ public class TutorialRoom2 : TutorialRoomBase
         if (!firstKill)
         {
             firstKill = true;
-            GlobalHelper.UI().SetBottomText("You will capture the first enemy unit you kill each fight.");
+            GlobalHelper.UI().SetBottomText("You will capture the first enemy unit you kill each fight.", -1, true);
             GlobalHelper.getCamMovement().ShakeCamera(4f, 0.8f);
         }
     }
     public IEnumerator startTutorial()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(0.5f);
         EnableFogOfWar(0);
-        GlobalHelper.UI().SetBottomText("This is your reserve. you can place units in the room during the selection phase.");
+        GlobalHelper.UI().SetBottomText("This is your reserve. you can place units in the room during the selection phase.", -1, true);
         GlobalHelper.getCamMovement().ShakeCamera(4f, 0.8f);
         yield return new WaitForSeconds(3);
-        GlobalHelper.UI().SetBottomText("Click on the bishop, and place it in the highlighted cell in the room.");
+        GlobalHelper.UI().SetBottomText("Click on the bishop, and place it in the highlighted cell in the room.", -1, true);
         r.SpawnableCells.Add(new Vector3Int(-6,-2));
         GlobalHelper.GlobalVariables.indicatorManager.ShowSpawnableCells();
 
@@ -77,7 +77,7 @@ public class TutorialRoom2 : TutorialRoomBase
     {
         p.AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Rook"), false));
         GlobalHelper.getCamMovement().ShakeCamera(2f, 0.3f);
-        GlobalHelper.UI().SetBottomText("Great, now do the same with the Rook.");
+        GlobalHelper.UI().SetBottomText("Great, now do the same with the Rook.", -1, true);
 
         GlobalHelper.GlobalVariables.indicatorManager.HideSpawnableCells();
         r.SpawnableCells.Clear();
@@ -89,7 +89,7 @@ public class TutorialRoom2 : TutorialRoomBase
     {
 
         GlobalHelper.getCamMovement().ShakeCamera(2f, 0.3f);
-        GlobalHelper.UI().SetBottomText("Great, now do the same with the Knight.");
+        GlobalHelper.UI().SetBottomText("Great, now do the same with the Knight.", -1, true);
         p.AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Knight"), false));
 
         GlobalHelper.GlobalVariables.indicatorManager.HideSpawnableCells();
@@ -101,7 +101,7 @@ public class TutorialRoom2 : TutorialRoomBase
     public void part4()
     {
         GlobalHelper.getCamMovement().ShakeCamera(2f, 0.3f);
-        GlobalHelper.UI().SetBottomText("Finally, place a Pawn at this position.");
+        GlobalHelper.UI().SetBottomText("Finally, place a Pawn at this position.", -1, true);
         p.AddUnit(GlobalHelper.GetRoom().CreateUnit(GlobalHelper.GetUnitData("Pawn"), false));
 
         GlobalHelper.GlobalVariables.indicatorManager.HideSpawnableCells();
@@ -114,7 +114,7 @@ public class TutorialRoom2 : TutorialRoomBase
     public void part5()
     {
         GlobalHelper.getCamMovement().ShakeCamera(2f, 0.3f);
-        GlobalHelper.UI().SetBottomText("Press the Fight button to start the combat.");
+        GlobalHelper.UI().SetBottomText("Press the Fight button to start the combat.", -1, true);
         GlobalHelper.UI().endTurnButton.gameObject.SetActive(true);
         GlobalHelper.UI().EnableButton(GlobalHelper.UI().endTurnButton);
         //Spawn the Fight button here
@@ -133,7 +133,7 @@ public class TutorialRoom2 : TutorialRoomBase
         switch (identifier)
         {
             case 1:
-                GlobalHelper.UI().SetBottomText("The pawn cannot move and attack in the same direction. Check the preview at the top left to know where it can attack from.");
+                GlobalHelper.UI().SetBottomText("The pawn cannot move and attack in the same direction. Check the preview at the top left to know where it can attack from.",-1,true);
                 //GlobalHelper.UI().ShakeButtonBottomRightText();
                 GlobalHelper.getCamMovement().ShakeCamera(3f, 0.8f);
                 EnableFogOfWar(2);

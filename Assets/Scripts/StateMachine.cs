@@ -19,7 +19,8 @@ public class UnitPlaceState : IState
     GameManager gmRef;
     public void OnEntry(GameManager gm)
     {
-
+        AudioManager.instance.SetBeforeFight();
+        AudioManager.instance.SetInFight();
         GlobalHelper.UI().EnableButton(GlobalHelper.UI().endTurnButton);
         gmRef = gm;
         Debug.Log("Starting unit place phase");
@@ -83,8 +84,9 @@ public class UnitPlaceState : IState
 
 public class FightState : IState
 {
-    public UnitData capturedThisFight = null;
+    public List<UnitData> capturedThisFight = new List<UnitData>();
     public GameManager gmRef;
+    public bool endGame = false;
     public void OnEntry(GameManager gm)
     {
         GlobalHelper.UI().EnableButton(GlobalHelper.UI().abilityButton.button);
@@ -94,7 +96,6 @@ public class FightState : IState
         GlobalHelper.UI().SetButtonBottomRightText("End Turn");
         GlobalHelper.UI().SetBottomText("Kill all enemies");
         GlobalHelper.UI().OnChangePhase += onChangePhase;
-
         //CheckGameWinState();
         GlobalHelper.GetRoom().OnBoardUpdate += CheckGameWinState;
         GlobalHelper.GetRoom().OnBoardUpdate += AutoEndTurn;
@@ -114,6 +115,7 @@ public class FightState : IState
         };
         gmRef.playerTurn = true;
 
+        gmRef.OnStartTurn(null);
     }
     public void OnExit(GameManager gm)
     {
@@ -140,7 +142,7 @@ public class FightState : IState
         if (gmRef.playerTurn)
         {
             GlobalHelper.GetRoom().StartCoroutine(EndTurn());
-            if (endFight)
+            if (endGame)
             {
                 Debug.LogError("Should show the end of game screen");
                 gmRef.BackToTitle();
@@ -160,6 +162,7 @@ public class FightState : IState
         yield return GlobalHelper.UI().nextFight.StopAnimate().WaitForCompletion();
         yield return GlobalHelper.UI().nextFight.StartAnimate("Enemy Turn").WaitForCompletion();
 
+        gmRef.OnEndTurn();
         Debug.Log("Ending turn");
         if(gmRef.extraTurns > 0)
         {
@@ -188,10 +191,10 @@ public class FightState : IState
             u.StartIdle();
             u.RefreshActions();
         }
+        gmRef.OnStartTurn(null);
         GlobalHelper.GlobalVariables.gameInfos.currentTurn++;
         GlobalHelper.UI().OnEndTurn();
         gmRef.playerTurn = true;
-        gmRef.OnEndTurn();
         ui.EnableButton(ui.abilityButton.button);
         ui.EnableButton(ui.endTurnButton);
 
@@ -208,9 +211,9 @@ public class FightState : IState
         Unit u = (Unit)o;
         if (u.isEnemy)
         {
-            if(capturedThisFight == null)
+            if(capturedThisFight.Count < gmRef.canCaptureThisFight)
             {
-                capturedThisFight = u.unitData;
+                capturedThisFight.Add(u.unitData);
                 GlobalHelper.UI().captureManager.CaptureAtPosition(u.GetWorldPosition());
                 //Animation de capture a la position de l'unit. Pour les megas je sais pas
                 GlobalHelper.GlobalVariables.player.AddUnit(u);
@@ -240,6 +243,10 @@ public class FightState : IState
     public bool endFight = false;
     public void CheckGameWinState()
     {
+        if (endFight)
+        {
+            return;
+        }
         endFight = false;
         Debug.Log("Checking win state");
         RoomView r = GlobalHelper.GetRoom();
@@ -256,16 +263,23 @@ public class FightState : IState
 
         if (r.GetAllies().Count == 0)
         {
+            AudioManager.instance.SetInElevator();
             GlobalHelper.UI().nextFight.StopAnimate();
             GlobalHelper.UI().SetBottomText("You lost the fight. \nPress the Reset Fight button, or the Game Over Button if you want to end it all.");
             GlobalHelper.UI().SetButtonBottomRightText("GAME OVER");
-            endFight = true;
+            endGame = true;
         }
     }
 
     public IEnumerator GoToNextFight()
     {
-        RoomView r = GlobalHelper.GetRoom();
+        AudioManager.instance.PlaySound("sfx_drum_win", 1.2f, 1);
+        if (gmRef.roomQueue.Count <=  0)
+        {
+
+            AudioManager.instance.PlayMainMusic();
+        }
+          RoomView r = GlobalHelper.GetRoom();
         UIManager ui = GlobalHelper.UI();
         ui.HideTopInfos();
         Sequence s = DOTween.Sequence().Pause(); 
@@ -282,25 +296,27 @@ public class FightState : IState
                 {
                     //Add unit back
                     GlobalHelper.GlobalVariables.player.AddUnit(u);
+                    AudioManager.instance.PlaySound("sfx_chess_move", 1, UnityEngine.Random.Range(1.05f, 1.1f));
                 };
                 s.Join(t);
             }
         }
+
+
         yield return s.Play().WaitForCompletion();
         yield return new WaitForSeconds(0.5f);
 
         GlobalHelper.GlobalVariables.bloodSplatManager.Cleanup();
         //Make the tilemap disappear
+        AudioManager.instance.SetInElevator();
         yield return r.HideTilemap();
         // Start Down Animation, and display the fight recap
         GameInfos gf = GlobalHelper.GlobalVariables.gameInfos;
 
-        int moneyEarned =Mathf.Clamp(gf.currentRoom.roomData.par - gf.currentTurn,0,99999)+1;
-        GlobalHelper.GlobalVariables.player.money += moneyEarned;
+        int moneyEarned =Mathf.Clamp(gf.currentRoom.parAfterEffects - gf.currentTurn+1,0,99999);
         GlobalHelper.UI().fightWinUI.OnNextPressed += LoadNext;
         gmRef.OnRoomCleared(GlobalHelper.GetGameManager().currentRoom);
-        //gmRef.OnRoomCleared(GlobalHelper.GetGameManager().currentRoom);
-        yield return GlobalHelper.UI().fightWinUI.Show(moneyEarned, capturedThisFight.unitName);
+        yield return GlobalHelper.UI().fightWinUI.Show(gf.currentRoom.parAfterEffects, GlobalHelper.GlobalVariables.gameInfos.currentTurn, moneyEarned, capturedThisFight);
         
     }
     public void LoadNext()
@@ -366,10 +382,22 @@ public class ChangeRoomState : IState
             }
             else
             {
-                gmRef.OnAreaCleared(GlobalHelper.GlobalVariables.gameInfos.currentArea);
-                Debug.Log("Out of rooms !");
-                Tween tw = gmRef.LoadNextArea();
-                yield return tw.WaitForCompletion();
+                if (gmRef.wasInShop || !gmRef.firstAreaLoaded)
+                {
+                    gmRef.wasInShop = false;
+                    gmRef.OnAreaCleared(GlobalHelper.GlobalVariables.gameInfos.currentArea);
+                    gmRef.areaBeaten++;
+                    Debug.Log("Out of rooms !");
+                    Tween tw = gmRef.LoadNextArea();
+                    yield return tw.WaitForCompletion();
+                }
+                else
+                {
+                    gmRef.wasInShop = true;
+                    gmRef.ChangeState(new ShopState());
+                    yield break;
+                }
+
 
             }
             //Go to shop state 
@@ -416,6 +444,35 @@ public class TitleScreenState : IState
     {
         Debug.Log("Starting Change Room State");
 
+    }
+
+    public void OnUpdate(GameManager gm)
+    {
+    }
+
+}
+
+
+public class ShopState : IState
+{
+    GameManager gmRef;
+    public void OnEntry(GameManager gm)
+    {
+        gmRef = gm;
+        AudioManager.instance.SetInFight();
+        GlobalHelper.UI().LoadShop();
+        GlobalHelper.UI().AreaName.text = "The Shop";
+
+    }
+
+    public void OnExit(GameManager gm)
+    {
+        Debug.Log("Starting Change Room State");
+        GlobalHelper.UI().HideShop();
+        AudioManager.instance.SetBeforeFight();
+        GlobalHelper.UI().EnableButton(GlobalHelper.UI().endTurnButton);
+        GlobalHelper.UI().EnableButton(GlobalHelper.UI().abilityButton.button);
+        GlobalHelper.UI().EnableButton(GlobalHelper.UI().resetFightButton);
     }
 
     public void OnUpdate(GameManager gm)

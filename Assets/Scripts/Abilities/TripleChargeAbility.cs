@@ -25,6 +25,7 @@ public class TripleChargeAbility : BaseAbility
         BaseEffect chargedEffect = GlobalHelper.effectLookup(GlobalHelper.GetEffectData("Charged"));
         chargedEffect.effectStrength = 3;
         u.AddEffect(chargedEffect);
+        chargedEffect.TriggerEffect(u);
         GlobalHelper.getCamMovement().ShakeCamera(0.3f, 0.2f);
 
         currentCharge = abilityData.cooldownDuration;

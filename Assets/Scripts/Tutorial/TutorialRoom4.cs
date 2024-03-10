@@ -38,7 +38,7 @@ public class TutorialRoom4 : TutorialRoomBase
     public IEnumerator startTutorial()
     {
         yield return new WaitForSeconds(2);
-        GlobalHelper.UI().SetBottomText("Abilities are useful to save units or clear rooms faster. ");
+        GlobalHelper.UI().SetBottomText("Abilities are useful to save units or clear rooms faster. ", -1, true);
 
         r.SpawnableCells.Add(new Vector3Int(-5, 3));
         GlobalHelper.GlobalVariables.indicatorManager.ShowSpawnableCells();
@@ -93,7 +93,7 @@ public class TutorialRoom4 : TutorialRoomBase
         switch (identifier)
         {
             case 1:
-                GlobalHelper.UI().SetBottomText("Use your ability to win this fight.");
+                GlobalHelper.UI().SetBottomText("Use your ability to win this fight.", -1, true);
                 //GlobalHelper.UI().ShakeButtonBottomRightText();
                 GlobalHelper.getCamMovement().ShakeCamera(3f, 0.8f);
                 break;

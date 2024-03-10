@@ -16,4 +16,6 @@ MonoBehaviour:
   sprite: {fileID: 0}
   stackable: 0
   effectDescription: Unit can play again after killing an enemy.
-  effectActivationTime: 2
+  effectActivationTime: 6
+  defaultValue: 1
+  transferOnMega: 1

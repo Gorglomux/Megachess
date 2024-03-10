@@ -20,6 +20,8 @@ public class TitleScreenManager : MonoBehaviour
         FillClasses();
         GlobalHelper.getCamMovement().ShakeCamera(2);
         GlobalHelper.UI().SetBottomText("") ;
+        AudioManager.instance.PlayMainMusic();
+        AudioManager.instance.SetInFight();
     }
 
     public void FillClasses()
@@ -70,7 +72,8 @@ public class TitleScreenManager : MonoBehaviour
             GlobalHelper.getCamMovement().ShakeCamera(2);
             GlobalHelper.UI().HideTitleScreen();
             GlobalHelper.UI().HideHoverInfos();
-            GlobalHelper.UI().SetBottomText("Come rescue the White King at the bottom of the Black king Lair!", 3);
+            GlobalHelper.UI().SetBottomText("Come rescue the White King at the bottom of the Black King Lair!", 3);
+            AudioManager.instance.PlaySound("dialogue", 1, UnityEngine.Random.Range(0.8f, 0.9f));
             GlobalHelper.GetGameManager().StartGame();
 
 
@@ -78,7 +81,8 @@ public class TitleScreenManager : MonoBehaviour
     }
     public void OnHoverEnter(PointerEventData data, PlayerContainer container)
     {
-        if(selectedPlayerContainer == null)
+        AudioManager.instance.PlaySound("sfx_tap", 1, UnityEngine.Random.Range(0.8f, 0.9f));
+        if (selectedPlayerContainer == null)
         {
             hoveredPlayerContainer = container;
 
@@ -95,6 +99,7 @@ public class TitleScreenManager : MonoBehaviour
     }
     public void OnSelectPlayerContainer(PointerEventData data, PlayerContainer container)
     {
+        AudioManager.instance.PlaySound("dialogue", 1, UnityEngine.Random.Range(0.8f, 0.9f));
         GlobalHelper.getCamMovement().ShakeCamera(0.5f, 0.2f);
         selectedPlayerContainer = container;
         GlobalHelper.UI().ShowHoverInfos(selectedPlayerContainer);
@@ -112,9 +117,5 @@ public class TitleScreenManager : MonoBehaviour
         GlobalHelper.getCamMovement().ShakeCamera(0.5f,0.2f);
         GlobalHelper.UI().SetBottomText("Are you ready to defeat the King?", 3);
     }
-    public void OnDiveButtonHoverExit()
-    {
-        GlobalHelper.getCamMovement().ShakeCamera(0.5f, 0.2f);
-        GlobalHelper.UI().SetBottomText("Need a bit more time?", 3);
-    }
+
 }

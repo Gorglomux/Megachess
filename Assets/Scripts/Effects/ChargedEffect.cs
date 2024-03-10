@@ -6,13 +6,13 @@ public class ChargedEffect : BaseEffect
 {
     public ChargedEffect(EffectData ed) : base(ed)
     {
+        Debug.Log("I have " + id);
     }
 
     public override void TriggerEffect(object o)
     {
 
-        Debug.Log("Activating Charge effect");
-        Unit opponent = (Unit)o;
+        Debug.Log("Activating Charge effect on" + id);
         if (effectStrength > 0)
         {
             UnitHavingEffect.actionsLeft+= effectStrength;

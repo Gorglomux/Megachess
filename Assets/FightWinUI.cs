@@ -27,22 +27,37 @@ public class FightWinUI : MonoBehaviour
         unitCapturedText.gameObject.SetActive(false);
         nextButton.gameObject.SetActive(false);
     }
-    public IEnumerator Show(int moneyEarned, string CapturedThisFight)
+    public IEnumerator Show(int par, int turn, int moneyEarned, List<UnitData> CapturedThisFight)
     {
         gameObject.SetActive(true);
         float delay = 0.5f;
         fightWonText.gameObject.SetActive(true);
         GlobalHelper.getCamMovement().ShakeCamera(0.5f, delay);
+        AudioManager.instance.PlaySound("dialogue", 1.2f, UnityEngine.Random.Range(0.8f, 0.9f));
+
         yield return new WaitForSeconds(delay);
         GlobalHelper.getCamMovement().ShakeCamera(0.5f, delay);
         moneyEarnedText.gameObject.SetActive(true);
+        AudioManager.instance.PlaySound("dialogue", 1.2f, UnityEngine.Random.Range(0.8f, 0.9f));
+
         moneyEarnedText.text = "$ Earned : "  + moneyEarned;
+        GlobalHelper.GlobalVariables.player.money += moneyEarned;
         yield return new WaitForSeconds(delay);
 
         GlobalHelper.getCamMovement().ShakeCamera(0.5f, delay);
         unitCapturedText.gameObject.SetActive(true);
-        unitCapturedText.text = "Unit Captured : " + CapturedThisFight;
+        AudioManager.instance.PlaySound("dialogue", 1.2f, UnityEngine.Random.Range(0.8f, 0.9f));
+
+
+        string captured = "  ";
+        foreach(UnitData ud in CapturedThisFight)
+        {
+            captured += ud.unitName + ", ";
+        }
+        captured = captured.Substring(0, captured.Length - 2);
+        unitCapturedText.text = "Unit Captured : " + captured;
         yield return new WaitForSeconds(delay*2);
+        AudioManager.instance.PlaySound("dialogue", 1.2f, UnityEngine.Random.Range(0.8f, 0.9f));
         GlobalHelper.getCamMovement().ShakeCamera(0.5f, delay);
         nextButton.gameObject.SetActive(true);
 
@@ -53,6 +68,8 @@ public class FightWinUI : MonoBehaviour
     }
     public IEnumerator corHide()
     {
+        AudioManager.instance.PlaySound("dialogue", 1.2f, UnityEngine.Random.Range(0.8f, 0.9f));
+
         GlobalHelper.getCamMovement().ShakeCamera(2, 1);
         HideUI();
         yield return new WaitForSeconds(0.5f);

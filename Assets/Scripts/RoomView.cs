@@ -20,10 +20,14 @@ public class RoomView : MonoBehaviour
     public List<Vector3Int> SpawnableCells = new List<Vector3Int>();
     public Unit[,] arrayUnits;
     public bool firstAttackThisRound = false;
+
+    public int allyUnitsInstantiated = 0;
+    public int parAfterEffects = 0;
+
     // Start is called before the first frame update
     void Start()
-    {    
-        
+    {
+        allyUnitsInstantiated = 0;
     }
 
     // Update is called once per frame
@@ -36,6 +40,7 @@ public class RoomView : MonoBehaviour
     {
         transform.parent.localScale = Vector3.zero;
         GlobalHelper.GlobalVariables.gameInfos.currentRoom = this;
+        parAfterEffects = roomData.par;
         arrayUnits = new Unit[tilemapFloorWalls.size.x, tilemapFloorWalls.size.y];
         LoadEntities();
         LoadSpawnableCells();
@@ -66,6 +71,7 @@ public class RoomView : MonoBehaviour
     {
         if (animate)
         {
+            AudioSource asource =  AudioManager.instance.PlaySound("sfx_rockfall", 0.7f, UnityEngine.Random.Range(1, 1f));
 
             Tween t = Camera.main.DOShakePosition(1f, Vector3.one * 0.005f, 3, 90).SetLoops(-1);
             Tween tween = transform.parent.DOScale(Vector3.one, 2.3f).SetEase(Ease.OutQuart);
@@ -74,6 +80,8 @@ public class RoomView : MonoBehaviour
                 t.Kill();
                 GlobalHelper.getCamMovement().ShakeCamera(5f, 1);
                 transform.parent.localScale = Vector3.one;
+                asource.Stop();
+                AudioManager.instance.PlaySound("sfx_drum_lowpitch", 1, UnityEngine.Random.Range(1, 1f));
             };
             return tween;
         }
@@ -481,6 +489,7 @@ public class RoomView : MonoBehaviour
                 u.StartIdle();
             }
 
+            AudioManager.instance.PlaySound("sfx_chess_move_2", 1.2f,1);
         };
 
     }
@@ -512,6 +521,11 @@ public class RoomView : MonoBehaviour
         if (!u.isEnemy)
         {
             CheckMegasOnGrid();
+            u.placedOrder = allyUnitsInstantiated;
+            allyUnitsInstantiated++;
+        }
+        else
+        {
 
         }
     }
@@ -552,11 +566,11 @@ public class RoomView : MonoBehaviour
 
 
         tilemapFloorWalls.SetTile(cellCenter, GlobalHelper.GlobalVariables.TileEmpty );
-        for (int horizontal = 0; horizontal < horizontalDistance; horizontal++)
+        for (int horizontal = 0; horizontal <= horizontalDistance; horizontal++)
         {
-            for (int y = -horizontal; y < horizontal; y++)
+            for (int y = -horizontal; y <= horizontal; y++)
             {
-                for (int x = -horizontal; x < horizontal; x++)
+                for (int x = -horizontal; x <= horizontal; x++)
                 {
                     if (tilemapFloorWalls.GetTile(cellCenter + new Vector3Int(x, y, 0)) != null)
                     {
@@ -565,6 +579,7 @@ public class RoomView : MonoBehaviour
                     }
                 }
             }
+            AudioManager.instance.PlaySound("dialogue", 0.5f, 0.8f);
             GlobalHelper.getCamMovement().ShakeCamera(1f, 0.1f);
             yield return new WaitForSeconds(0.12f);
 

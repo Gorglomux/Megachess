@@ -102,6 +102,23 @@ public class Player : MonoBehaviour
             ability.currentCharge = backupStartAbilityCharge;
         }
     }
+    public void AddUnitData(UnitData ud)
+    {
+        Unit u = GlobalHelper.GetRoom().CreateUnit(ud, false);
+        u.LoadPalette(GlobalHelper.GlobalVariables.gameInfos.currentArea.paletteIndex);
+        if (!inventory.ContainsKey(u.unitData))
+        {
+            inventory[u.unitData] = new List<Unit>();
+            OnNewUnitAdded(u.unitData);
+            print("Category created");
+        }
+        inventory[u.unitData].Add(u);
+        OnInventoryAdded(u);
+        u.transform.parent = transform;
+        print("Unit Data added");
+    }
+
+
     public void AddUnit(Unit unit)
     {
         unit.gameObject.SetActive(false);
@@ -191,4 +208,31 @@ public class Player : MonoBehaviour
         }
         ChangeAbility(data.startingAbilityData);
     }
+    public List<PassiveData> passiveDatas = new List<PassiveData>();
+    public List<BasePassive> passives = new List<BasePassive>();
+
+    public void AddPassive(PassiveData passiveData)
+    {
+        GlobalHelper.UI().AddPassiveItem(passiveData);
+        print("Adding passive " + passiveData.passiveName);
+        passiveDatas.Add(passiveData);
+
+        BasePassive passive = GlobalHelper.passiveLookup(passiveData);
+
+        passives.Add(passive);
+    }
+
+
+
+    public void RemovePassive(PassiveData passiveData)
+    {
+        BasePassive passive = passives.Find(x=> x.passiveData == passiveData);
+        if(passive != null)
+        {
+            passives.Remove(passive);
+            passiveDatas.Remove(passiveData);
+        }
+
+    }
+
 }

@@ -17,6 +17,7 @@ public class TutorialRoom1 : TutorialRoomBase
         king.health = 13;
         king.startingHealth = 13;
         r.PlaceUnitOnMap(king, new Vector3Int(-6,0));
+        AudioManager.instance.PlaySound("sfx_drum_lowpitch", 1f, UnityEngine.Random.Range(0.9f, 1f));
 
 
         enemyKing = r.CreateUnit(GlobalHelper.GetUnitData("King"), true);
@@ -43,7 +44,7 @@ public class TutorialRoom1 : TutorialRoomBase
     {
         yield return new WaitForSeconds(2);
         EnableFogOfWar(0);
-        GlobalHelper.UI().SetBottomText("Click on your king to select it.");
+        GlobalHelper.UI().SetBottomText("Click on your king to select it.", -1, true);
         GlobalHelper.getCamMovement().ShakeCamera(4f, 0.8f);
 
     }
@@ -57,19 +58,19 @@ public class TutorialRoom1 : TutorialRoomBase
         switch (identifier)
         {
             case 1:
-                GlobalHelper.UI().SetBottomText("Move to the right to continue. ");
+                GlobalHelper.UI().SetBottomText("Move to the right to continue. ", -1, true);
                 //GlobalHelper.UI().ShakeButtonBottomRightText();
                 GlobalHelper.getCamMovement().ShakeCamera(3f, 0.8f);
                 EnableFogOfWar(1);
                 break;
             case 2:
-                GlobalHelper.UI().SetBottomText("You can also drag and drop the king to move. ");
+                GlobalHelper.UI().SetBottomText("You can also drag and drop the king to move. ", -1, true);
                 GlobalHelper.getCamMovement().ShakeCamera(3f, 0.8f);
 
                 EnableFogOfWar(2);
                 break;
             case 3:
-                GlobalHelper.UI().SetBottomText("Kill enemy units by moving into them. ");
+                GlobalHelper.UI().SetBottomText("Kill enemy units by moving into them. ", -1, true);
                 GlobalHelper.getCamMovement().ShakeCamera(3f, 0.8f);
 
 
@@ -90,11 +91,13 @@ public class TutorialRoom1 : TutorialRoomBase
     {
         yield return new WaitForSeconds(2);
         GlobalHelper.getCamMovement().ShakeCamera(3f, 1);
-        GlobalHelper.UI().SetBottomText("Did you think going into my lair was going to be this easy?");
+        GlobalHelper.UI().SetBottomText("Did you think getting rid of me was going to be this easy?");
+        AudioManager.instance.PlaySound("sfx_drum_lowpitch", 1f, UnityEngine.Random.Range(0.9f, 1f));
 
         EnableFogOfWar(3);
         yield return new WaitForSeconds(3);
         GlobalHelper.getCamMovement().ShakeCamera(3f, 1);
+        AudioManager.instance.PlaySound("sfx_drum_lowpitch", 1f, UnityEngine.Random.Range(0.9f, 1f));
         EnableFogOfWar(4);
         //GlobalHelper.getCamMovement().ZoomToPosition(titleScreen.transform.position,0.6f,12);
 
@@ -105,6 +108,10 @@ public class TutorialRoom1 : TutorialRoomBase
     int totalFadeInStages = 13;
     public void FadeInScreen(object o)
     {
+        if(fadeInStage == 0)
+        {
+            AudioManager.instance.PlayMainMusic();
+        }
         fadeInStage++;
         float f = Mathf.Lerp(0,13 , 1 - ((float)fadeInStage / (float)totalFadeInStages));
         titleScreen.material.SetFloat("_Dither", f);
@@ -115,6 +122,7 @@ public class TutorialRoom1 : TutorialRoomBase
         }
         if(fadeInStage == totalFadeInStages)
         {
+            AudioManager.instance.PlaySound("sfx_drum_lowpitch", 1f, UnityEngine.Random.Range(0.9f, 1f));
             EnableFogOfWar(5);
             StartCoroutine(corEndTuto1());
         }
@@ -127,6 +135,7 @@ public class TutorialRoom1 : TutorialRoomBase
         titleScreen.material.SetFloat("_Dither", 12);
         titleScreen.gameObject.SetActive(false);
         GlobalHelper.UI().SetBottomText("");
+        AudioManager.instance.PlaySound("sfx_drum_lowpitch", 1f, UnityEngine.Random.Range(0.9f, 1f));
         yield return new WaitForSeconds(3);
         //This is where we change scenes
 

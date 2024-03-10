@@ -53,6 +53,7 @@ public class AbilityButton : MonoBehaviour
     public void OnPointerEnter(BaseEventData data)
     {
 
+        AudioManager.instance.PlaySound("sfx_tap", 0.8f, UnityEngine.Random.Range(1f, 1.2f));
         GlobalHelper.UI().ShowHoverInfos(ability);
     }
 
@@ -83,6 +84,7 @@ public class AbilityButton : MonoBehaviour
     {
         if (canSelect())
         {
+            AudioManager.instance.PlaySound("sfx_chess_move", 1.2f, UnityEngine.Random.Range(0.8f, 1f));
             EventSystem.current.SetSelectedGameObject(gameObject);
 
         }
@@ -115,6 +117,7 @@ public class AbilityButton : MonoBehaviour
                 {
                     print("Found reserve targetr");
                     ability.ExecuteAbility(GlobalHelper.GlobalVariables.gameInfos.selected);
+                    AudioManager.instance.PlaySound("dialogue", 1.2f, UnityEngine.Random.Range(1f, 1f));
                     selectable.onDeselect(Vector3.negativeInfinity);
                 }
                 else if (selectable is Unit && ability.abilityData.targettingType == TARGETTING_TYPE.UNIT)
@@ -122,6 +125,7 @@ public class AbilityButton : MonoBehaviour
 
                     print("Found unit targetr");
                     ability.ExecuteAbility(GlobalHelper.GlobalVariables.gameInfos.selected);
+                    AudioManager.instance.PlaySound("dialogue", 1.2f, UnityEngine.Random.Range(1, 1f));
 
                 }
 

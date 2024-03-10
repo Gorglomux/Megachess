@@ -2,6 +2,7 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
@@ -23,6 +24,7 @@ public class GameManager : MonoBehaviour
     public Action<object> OnStartTurn = delegate { };
     public Action<object> OnStartFight= delegate { };
     public Action<object> OnKillUnit = delegate { };
+    public Action<object> OnUnitPlayed = delegate { };
 
 
     public Room roomToDebug;
@@ -42,8 +44,16 @@ public class GameManager : MonoBehaviour
     public IState currentState;
     public int roomIndex = 0;
     public int extraTurns = 0;
+    public int areaBeaten = 0;
+    public int roomToClearAmount = 0;
+    public int roomToClearBonus = 0;
 
+
+    public bool firstAttackThisArea = false;
     public bool playerTurn = false;
+
+    public bool wasInShop = false;
+    public int canCaptureThisFight = 1;
     // Start is called before the first frame update
     void Start()
     {
@@ -80,7 +90,7 @@ public class GameManager : MonoBehaviour
         //    LoadArea(GlobalHelper.areaList[0]);
 
         //}
-
+        roomToClearAmount = GlobalHelper.GlobalVariables.gameInfos.roomToClearBaseAmount;
     }
     public bool shouldGetBackToTitle = false;
     public void BackToTitle()
@@ -118,9 +128,14 @@ public class GameManager : MonoBehaviour
     }
     public Tween LoadArea(Area a)
     {
+        roomToClearAmount = areaBeaten + roomToClearBonus + GlobalHelper.GlobalVariables.gameInfos.roomToClearBaseAmount;
+        firstAttackThisArea = false;
         GlobalHelper.GlobalVariables.gameInfos.currentArea = a;
         print("Loading area " + a.name);
-        a.GetRooms().ForEach(r => roomQueue.Enqueue(r));
+
+        List<Room> roomsToAdd = a.GetRooms();
+        roomsToAdd = roomsToAdd.Take(roomToClearAmount).ToList();
+        roomsToAdd.ForEach(r => roomQueue.Enqueue(r));
         
         if (paletteCoroutine != null)
         {
@@ -231,5 +246,16 @@ public class GameManager : MonoBehaviour
             PlayerPrefs.DeleteAll();
         }
     }
-     
+
+    public Unit CreateUnit(UnitData ud, bool isEnemy)
+    {
+        //Instantiate the unit 
+        GameObject unitGo = GameObject.Instantiate(GlobalHelper.GlobalVariables.unitPrefab);
+        Unit u = unitGo.GetComponent<Unit>();
+        u.transform.localScale = Vector3.one;
+        u.transform.position = Vector3.zero;
+
+        u.Initialize(ud, isEnemy);
+        return u;
+    }
 }
