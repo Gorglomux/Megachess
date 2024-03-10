@@ -16,6 +16,10 @@ public class BloodlustEffect : BaseEffect
             return;
         }
         Unit target = (Unit)o;
+        if (isAttackingSelf(target))
+        {
+            return;
+        }
         if(target.health <= 0)
         {
             //Display bloolust trigger message here

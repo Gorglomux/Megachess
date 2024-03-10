@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 
 public interface IState
 {
@@ -30,7 +30,6 @@ public class UnitPlaceState : IState
         GlobalHelper.GlobalVariables.indicatorManager.ShowSpawnableCells();
         GlobalHelper.UI().OnChangePhase += EndPlaceState;
         GlobalHelper.GetRoom().OnBoardUpdate += CheckUnitsLeft;
-        GlobalHelper.GlobalVariables.player.BackupInventory();
         CheckUnitsLeft();
         GlobalHelper.UI().ShowTopInfos();
         GlobalHelper.UI().nextFight.StartAnimate("Selection Phase");
@@ -85,7 +84,6 @@ public class UnitPlaceState : IState
 public class FightState : IState
 {
     public UnitData capturedThisFight = null;
-    public bool enemyTurn = false;
     public GameManager gmRef;
     public void OnEntry(GameManager gm)
     {
@@ -114,6 +112,7 @@ public class FightState : IState
         {
             GlobalHelper.UI().nextFight.StartAnimate("Player Turn");
         };
+        gmRef.playerTurn = true;
 
     }
     public void OnExit(GameManager gm)
@@ -136,10 +135,16 @@ public class FightState : IState
     }
     public void onChangePhase()
     {
-        if (!enemyTurn)
+
+
+        if (gmRef.playerTurn)
         {
             GlobalHelper.GetRoom().StartCoroutine(EndTurn());
-
+            if (endFight)
+            {
+                Debug.LogError("Should show the end of game screen");
+                gmRef.BackToTitle();
+            }
         }
     }
     public IEnumerator EndTurn()
@@ -151,7 +156,7 @@ public class FightState : IState
         {
             yield break;
         }
-        enemyTurn = true;
+        gmRef.playerTurn = false;
         yield return GlobalHelper.UI().nextFight.StopAnimate().WaitForCompletion();
         yield return GlobalHelper.UI().nextFight.StartAnimate("Enemy Turn").WaitForCompletion();
 
@@ -185,7 +190,7 @@ public class FightState : IState
         }
         GlobalHelper.GlobalVariables.gameInfos.currentTurn++;
         GlobalHelper.UI().OnEndTurn();
-        enemyTurn = false;
+        gmRef.playerTurn = true;
         gmRef.OnEndTurn();
         ui.EnableButton(ui.abilityButton.button);
         ui.EnableButton(ui.endTurnButton);
@@ -252,8 +257,8 @@ public class FightState : IState
         if (r.GetAllies().Count == 0)
         {
             GlobalHelper.UI().nextFight.StopAnimate();
-            GlobalHelper.UI().SetBottomText("GAME OVER. Close the game I didn't implement this.");
-
+            GlobalHelper.UI().SetBottomText("You lost the fight. \nPress the Reset Fight button, or the Game Over Button if you want to end it all.");
+            GlobalHelper.UI().SetButtonBottomRightText("GAME OVER");
             endFight = true;
         }
     }
@@ -314,6 +319,7 @@ public class ChangeRoomState : IState
     {
         gmRef = gm;
         GlobalHelper.UI().ShowRoot();
+        GlobalHelper.UI().HideTitleScreen();
 
         gmRef.StartCoroutine(loadGame());
 
@@ -333,19 +339,30 @@ public class ChangeRoomState : IState
     {
         RoomView previousRoom = GlobalHelper.GetRoom();
         bool previousRoomIsTutorial = previousRoom!=null && previousRoom.roomData.isTutorial;
+
+
         Debug.Log("Loading next");
         Tween t = gmRef.LoadNextRoom();
         if (t!= null)
         {
             yield return t.WaitForCompletion();
 
-                GlobalHelper.UI().UpdateRoomCount(gmRef.roomIndex+1 ,GlobalHelper.GlobalVariables.gameInfos.areaSize);
+            GlobalHelper.UI().UpdateRoomCount(gmRef.roomIndex+1 ,GlobalHelper.GlobalVariables.gameInfos.areaSize);
         }
         else
         {
             if (previousRoomIsTutorial)
             {
-                gmRef.ChangeState(new TitleScreenState());
+                if (gmRef.shouldGetBackToTitle || previousRoomIsTutorial)
+                {
+                    GlobalHelper.getCamMovement().ShakeCamera(4f, 0.8f);
+                    GlobalHelper.UI().ShowBlackScreen();
+                    yield return new WaitForSeconds(2);
+
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+                    yield break;
+                }
             }
             else
             {

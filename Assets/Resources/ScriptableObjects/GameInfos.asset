@@ -15,4 +15,6 @@ MonoBehaviour:
   currentArea: {fileID: 0}
   currentRoom: {fileID: 0}
   currentGlobalPaletteIndex: 0
-  gameState: 0
+  currentTurn: 0
+  areaSize: 0
+  shouldClearPlayerPrefs: 1

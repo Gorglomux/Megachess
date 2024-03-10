@@ -25,5 +25,6 @@ public class GameInfos : ScriptableObject
 
     public int currentTurn = 0;
     public int areaSize = 0;
+    public bool shouldClearPlayerPrefs = false;
 
 }

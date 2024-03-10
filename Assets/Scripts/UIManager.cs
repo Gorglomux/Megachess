@@ -273,11 +273,13 @@ public class UIManager : MonoBehaviour
             return;
         }
 
+        GlobalHelper.GlobalVariables.player.ClearInventory();
         isResetting = true;
         GameManager gm = GlobalHelper.GetGameManager();
         OnResetTurnActivated();
         GlobalHelper.GlobalVariables.bloodSplatManager.Cleanup();
         gm.CleanPreviousRoom();
+        gm.ChangeState(null);
         gm.LoadRoom(gm.currentRoom.roomData).onComplete += () => {
 
             if (gm.currentRoom.roomData.isTutorial)
@@ -287,6 +289,7 @@ public class UIManager : MonoBehaviour
             }
             else
             {
+                print("Restoring backup !");
                 GlobalHelper.GlobalVariables.player.RestoreBackup();
                 gm.ChangeState(new UnitPlaceState());
 
@@ -321,5 +324,16 @@ public class UIManager : MonoBehaviour
     public void HideTitleScreen()
     {
         rootTitle.gameObject.SetActive(false);
+    }
+
+    public GameObject blackScreen;
+    public void ShowBlackScreen()
+    {
+        blackScreen.gameObject.SetActive(true);
+    }
+
+    public void HideBlackScreen()
+    {
+        blackScreen.gameObject.SetActive(false);
     }
 }

@@ -35,7 +35,8 @@ public class BaseEffect
         switch (effectData.effectActivationTime)
         {
             case EFFECT_ACTIVATION_TIME.ON_APPLY:
-                GlobalHelper.GetGameManager().OnStartFight += TriggerEffect;
+                OnApply += TriggerEffect;
+                //GlobalHelper.GetGameManager().OnStartFight += TriggerEffect;
                 break;
             case EFFECT_ACTIVATION_TIME.BEFORE_ATTACK:
                 if(UnitHavingEffect != null)
@@ -72,7 +73,8 @@ public class BaseEffect
         switch (effectData.effectActivationTime)
         {
             case EFFECT_ACTIVATION_TIME.ON_APPLY:
-                GlobalHelper.GetGameManager().OnStartFight -= TriggerEffect;
+                //GlobalHelper.GetGameManager().OnStartFight -= TriggerEffect;
+                OnApply -= TriggerEffect;
                 break;
             case EFFECT_ACTIVATION_TIME.BEFORE_ATTACK:
                 if (UnitHavingEffect != null)
@@ -93,5 +95,24 @@ public class BaseEffect
                 GlobalHelper.GetGameManager().OnStartTurn -= TriggerEffect;
                 break;
         };
+    }
+    /// <summary>
+    /// Returns true if the effect is negative
+    /// </summary>
+    public bool RemoveStrength(int value = 1)
+    {
+        effectStrength--;
+        if(effectStrength <= 0)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    //If opponent is attacking unit
+    public bool isAttackingSelf(Unit opponent)
+    {
+        return (GlobalHelper.isPlayerTurn() && !opponent.isEnemy )||(!GlobalHelper.isPlayerTurn() && opponent.isEnemy);
+
     }
 }

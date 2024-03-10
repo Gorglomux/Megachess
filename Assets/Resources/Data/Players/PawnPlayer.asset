@@ -25,4 +25,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: cc307878337bfb74b8a6a0e98bdccf7a, type: 2}
   - {fileID: 11400000, guid: cc307878337bfb74b8a6a0e98bdccf7a, type: 2}
   startingAbilityData: {fileID: 11400000, guid: 45c4523db373a81408c344c9ab7eea12, type: 2}
-  difficulty: 1
+  difficulty: 6

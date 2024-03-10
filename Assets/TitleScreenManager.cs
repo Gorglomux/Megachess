@@ -18,6 +18,8 @@ public class TitleScreenManager : MonoBehaviour
     void Start()
     {
         FillClasses();
+        GlobalHelper.getCamMovement().ShakeCamera(2);
+        GlobalHelper.UI().SetBottomText("") ;
     }
 
     public void FillClasses()

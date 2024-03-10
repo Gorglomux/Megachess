@@ -22,7 +22,9 @@ public class TripleChargeAbility : BaseAbility
         Debug.Log("Triple charge activates on " + target);
         GlobalHelper.UI().captureManager.DisplayAtPosition(u.GetWorldPosition(), "+ Triple Charge");
         GlobalHelper.UI().HideHoverInfos();
-        u.AddEffect(GlobalHelper.effectLookup(GlobalHelper.GetEffectData("TripleCharge")));
+        BaseEffect chargedEffect = GlobalHelper.effectLookup(GlobalHelper.GetEffectData("Charged"));
+        chargedEffect.effectStrength = 3;
+        u.AddEffect(chargedEffect);
         GlobalHelper.getCamMovement().ShakeCamera(0.3f, 0.2f);
 
         currentCharge = abilityData.cooldownDuration;

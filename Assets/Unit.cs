@@ -48,6 +48,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
     public int health;
     public int startingHealth;
     public int megaSize = 1;
+    public int shieldAmount = 0;
 
     public int maxActions = 1;
     public int actionsLeft = 1;
@@ -87,14 +88,15 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         }
         this.isEnemy = isEnemy;
         LoadPalette(palette);
-        health = occupiedCells.Count;
+        
         UID = GlobalHelper.GetUID();
         megaSize = (int)Mathf.Sqrt(occupiedCells.Count);
         if(megaSize == 0)
         {
             megaSize = 1;
         }
-        startingHealth = occupiedCells.Count;
+        health =(int)Mathf.Pow(megaSize,2);
+        startingHealth = health;
     }
     public Sequence s = null;
     public Tween tweenIdle = null;
@@ -186,7 +188,15 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
                 {
                     if(targetedUnit.UID != UID)
                     {
-                        OnBeforeAttack(targetedUnit);
+                        if (OnBeforeAttack != null)
+                        {
+
+                            OnBeforeAttack(targetedUnit);
+                        }
+                        if(targetedUnit.OnBeforeAttack != null)
+                        {
+                            targetedUnit.OnBeforeAttack(this);
+                        }
                         onlySelf = false;
                         hasMoved = true;
                         Tween t = transform.DOLocalMove(GetProjectedWorldPosition(positions), GlobalHelper.TWEEN_DURATION_MOVE).SetEase(Ease.InBack, GlobalHelper.TWEEN_OVERSHOOT_MOVE);
@@ -199,9 +209,20 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
                                 Tween t = transform.DOLocalMove(GetWorldPosition(), GlobalHelper.TWEEN_DURATION_MOVE*0.5f).SetEase(Ease.OutCubic);
                             } 
                             GlobalHelper.getCamMovement().ShakeCamera(megaSize * 0.2f * GlobalHelper.CAM_SHAKE_ATTACK);
+
+                            if (OnAfterAttack != null)
+                            {
+
+                                OnAfterAttack(targetedUnit);
+                            }
+
+                            if(targetedUnit.OnBeforeAttack != null)
+                            {
+
+                                targetedUnit.OnAfterAttack (this);
+                            }
                         };
                         attackSequence.Join(t);
-                        OnAfterAttack(targetedUnit);
                     }
                 }
                 if (!onlySelf && !isEnemy && !roomRef.firstAttackThisRound)
@@ -328,9 +349,17 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
 
     public bool TakeDamage(int damageCount)
     {
-        health -= damageCount;
+        if(shieldAmount > 0)
+        {
+            shieldAmount--;
+            GlobalHelper.UI().captureManager.DisplayAtPosition(GetWorldPosition(), "Shielded !");
+        }
+        else
+        {
+            health -= damageCount;
+        }
         OnHit(this);
-        if(health <= 0)
+        if (health <= 0)
         {
             //Destroy me 
             roomRef.DestroyUnit(this);
@@ -338,7 +367,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         }
         else
         {
-            float f = Mathf.Lerp(5, 16, 1- ((float)health / (float)startingHealth));
+            float f = Mathf.Lerp(2, 16, 1- ((float)health / (float)startingHealth));
             spriteRenderer.material.SetFloat("_Dither",f);
             return false;
         }
@@ -771,7 +800,27 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
             effect.OnApply(this);
         }
     }
-
+    public void RemoveEffect(BaseEffect effect)
+    {
+        BaseEffect effectFound = currentEffects.Find(x => x.effectData.effectName == effect.effectData.effectName);
+        if (effectFound != null && effectFound.effectData.stackable)
+        {
+            if (effectFound.RemoveStrength())
+            {
+                effect.onDestroy();
+                currentEffects.Remove(effectFound);
+            }
+        }
+        else if (effectFound != null)
+        {
+            effect.onDestroy();
+            currentEffects.Remove(effectFound);
+        }
+        else
+        {
+            Debug.LogError("Error : Effect not present on unit " + UID + " " + effect.effectData.effectName);
+        }
+    }
     public void onUnitDestroyed()
     {
         OnBeforeAttack = null;

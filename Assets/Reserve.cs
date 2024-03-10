@@ -50,6 +50,7 @@ public class Reserve : MonoBehaviour
         if (containers.ContainsKey(id))
         {
             Destroy(containers[id].gameObject);
+            containers.Remove(id);
         }
 
     }

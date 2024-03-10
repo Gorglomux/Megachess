@@ -83,9 +83,12 @@ public class Player : MonoBehaviour
     }
     public void RestoreBackup()
     {
-        foreach(ReserveContainer rc  in GlobalHelper.UI().reserve.containers.Values)
+        foreach (ReserveContainer rc  in GlobalHelper.UI().reserve.containers.Values)
         {
-            Destroy(rc.gameObject);
+            if(rc != null)
+            {
+                Destroy(rc.gameObject);
+            }
         }
         GlobalHelper.UI().reserve.containers.Clear();
         inventory.Clear();

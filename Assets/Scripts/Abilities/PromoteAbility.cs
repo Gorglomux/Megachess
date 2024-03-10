@@ -31,7 +31,8 @@ public class PromoteAbility : BaseAbility
         RoomView rv = GlobalHelper.GetRoom();
 
         Unit queen = rv.CreateUnit(GlobalHelper.GetUnitData("Queen"), false);
-        rv.PlaceUnitOnMap(queen, u.occupiedCells[0]);
+        rv.PlaceUnitOnMap(queen,rv.CellToTilemap(u.occupiedCells[0]));
+        GlobalHelper.GlobalVariables.gameInfos.selected = null;
         rv.DestroyUnit(u);
         GlobalHelper.getCamMovement().ShakeCamera(0.3f, 0.2f);
 

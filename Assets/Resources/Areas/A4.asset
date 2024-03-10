@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaef5d30ab8397d4898a381aba4f3e7d, type: 3}
+  m_Name: A4
+  m_EditorClassIdentifier: 
+  areaName: The Vanguard
+  paletteIndex: 7
+  contrastText: 0
+  colorText: {r: 1, g: 1, b: 1, a: 1}
+  roomList:
+  - {fileID: 11400000, guid: c72637f268beb6c4fa30b4cc611ea1db, type: 2}
+  - {fileID: 11400000, guid: 69ac5005a056df94eb5cb7c6fd285366, type: 2}
+  - {fileID: 11400000, guid: 4c8818a7d749d314189f41d41b4068d8, type: 2}
+  - {fileID: 11400000, guid: 2ce274874132fbb4588bd25aa424ac43, type: 2}
+  - {fileID: 11400000, guid: 19e1107c743a4d14e99dbf50183de99c, type: 2}
+  - {fileID: 11400000, guid: 9863c3bb70733fa4789f23abd395d4be, type: 2}
+  - {fileID: 11400000, guid: c272ad2c39c36044b8c2f048bf71170f, type: 2}
+  - {fileID: 11400000, guid: da56104e1cc52fb41a2ad62538b43e78, type: 2}
+  - {fileID: 11400000, guid: cb67021abac1ff643b1892bf748e8125, type: 2}
+  - {fileID: 11400000, guid: 5bcfa8cb350ea0840a295a06112d5dfc, type: 2}
+  - {fileID: 11400000, guid: 1926ccf9d19483140b474ab6141a922a, type: 2}
+  shuffleArea: 1

@@ -15,11 +15,11 @@ public class BloodSplatManager : MonoBehaviour
     {
         foreach(GameObject splat in splats)
         {
-            splat.transform.DOScale(Vector3.zero, 0.5f).onComplete += () =>
-            {
-                Destroy(splat);
+            Destroy(splat);
+            //splat.transform.DOScale(Vector3.zero, 0.1f).onComplete += () =>
+            //{
 
-            };
+            //};
 
         }
         splats.Clear();

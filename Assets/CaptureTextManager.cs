@@ -37,7 +37,7 @@ public class CaptureTextManager : MonoBehaviour
         text.gameObject.SetActive(true);
         text.transform.position = position;
         text.capturedText.text = "Captured";
-        text.AnimateCaptureText().onComplete += () =>
+        text.AnimateCaptureText(-1).onComplete += () =>
         {
             DisableText(text);
         };

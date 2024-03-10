@@ -29,6 +29,10 @@ public class TutorialRoom1 : TutorialRoomBase
         EnableFogOfWar(5);
         titleScreen.material.SetFloat("_PaletteIndex",king.basePaletteIndex);
         titleScreen.material.SetFloat("_Dither",12);
+
+        GlobalHelper.UI().abilityButton.gameObject.SetActive(false);
+        GlobalHelper.UI().endTurnButton.gameObject.SetActive(false);
+        GlobalHelper.UI().resetFightButton.gameObject.SetActive(false);
     }
 
     public void OnDestroy()

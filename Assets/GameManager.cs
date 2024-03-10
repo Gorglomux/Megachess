@@ -42,6 +42,8 @@ public class GameManager : MonoBehaviour
     public IState currentState;
     public int roomIndex = 0;
     public int extraTurns = 0;
+
+    public bool playerTurn = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -71,11 +73,33 @@ public class GameManager : MonoBehaviour
                 ChangeState(new ChangeRoomState());
             }
         }
+
+        OnRoomLoaded += StartSave;
         //else
         //{
         //    LoadArea(GlobalHelper.areaList[0]);
 
         //}
+
+    }
+    public bool shouldGetBackToTitle = false;
+    public void BackToTitle()
+    {
+        GlobalHelper.GlobalVariables.bloodSplatManager.Cleanup();
+        shouldGetBackToTitle = true;
+        ChangeState(new ChangeRoomState());
+    }
+    public void StartSave()
+    {
+        StartCoroutine(DelayedSave());
+
+    }
+    public IEnumerator DelayedSave()
+    {
+        yield return null;
+        yield return null;
+        print("Saving Backup !");
+        GlobalHelper.GlobalVariables.player.BackupInventory();
     }
     public bool CheckTutorial()
     {
@@ -169,6 +193,10 @@ public class GameManager : MonoBehaviour
     public Tween LoadRoom(Room r)
     {
         CleanPreviousRoom();
+        if(r.roomPrefab == null)
+        {
+            Debug.LogError("Error :" + r.name + " Does not have an associated room prefab");
+        }
         currentRoom = GameObject.Instantiate(r.roomPrefab,roomRoot.transform).GetComponent<RoomView>();
         GlobalHelper.GlobalVariables.gameInfos.currentRoom = currentRoom;
         Tween t = currentRoom.LoadRoom();
@@ -183,24 +211,23 @@ public class GameManager : MonoBehaviour
     {
         if(currentState != null)
         {
-            currentState.OnExit(this);
+            currentState?.OnExit(this);
         }
 
         currentState = s;
         GlobalHelper.GlobalVariables.gameInfos.gameState = currentState;
-        currentState.OnEntry(this);
+        currentState?.OnEntry(this);
     }
-    public bool clearPlayerPrefs = false;
     private void Update()
     {
         if(currentState != null)
         {
-           currentState.OnUpdate(this);
+           currentState?.OnUpdate(this);
         }
 
-        if (clearPlayerPrefs)
+        if (GlobalHelper.GlobalVariables.gameInfos.shouldClearPlayerPrefs)
         {
-            clearPlayerPrefs = false;
+            GlobalHelper.GlobalVariables.gameInfos.shouldClearPlayerPrefs = false;
             PlayerPrefs.DeleteAll();
         }
     }

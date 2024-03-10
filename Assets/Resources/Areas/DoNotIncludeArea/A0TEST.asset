@@ -10,14 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aaef5d30ab8397d4898a381aba4f3e7d, type: 3}
-  m_Name: A1
+  m_Name: A0TEST
   m_EditorClassIdentifier: 
-  areaName: The start of something great
-  paletteIndex: 15
+  areaName: TEST
+  paletteIndex: 11
   contrastText: 0
   colorText: {r: 1, g: 1, b: 1, a: 1}
   roomList:
-  - {fileID: 11400000, guid: defaf318916236b4aa647e145faadc0c, type: 2}
-  - {fileID: 11400000, guid: ea8badaa7eba7644ab2bb47e6be35273, type: 2}
-  - {fileID: 11400000, guid: 839b9ef43e6ea584dad158cfb061cac9, type: 2}
+  - {fileID: 11400000, guid: bf0cbfae5cbe02a409d041e9c3556fb1, type: 2}
   shuffleArea: 0

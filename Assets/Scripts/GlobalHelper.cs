@@ -176,6 +176,12 @@ public class GlobalHelper
             case "Bloodlust":
                 effect = new BloodlustEffect(ed);
                 break;
+            case "Shielded":
+                effect = new ShieldedEffect(ed);
+                break;
+            case "Charged":
+                effect = new ChargedEffect(ed);
+                break;
             default:
                 Debug.LogError("Invalid Effect lookup");
                 break;
@@ -220,27 +226,9 @@ public class GlobalHelper
     }
     public static bool isPlayerTurn()
     {
-        IState state = GlobalVariables.gameManager.currentState;
 
-        if(state is FightState)
-        {
-            FightState fightState = (FightState)state;
-            if (fightState.enemyTurn)
-            {
-                return false;
-            }
-        }
 
-        if (state is TutorialFightState)
-        {
-            TutorialFightState fightState = (TutorialFightState)state;
-            if (fightState.enemyTurn)
-            {
-                return false;
-            }
-        }
-
-        return true;
+        return GetGameManager().playerTurn;
     }
 
     public static Action<object> GetEffectActivationEvent(EFFECT_ACTIVATION_TIME activationTime)

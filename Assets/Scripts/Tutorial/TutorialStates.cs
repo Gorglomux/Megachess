@@ -8,7 +8,6 @@ using UnityEngine;
 public class TutorialFightState : IState
 {
     public UnitData capturedThisFight = null;
-    public bool enemyTurn = false;
     public GameManager gmRef;
 
     public int tutorialCount;
@@ -53,7 +52,7 @@ public class TutorialFightState : IState
                 u.RefreshActions();
             }
         }
-
+        gmRef.playerTurn = true;
     }
     public void DramaticDelay(object o)
     {
@@ -82,7 +81,7 @@ public class TutorialFightState : IState
     }
     public void onChangePhase()
     {
-        if (!enemyTurn)
+        if (gmRef.playerTurn)
         {
             GlobalHelper.GetRoom().StartCoroutine(EndTurn());
 
@@ -97,7 +96,7 @@ public class TutorialFightState : IState
         {
             yield break;
         }
-        enemyTurn = true;
+        gmRef.playerTurn = false;
         if(tutorialCount > 0)
         {
 
@@ -167,7 +166,7 @@ public class TutorialFightState : IState
         }
         GlobalHelper.GlobalVariables.gameInfos.currentTurn++;
         GlobalHelper.UI().OnEndTurn();
-        enemyTurn = false;
+        gmRef.playerTurn = true;
         gmRef.OnEndTurn();
         if(tutorialCount > 0)
         {

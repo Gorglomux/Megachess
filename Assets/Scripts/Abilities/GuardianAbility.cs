@@ -21,10 +21,9 @@ public class GuardianAbility : BaseAbility
         }
         Debug.Log("Guardian activates on " + target);
 
-        Debug.LogError("Guardian effect does not exists yet");
-        GlobalHelper.UI().captureManager.DisplayAtPosition(u.GetWorldPosition(), "+ Guardian");
+        GlobalHelper.UI().captureManager.DisplayAtPosition(u.GetWorldPosition(), "+ Shielded");
         GlobalHelper.UI().HideHoverInfos();
-        u.AddEffect(GlobalHelper.effectLookup(GlobalHelper.GetEffectData("Guardian")));
+        u.AddEffect(GlobalHelper.effectLookup(GlobalHelper.GetEffectData("Shielded")));
         GlobalHelper.getCamMovement().ShakeCamera(0.3f, 0.2f);
 
         currentCharge = abilityData.cooldownDuration;
