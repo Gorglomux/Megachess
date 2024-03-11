@@ -218,7 +218,7 @@ public class RoomView : MonoBehaviour
     public bool isValidAttack(Unit u, List<Vector3Int> targetDestination)
     {
         bool isValid = true;
-        if (targetDestination.Count == u.occupiedCells.Count)
+        if (targetDestination.Count == u.occupiedCells.Count && !MovementMethods.HasSpreadMethod(u.unitData.unitName))
         {
             //Movement stops if there is a unit 
             foreach (Vector3Int position in targetDestination)
@@ -242,6 +242,9 @@ public class RoomView : MonoBehaviour
                     }
                 }
             }
+
+        }else if (MovementMethods.HasSpreadMethod(u.unitData.unitName))
+        {
 
         }
         else

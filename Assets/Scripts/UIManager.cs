@@ -361,6 +361,8 @@ public class UIManager : MonoBehaviour
         GlobalHelper.GlobalVariables.bloodSplatManager.Cleanup();
         gm.CleanPreviousRoom();
         gm.ChangeState(null);
+        GlobalHelper.getCamMovement().ResetCameraPosition();
+        GlobalHelper.getCamMovement().ResetZoomPosition();
         gm.LoadRoom(gm.currentRoom.roomData).onComplete += () => {
 
             if (gm.currentRoom.roomData.isTutorial)

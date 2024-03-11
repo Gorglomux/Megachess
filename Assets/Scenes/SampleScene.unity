@@ -4701,9 +4701,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0
+    y: 0.011363636
     width: 1
-    height: 1
+    height: 0.9762396
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 34
@@ -16966,6 +16966,7 @@ MonoBehaviour:
   tileEmpty: {fileID: 11400000, guid: cd96e4ccd87ef2e4ea306f20d248331a, type: 2}
   tileMove: {fileID: 11400000, guid: 5a9ca2bb71bbe4d4a8a3be3980c86f7a, type: 2}
   tileAttack: {fileID: 11400000, guid: 54c1195adbfddd14db6aefa856f72db0, type: 2}
+  tileSpread: {fileID: 11400000, guid: 389e88e8097d3cf41a9461489caad2a3, type: 2}
   spritesToShow: 3
   tilemapBottomLeft: {fileID: 1862979421}
   grid: {fileID: 1005514639}

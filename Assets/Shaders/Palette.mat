@@ -57,7 +57,7 @@ Material:
     m_Floats:
     - _IndexToLerpTo: 0
     - _Lerp: 0
-    - _PaletteIndex: 7
+    - _PaletteIndex: 13
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors: []

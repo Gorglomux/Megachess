@@ -15,10 +15,13 @@ MonoBehaviour:
   unitName: Fork
   sprite: {fileID: 21300000, guid: 9986bae66beb6bd4f849e7d27bc5df92, type: 3}
   sprite_NB: {fileID: 21300000, guid: 5f384a26498756347b64627bd556fb9a, type: 3}
-  baseCost: 7
+  baseCost: 12
   isBoss: 0
   moveAfterAttack: 0
   canTargetAllies: 0
-  effectDatas: []
-  paletteIndex: 11
+  effectDatas:
+  - {fileID: 11400000, guid: 5c5db206379ecf24d9933a76c951d5a5, type: 2}
+  - {fileID: 11400000, guid: da516d734bc970b48846a00519bcbb3b, type: 2}
+  paletteIndex: 13
   attackOrder: 1
+  spreadAttack: 0

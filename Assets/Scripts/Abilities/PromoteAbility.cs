@@ -19,7 +19,7 @@ public class PromoteAbility : BaseAbility
         {
             return;
         }
-        if(u.unitData.unitName != "Pawn" && u.megaSize == 1)
+        if(u.unitData.unitName != "Pawn" || u.megaSize == 1)
         {
             GlobalHelper.getCamMovement().ShakeCamera(0.3f, 0.2f);
             GlobalHelper.UI().SetBottomText("Can only promote non mega pawns ! ", 3);

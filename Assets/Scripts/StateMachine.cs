@@ -246,6 +246,7 @@ public class FightState : IState
     public bool endFight = false;
     public void CheckGameWinState()
     {
+
         if (endFight)
         {
             return;

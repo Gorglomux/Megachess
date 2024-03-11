@@ -24,7 +24,7 @@ public interface IDraggable
     void onDragTick(Vector3 mousePosition);
 }
 
-public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
+public class Unit : MonoBehaviour, ISelectable, IHoverable, IDraggable
 {
 
     public Action<object> OnBeforeAttack = delegate { };
@@ -33,14 +33,14 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
     public UnitData unitData;
     public int UID;
     public List<Vector3Int> occupiedCells = new List<Vector3Int>();
-    
+
     public SpriteRenderer spriteRenderer;
     public SendSpriteAtlasPosition sendAtlasPosition;
 
     public List<Func<List<Vector3Int>, Tilemap>> movementMethods;
     public List<Func<List<Vector3Int>, Tilemap>> attackMethods;
 
-    public  int basePaletteIndex = -1;
+    public int basePaletteIndex = -1;
 
     public List<BaseEffect> currentEffects = new List<BaseEffect>();
     public bool isEnemy = false;
@@ -58,9 +58,11 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
     public Unit lastAttacker = null;
 
     public int placedOrder = 0;
-    public RoomView roomRef { get
+    public RoomView roomRef
+    {
+        get
         {
-            if(_room == null)
+            if (_room == null)
             {
                 _room = GlobalHelper.GetRoom();
             }
@@ -85,35 +87,35 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
     public void Initialize(UnitData ud, bool isEnemy, int palette = -1)
     {
         unitData = ud;
-        foreach(EffectData ed in ud.effectDatas)
+        foreach (EffectData ed in ud.effectDatas)
         {
             AddEffect(GlobalHelper.effectLookup(ed));
         }
         this.isEnemy = isEnemy;
         LoadPalette(palette);
-        
+
         UID = GlobalHelper.GetUID();
         megaSize = (int)Mathf.Sqrt(occupiedCells.Count);
-        if(megaSize == 0)
+        if (megaSize == 0)
         {
             megaSize = 1;
         }
-        health =(int)Mathf.Pow(megaSize,2);
+        health = (int)Mathf.Pow(megaSize, 2);
         startingHealth = health;
     }
     public Sequence s = null;
     public Tween tweenIdle = null;
     public void StartIdle()
     {
-        if(s != null)
+        if (s != null)
         {
             s.Kill();
         }
-        if(tweenIdle != null)
+        if (tweenIdle != null)
         {
             tweenIdle.Kill();
         }
-        tweenIdle = spriteRenderer.transform.DORotate(Vector3.zero,0.1f);
+        tweenIdle = spriteRenderer.transform.DORotate(Vector3.zero, 0.1f);
         tweenIdle.onComplete += () =>
         {
             s = DOTween.Sequence();
@@ -128,12 +130,13 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
     }
     public void EndIdle()
     {
-        if(s != null)
+        if (s != null)
         {
             s.Kill();
             spriteRenderer.transform.DORotate(Vector3.zero, 0.2f);
-        }if(tweenIdle != null)
-        { 
+        }
+        if (tweenIdle != null)
+        {
             tweenIdle.Kill();
         }
 
@@ -173,30 +176,30 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
     // Update is called once per frame
     void Update()
     {
-        
+
     }
-    
+
     public Sequence Attack(List<Vector3Int> positions)
     {
         Sequence attackSequence = DOTween.Sequence();
-        if (roomRef.isValidAttack(this,positions))
+        if (roomRef.isValidAttack(this, positions))
         {
             bool hasMoved = false;
             List<Unit> targeted = roomRef.GetUnitsAt(positions);
-            if(targeted != null && targeted.Count > 0)
+            if (targeted != null && targeted.Count > 0)
             {
 
                 bool onlySelf = true;
                 foreach (Unit targetedUnit in targeted)
                 {
-                    if(targetedUnit.UID != UID)
+                    if (targetedUnit.UID != UID)
                     {
                         if (OnBeforeAttack != null)
                         {
 
                             OnBeforeAttack(targetedUnit);
                         }
-                        if(targetedUnit.OnBeforeAttack != null)
+                        if (targetedUnit.OnBeforeAttack != null)
                         {
                             targetedUnit.OnBeforeAttack(this);
                         }
@@ -209,8 +212,8 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
                             targetedUnit.lastAttacker = this;
                             if (!targetedUnit.TakeDamage(occupiedCells.Count))
                             {
-                                Tween t = transform.DOLocalMove(GetWorldPosition(), GlobalHelper.TWEEN_DURATION_MOVE*0.5f).SetEase(Ease.OutCubic);
-                            } 
+                                Tween t = transform.DOLocalMove(GetWorldPosition(), GlobalHelper.TWEEN_DURATION_MOVE * 0.5f).SetEase(Ease.OutCubic);
+                            }
                             GlobalHelper.getCamMovement().ShakeCamera(megaSize * 0.2f * GlobalHelper.CAM_SHAKE_ATTACK);
 
                             if (OnAfterAttack != null)
@@ -219,10 +222,10 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
                                 OnAfterAttack(targetedUnit);
                             }
 
-                            if(targetedUnit.OnBeforeAttack != null)
+                            if (targetedUnit.OnBeforeAttack != null)
                             {
 
-                                targetedUnit.OnAfterAttack (this);
+                                targetedUnit.OnAfterAttack(this);
                             }
                         };
                         attackSequence.Join(t);
@@ -264,6 +267,14 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
                 }
                 else
                 {
+                    if (!isEnemy)
+                    {
+                        GlobalHelper.getCamMovement().ResetCameraPosition();
+                        GlobalHelper.getCamMovement().ResetZoomPosition();
+
+                    }
+                    Tween t = transform.DOLocalMove(GetWorldPosition(), GlobalHelper.TWEEN_DURATION_MOVE/2).SetEase(Ease.InCubic);
+
                     GlobalHelper.GlobalVariables.indicatorManager.HideAll();
                     roomRef.OnBoardUpdate();
                     if (actionsLeft > 0 && !isEnemy)
@@ -284,9 +295,9 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
     {
         GameObject randomBlood = GameObject.Instantiate(bloodEffectPrefab);
         ParticleSystem ps = randomBlood.GetComponentInChildren<ParticleSystem>();
-        Renderer psRenderer= ps.GetComponentInChildren<Renderer>();
+        Renderer psRenderer = ps.GetComponentInChildren<Renderer>();
         psRenderer.material = new Material(GlobalHelper.GlobalVariables.paletteMaterial);
-        psRenderer.material.SetTexture("_MainTex",bloodEffectTextures[UnityEngine.Random.Range(0, bloodEffectTextures.Count)]);
+        psRenderer.material.SetTexture("_MainTex", bloodEffectTextures[UnityEngine.Random.Range(0, bloodEffectTextures.Count)]);
         psRenderer.material.SetFloat("_PaletteIndex", basePaletteIndex);
         psRenderer.material.SetFloat("_Lerp", 0);
 
@@ -296,7 +307,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         float angle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg;
         ps.Play();
         randomBlood.transform.position = position;
-        randomBlood.transform.eulerAngles = new Vector3(0,0,- angle);
+        randomBlood.transform.eulerAngles = new Vector3(0, 0, -angle);
 
     }
 
@@ -304,13 +315,14 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
     {
         bool MOVE_SUCCESS = false;
 
-        if(roomRef.isValidMove(this, positions)){
+        if (roomRef.isValidMove(this, positions))
+        {
             //Animate here
             //On complete : MoveUnit 
             roomRef.MoveUnit(this, positions);
             if (animate)
             {
-                Tween t = transform.DOLocalMove(GetProjectedWorldPosition(positions), GlobalHelper.TWEEN_DURATION_MOVE*0.4f).SetEase(Ease.OutQuint);
+                Tween t = transform.DOLocalMove(GetProjectedWorldPosition(positions), GlobalHelper.TWEEN_DURATION_MOVE * 0.4f).SetEase(Ease.OutQuint);
                 //AudioManager.instance.PlaySound("sfx_chess_move", 1, UnityEngine.Random.Range(0.95f, 0.9f));
             }
             else
@@ -336,9 +348,9 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
     {
         RoomView rv = GlobalHelper.GetRoom();
         Vector3 meanPosition = Vector3.zero;
-        foreach(Vector3Int position in occupiedCells)
+        foreach (Vector3Int position in occupiedCells)
         {
-            
+
             meanPosition += rv.tilemapFloorWalls.CellToLocal(rv.CellToTilemap(position));
         }
         meanPosition /= occupiedCells.Count;
@@ -355,7 +367,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
 
             meanPosition += rv.tilemapFloorWalls.CellToLocal(rv.CellToTilemap(position));
         }
-        meanPosition /= occupiedCells.Count;
+        meanPosition /= positions.Count;
         meanPosition += rv.tilemapFloorWalls.cellSize / 2;
 
         return meanPosition;
@@ -363,7 +375,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
 
     public bool TakeDamage(int damageCount)
     {
-        if(shieldAmount > 0)
+        if (shieldAmount > 0)
         {
             shieldAmount--;
             GlobalHelper.UI().captureManager.DisplayAtPosition(GetWorldPosition(), "Shielded !");
@@ -383,8 +395,8 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         else
         {
             AudioManager.instance.PlaySound("piece_capture_low", 1, UnityEngine.Random.Range(0.8f, 0.9f));
-            float f = Mathf.Lerp(4, 18, 1- ((float)health / (float)startingHealth));
-            spriteRenderer.material.SetFloat("_Dither",f);
+            float f = Mathf.Lerp(4, 18, 1 - ((float)health / (float)startingHealth));
+            spriteRenderer.material.SetFloat("_Dither", f);
             return false;
         }
     }
@@ -402,7 +414,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         }
         else if (!blinking && enabled)
         {
-            tweenBlink = StartCoroutine(corBlink(frameOutDelaySelected / blinkspeed, frameInDelaySelected/blinkspeed));
+            tweenBlink = StartCoroutine(corBlink(frameOutDelaySelected / blinkspeed, frameInDelaySelected / blinkspeed));
             //tweenBlink = spriteRenderer.DOColor(new Color(1, 1, 1, 0.7f), 0.5f).SetEase(Ease.Flash,20,0).SetLoops(-1, LoopType.Restart);
             blinking = true;
         }
@@ -410,9 +422,9 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
     }
 
 
-    [Range(0,1)]public float frameOutDelaySelected = 0.17f;
+    [Range(0, 1)] public float frameOutDelaySelected = 0.17f;
     [Range(0, 1)] public float frameInDelaySelected = 0.44f;
-    public IEnumerator corBlink( float outDelay, float inDelay)
+    public IEnumerator corBlink(float outDelay, float inDelay)
     {
 
         while (true)
@@ -451,7 +463,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         //regarding position + megasize * cellSize / 2 
 
         bool hasMoved = false;
-        foreach(Vector3Int cell in output)
+        foreach (Vector3Int cell in output)
         {
             if (!occupiedCells.Contains(cell))
             {
@@ -459,9 +471,9 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
                 break;
             }
         }
-        if (!hasMoved )
+        if (!hasMoved)
         {
-           
+
             output.Clear();
         }
         return output;
@@ -491,16 +503,21 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
     public bool TryMoveOrAttackAtPosition(Vector3 position)
     {
         bool success = false;
-        position = new Vector3(position.x,position.y,0);
+        position = new Vector3(position.x, position.y, 0);
         //else
         List<Vector3Int> evaluated = EvaluateAroundPosition(position);
         if (Mathf.Sqrt(evaluated.Count) == megaSize)
         {
             bool isAttack = IsAttack(evaluated);
+            List<Vector3Int> spreadAttack = GetSpreadList(evaluated);
             List<Vector3Int> validPositions = new List<Vector3Int>();
             if (isAttack)
-            {
+            { 
                 validPositions = MovementMethods.GetAttackMethod(unitData.unitName).Invoke(roomRef, this, -1);
+            }
+            else if(spreadAttack.Count > 0)
+            {
+                validPositions = spreadAttack;
             }
             else
             {
@@ -526,7 +543,19 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
                         if (isAttack)
                         {
                             Attack(evaluated);
-                        } else
+                        }
+                        else
+                        {
+                            Move(evaluated);
+                        }
+                    }
+                    else if (MovementMethods.HasSpreadMethod(unitData.unitName))
+                    {
+                        if (spreadAttack.Count > 0)
+                        {
+                            Attack(spreadAttack);
+                        }
+                        else
                         {
                             Move(evaluated);
                         }
@@ -566,18 +595,67 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         }
         return isAttack;
     }
+    public List<Vector3Int> GetSpreadList(List<Vector3Int> evaluatedPositions)
+    {
+        List<Vector3Int> spreadList = new List<Vector3Int>(); ;
+        if (MovementMethods.HasSpreadMethod(unitData.unitName))
+        {
+            foreach (Vector3Int cell in evaluatedPositions)
+            {
+                List<List<Vector3Int>> attacks = MovementMethods.GetSpreadMethod(unitData.unitName).Invoke(roomRef, this, -1, cell);
+                if (attacks.Count > 0)
+                {
+                    foreach (List<Vector3Int> att in attacks)
+                    {
+                        bool correctAttack = true;
+                        foreach (Vector3Int cell2 in evaluatedPositions)
+                        {
+
+                            if (att.Contains(cell))
+                            {
+                                correctAttack = true;
+                                break;
+                            }
+                        }
+                        if (correctAttack)
+                        {
+                            spreadList = att;
+                            break;
+                        }
+                    }
+                }
+
+            }
+
+        }
+        bool hasUnits = false;
+        foreach(Vector3Int cell in spreadList)
+        {
+            if(roomRef.GetUnitAt(cell) != null)
+            {
+                hasUnits = true;
+                break;
+            }
+        }
+        if (!hasUnits)
+        {
+            spreadList.Clear();
+        }
+        return spreadList;
+    }
+
     #region interfaces
     public Tween growTween;
     public void onHoverEnter()
     {
-        if(growTween != null)
+        if (growTween != null)
         {
             growTween.Kill();
         }
         print(UID + " is hovered !");
         //DoScale if ally? 
         AudioManager.instance.PlaySound("sfx_tap", 1, UnityEngine.Random.Range(0.8f, 1f));
-        
+
         GlobalHelper.GlobalVariables.indicatorManager.DisplayMovement(this);
         growTween = spriteRenderer.transform.DOScale(1.2f, 0.5f).SetEase(Ease.OutQuint);
         GlobalHelper.UI().ShowHoverInfos(this);
@@ -586,7 +664,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
 
     public void onHoverExit()
     {
-        if(spriteRenderer== null)
+        if (spriteRenderer == null)
         {
             return;
         }
@@ -610,9 +688,9 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         {
             success = false;
         }
-        else if(actionsLeft > 0)
+        else if (actionsLeft > 0)
         {
-            AudioManager.instance.PlaySound("sfx_chess_move",1, UnityEngine.Random.Range(1.1f,1.2f));
+            AudioManager.instance.PlaySound("sfx_chess_move", 1, UnityEngine.Random.Range(1.1f, 1.2f));
             EndIdle();
             print(UID + " is selected");
             GlobalHelper.GlobalVariables.indicatorManager.DisplayMovement(this);
@@ -655,7 +733,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
 
                 AudioManager.instance.PlaySound("sfx_chess_move", 0.8f, 0.95f);
             }
-           
+
         }
         spriteRenderer.transform.DOScale(1, 0.5f).SetEase(Ease.OutQuint);
 
@@ -663,11 +741,11 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
     }
     public void onSelectTick(Vector3 mousePosition)
     {
-        if(actionsLeft > 0)
+        if (actionsLeft > 0)
         {
-        mousePosition = new Vector3(mousePosition.x, mousePosition.y,0);
-        List<Vector3Int> evaluated = EvaluateAroundPosition(mousePosition);
-        GlobalHelper.GlobalVariables.indicatorManager.ShowPossibleUnitMove(this, evaluated); 
+            mousePosition = new Vector3(mousePosition.x, mousePosition.y, 0);
+            List<Vector3Int> evaluated = EvaluateAroundPosition(mousePosition);
+            GlobalHelper.GlobalVariables.indicatorManager.ShowPossibleUnitMove(this, evaluated);
         }
 
 
@@ -689,9 +767,9 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
     {
         spriteRenderer.color = Color.white;
 
-        if(GlobalHelper.GlobalVariables.gameInfos.gameState is UnitPlaceState)
+        if (GlobalHelper.GlobalVariables.gameInfos.gameState is UnitPlaceState)
         {
-            if (GlobalHelper.IsMouseOnReserve(mousePosition)&& GlobalHelper.GetRoom().getAllUnits().Contains(this))
+            if (GlobalHelper.IsMouseOnReserve(mousePosition) && GlobalHelper.GetRoom().getAllUnits().Contains(this))
             {
                 GlobalHelper.GlobalVariables.player.AddUnit(this);
                 GlobalHelper.GetRoom().DestroyUnit(this);
@@ -747,7 +825,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
     }
     public bool ConsumeAction()
     {
-        if(actionsLeft > 0)
+        if (actionsLeft > 0)
         {
             actionsLeft--;
             return true;
@@ -827,7 +905,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
 
             }
         }
-       
+
 
     }
 
@@ -839,7 +917,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
             effectFound.AddStrength(effectFound.effectStrength);
             effectFound.OnApply(this);
         }
-        else if(effectFound == null)
+        else if (effectFound == null)
         {
             currentEffects.Add(effect);
             effect.BindEffect(this);
@@ -872,7 +950,7 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
         OnBeforeAttack = null;
         OnAfterAttack = null;
         print(UID + "Destroyed");
-        foreach(BaseEffect effect in currentEffects)
+        foreach (BaseEffect effect in currentEffects)
         {
             effect.onDestroy();
         }

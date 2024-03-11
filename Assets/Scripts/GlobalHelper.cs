@@ -193,6 +193,12 @@ public class GlobalHelper
             case "Charged":
                 effect = new ChargedEffect(ed);
                 break;
+            case "Stationary":
+                effect = new StationaryEffect(ed);
+                break;
+            case "Cleave":
+                effect = new CleaveEffect(ed);
+                break;
             default:
                 Debug.LogError("Invalid Effect lookup");
                 break;

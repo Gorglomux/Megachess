@@ -11,8 +11,10 @@ public class PreviewMove : MonoBehaviour
     public TileBase tileEmpty;
     public TileBase tileMove;
     public TileBase tileAttack;
+    public TileBase tileSpread;
 
     public int spritesToShow = 3;
+    public int minValue = 0;
     public Transform tilemapBottomLeft;
     public Grid grid;
     public float tilemapSize = 1;
@@ -23,7 +25,7 @@ public class PreviewMove : MonoBehaviour
     void Start()
     {
         initialPosition = transform.position;
-        bigFactor = (spritesToShow * 2 +1) * grid.cellSize.x;
+        bigFactor = (spritesToShow * 2 +1 ) * grid.cellSize.x;
     }
     public float smallFactor;
     public float ratio;
@@ -54,6 +56,10 @@ public class PreviewMove : MonoBehaviour
         {
             spread = squareSize * 2- u.megaSize;
         }
+        if(spread < minValue)
+        {
+            spread = minValue;
+        }
 
         smallFactor = spread * grid.cellSize.x ;
         ratio = bigFactor / smallFactor;
@@ -69,6 +75,7 @@ public class PreviewMove : MonoBehaviour
         Vector3Int center = bottomLeft + new Vector3Int(spread / 2, spread / 2);
 
         bool hasAttack = false;
+        bool hasSpread = false;
         TileBase tileMovement = tileAttack;
         if (MovementMethods.HasAttackMethod(u.unitData.unitName))
         {
@@ -76,6 +83,12 @@ public class PreviewMove : MonoBehaviour
             hasAttack = true;
 
         }
+        if (MovementMethods.HasSpreadMethod(u.unitData.unitName))
+        {
+            tileMovement = tileMove;
+            hasSpread = true;
+        }
+
         foreach (Vector3Int cell in movementCells)
         {
             if (tilemapPreview.GetTile(cell + center) == tileEmpty)
@@ -92,6 +105,18 @@ public class PreviewMove : MonoBehaviour
                 if (tilemapPreview.GetTile(cell + center) != null)
                 {
                     tilemapPreview.SetTile(cell + center, tileAttack);
+
+                }
+            }
+        }
+        if (hasSpread)
+        {
+            List<Vector3Int> spreadCells = MovementMethods.GetSpreadMethod(u.unitData.unitName).Invoke(GlobalHelper.GetRoom(), u, spritesToShow, new Vector3Int(9999,9999,0))[0];
+            foreach (Vector3Int cell in spreadCells)
+            {
+                if (tilemapPreview.GetTile(cell + center) != null)
+                {
+                    tilemapPreview.SetTile(cell + center, tileSpread);
 
                 }
             }

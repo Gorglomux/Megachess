@@ -81,6 +81,14 @@ public class IndicatorManager : MonoBehaviour
             List<Vector3Int> attacks = MovementMethods.GetAttackMethod(u.unitData.unitName).Invoke(r, u, -1);
             DisplayPositions(attacks, u, INDICATOR_STATE.ATTACK);
 
+        }else if (MovementMethods.HasSpreadMethod(u.unitData.unitName))
+        {
+            List<List<Vector3Int>> spreadCells = MovementMethods.GetSpreadMethod(u.unitData.unitName).Invoke(GlobalHelper.GetRoom(), u, -1, new Vector3Int(9999, 9999, 0));
+            foreach(List<Vector3Int> spreadList in spreadCells)
+            {
+                DisplayPositions(spreadList, u, INDICATOR_STATE.ATTACK);
+            }
+
         }
 
     }
@@ -204,35 +212,116 @@ public class IndicatorManager : MonoBehaviour
         spawnableCellIndicators.Clear();
     }
 
+    //Refaire ça pour inclure les attaques et les targeted
+
     public void ShowPossibleUnitMove(Unit u, List<Vector3Int> positions)
     {
+        bool hasSpread = MovementMethods.HasSpreadMethod(u.unitData.unitName);
         RoomView r = GlobalHelper.GetRoom();
-
-        List<Vector3Int> validPositions = MovementMethods.GetMovementMethod(u.unitData.unitName).Invoke(r, u, -1);
-        foreach (Vector3Int position in validPositions)
+        bool hasSetSpread = false;
+        if (hasSpread)
         {
-            Indicator indicator = activeIndicators.Find((x) => x.transform.position ==  transform.position + GetIndicatorPosition(position));
-            if (positions.Contains(position))
+            List<Vector3Int> finalCells = new List<Vector3Int>();
+            List<List<Vector3Int>> spreadCells = MovementMethods.GetSpreadMethod(u.unitData.unitName).Invoke(GlobalHelper.GetRoom(), u, -1, new Vector3Int(9999, 9999, 0));
+            foreach (List<Vector3Int> spreadList in spreadCells)
             {
-                
-                if (indicator != null)
+                bool correct = true;
+                if (!hasSetSpread)
                 {
-                    indicator.SetState(INDICATOR_STATE.TARGETED,false, indicator.isSelected, position);
-                }
-            }
-            else if(indicator != null)
-            {
-                Unit enemy = r.GetUnitAt(position);
-                if (enemy != null && enemy.UID != u.UID && enemy.isEnemy)
-                {
-                    indicator.SetState(INDICATOR_STATE.ATTACK, false, indicator.isSelected, position);
+                    if (positions.Count == 0)
+                    {
+                        correct = false;
+                    }
+                    foreach (Vector3Int cell in positions)
+                    {
+
+                        if (u.occupiedCells.Contains(cell) || !spreadList.Contains(cell))
+                        {
+                            correct = false;
+                            break;
+                        }
+                    }
+                    foreach (Vector3Int cell in spreadList)
+                    {
+                        Indicator indicator = activeIndicators.Find((x) => x.transform.position == transform.position + GetIndicatorPosition(cell));
+                        if (correct)
+                        {
+
+                            if (indicator != null)
+                            {
+                                finalCells.Add(cell);
+                                indicator.SetState(INDICATOR_STATE.TARGETED, false, indicator.isSelected, cell);
+                                hasSetSpread = true;
+                            }
+
+                        }
+                        else if (indicator != null)
+                        {
+
+                            indicator.SetState(INDICATOR_STATE.ATTACK, false, indicator.isSelected, cell);
+
+                        }
+                    }
                 }
                 else
                 {
-                    indicator.SetState(INDICATOR_STATE.MOVE, false, indicator.isSelected, position);
+                    correct = false;
+                    foreach (Vector3Int cell in spreadList)
+                    {
+                        Indicator indicator = activeIndicators.Find((x) => x.transform.position == transform.position + GetIndicatorPosition(cell));
+                        if (indicator  != null && finalCells.Contains(cell))
+                        {
+
+                            if (indicator != null)
+                            {
+                                indicator.SetState(INDICATOR_STATE.TARGETED, false, indicator.isSelected, cell);
+                                hasSetSpread = true;
+                            }
+
+                        }
+                        else if (indicator != null)
+                        {
+
+                            indicator.SetState(INDICATOR_STATE.ATTACK, false, indicator.isSelected, cell);
+
+                        }
+                    }
+                }
+                
+               
+            }
+
+        }
+        if((hasSpread && !hasSetSpread)||!hasSpread)
+        {
+
+            List<Vector3Int> validPositions = MovementMethods.GetMovementMethod(u.unitData.unitName).Invoke(r, u, -1);
+            foreach (Vector3Int position in validPositions)
+            {
+                Indicator indicator = activeIndicators.Find((x) => x.transform.position == transform.position + GetIndicatorPosition(position));
+                if (positions.Contains(position))
+                {
+
+                    if (indicator != null)
+                    {
+                        indicator.SetState(INDICATOR_STATE.TARGETED, false, indicator.isSelected, position);
+                    }
+                }
+                else if (indicator != null)
+                {
+                    Unit enemy = r.GetUnitAt(position);
+                    if (enemy != null && enemy.UID != u.UID && enemy.isEnemy)
+                    {
+                        indicator.SetState(INDICATOR_STATE.ATTACK, false, indicator.isSelected, position);
+                    }
+                    else
+                    {
+                        indicator.SetState(INDICATOR_STATE.MOVE, false, indicator.isSelected, position);
+                    }
                 }
             }
         }
+
 
     }
     Vector3 GetIndicatorPosition(Vector3Int position)
