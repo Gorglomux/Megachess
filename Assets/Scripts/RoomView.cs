@@ -317,8 +317,13 @@ public class RoomView : MonoBehaviour
 
             }
         }
+
         u.onUnitDestroyed();
-        GlobalHelper.GetGameManager().OnKillUnit(u);
+        if (GlobalHelper.GetGameState() is FightState || GlobalHelper.GetGameState() is TutorialFightState)
+        {
+            GlobalHelper.GetGameManager().OnKillUnit(u);
+
+        }
         u.gameObject.SetActive(false);
         //Destroy(u.gameObject);
     }

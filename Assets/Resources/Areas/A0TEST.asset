@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: A0TEST
   m_EditorClassIdentifier: 
   areaName: TEST
-  paletteIndex: 11
+  paletteIndex: 13
   contrastText: 0
   colorText: {r: 1, g: 1, b: 1, a: 1}
   roomList:

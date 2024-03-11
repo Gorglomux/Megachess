@@ -48,6 +48,10 @@ public class UIManager : MonoBehaviour
 
     public PassiveShop passiveShop;
     public PassivesMenu passivesMenu;
+    public RectTransform ReserveRectTransform;
+
+    public Button pauseButton;
+    public PauseManager pauseManager;
     // Start is called before the first frame update
     void Start()
     {
@@ -56,9 +60,15 @@ public class UIManager : MonoBehaviour
         HideHoverInfos();
         HideShop();
         HidePassivesMenu();
+        HidePauseMenu();
         //HideTitleScreen();
         DisableButton(abilityButton.button);
         SetBottomText("");
+
+
+
+        DOTween.timeScale = PlayerPrefs.GetFloat("AnimationSpeed", 1);
+        GlobalHelper.ScreenShakeMultiplier = PlayerPrefs.GetFloat("ScreenShake", 1);
     }
     public void HidePassivesMenu()
     {
@@ -73,6 +83,19 @@ public class UIManager : MonoBehaviour
     {
         ShowPassivesMenu();
         passivesMenu.AddPassive(data);
+    }
+
+    public void ShowPauseMenu()
+    {
+        pauseManager.gameObject.SetActive(true);
+        Time.timeScale = 0;
+    }
+
+    public void HidePauseMenu()
+    {
+        pauseManager.gameObject.SetActive(false);
+        Time.timeScale = 1;
+
     }
 
     // Update is called once per frame
@@ -234,6 +257,19 @@ public class UIManager : MonoBehaviour
             EffectContainer ecAbility = effectContainerManager.getNext();
             ecAbility.FillAbility(GlobalHelper.abilityLookup(playerContainer.playerData.startingAbilityData), true);
         }
+        if(hoverable is string)
+        {
+            string s = (string)hoverable;
+            if(s == "reset")
+            {
+                Debug.Log("Showing hover infos");
+                EffectContainer ec = effectContainerManager.getNext();
+                ec.FillReset();
+                UnitNameText.text = "RESET";
+            }
+
+        }
+
         //else if is ability, else if is shopitem...
     }
 
@@ -301,7 +337,7 @@ public class UIManager : MonoBehaviour
             GlobalHelper.UI().ShakeButtonBottomRightText(); 
             SetBottomText("Can only reset turn while in a fight.");
         }
-        if (!GlobalHelper.GlobalVariables.player.CanBuy(GlobalHelper.RESET_COST))
+        if (!GlobalHelper.GlobalVariables.player.CanBuy(GlobalHelper.GetResetCost()))
         {
             GlobalHelper.UI().ShakeButtonBottomRightText();
             SetBottomText("Not enough money !");
@@ -310,7 +346,14 @@ public class UIManager : MonoBehaviour
         {
             return;
         }
+        
+        if(GlobalHelper.GetGameState() is FightState /*|| GlobalHelper.GetGameState() is UnitPlaceState*/)
+        {
+            GlobalHelper.GlobalVariables.player.Buy(GlobalHelper.GetResetCost());
+            GlobalHelper.GetGameManager().currentResetCost++;
 
+        }
+        GlobalHelper.UI().HideHoverInfos();
         GlobalHelper.GlobalVariables.player.ClearInventory();
         isResetting = true;
         GameManager gm = GlobalHelper.GetGameManager();
@@ -339,7 +382,7 @@ public class UIManager : MonoBehaviour
     public bool canReset()
     {
         bool isCorrectState = GlobalHelper.CheckUnitFightState();
-        bool canBuy = GlobalHelper.GlobalVariables.player.CanBuy(GlobalHelper.RESET_COST);
+        bool canBuy = GlobalHelper.GlobalVariables.player.CanBuy(GlobalHelper.GetResetCost());
         return isCorrectState && !isResetting && canBuy;
     }
 
@@ -349,8 +392,17 @@ public class UIManager : MonoBehaviour
     {
         HideRoot();
         rootTitle.gameObject.SetActive(true);
+        ShowPauseButton();
     }
+    public void ShowPauseButton()
+    {
+        pauseButton.gameObject.SetActive(true);
+    }
+    public void HidePauseButton()
+    {
+        pauseButton.gameObject.SetActive(false);
 
+    }
     public void HideRoot()
     {
         root.gameObject.SetActive(false);
@@ -386,5 +438,15 @@ public class UIManager : MonoBehaviour
     {
         passiveShop.gameObject.SetActive(false);
 
+    }
+
+    public void onHoverEnterResetButton()
+    {
+        //Check if unit place and send something else than reset 
+        ShowHoverInfos("reset");
+    }
+    public void onHoverExitResetButton()
+    {
+        HideHoverInfos();
     }
 }

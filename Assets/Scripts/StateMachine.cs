@@ -19,6 +19,7 @@ public class UnitPlaceState : IState
     GameManager gmRef;
     public void OnEntry(GameManager gm)
     {
+
         AudioManager.instance.SetBeforeFight();
         AudioManager.instance.SetInFight();
         GlobalHelper.UI().EnableButton(GlobalHelper.UI().endTurnButton);
@@ -35,6 +36,7 @@ public class UnitPlaceState : IState
         GlobalHelper.UI().ShowTopInfos();
         GlobalHelper.UI().nextFight.StartAnimate("Selection Phase");
         gm.OnStartFight(null);
+
     }
 
 
@@ -141,6 +143,7 @@ public class FightState : IState
 
         if (gmRef.playerTurn)
         {
+
             GlobalHelper.GetRoom().StartCoroutine(EndTurn());
             if (endGame)
             {
@@ -354,9 +357,18 @@ public class ChangeRoomState : IState
     public IEnumerator loadGame()
     {
         RoomView previousRoom = GlobalHelper.GetRoom();
-        bool previousRoomIsTutorial = previousRoom!=null && previousRoom.roomData.isTutorial;
+        bool previousRoomIsTutorial = previousRoom != null && previousRoom.roomData.isTutorial;
 
+        if (gmRef.shouldGetBackToTitle)
+        {
+            GlobalHelper.getCamMovement().ShakeCamera(4f, 0.8f);
+            GlobalHelper.UI().ShowBlackScreen();
+            yield return new WaitForSeconds(2);
 
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+            yield break;
+        }
         Debug.Log("Loading next");
         Tween t = gmRef.LoadNextRoom();
         if (t!= null)

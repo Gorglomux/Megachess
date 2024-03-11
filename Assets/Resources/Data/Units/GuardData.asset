@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee64ea7af66fc514b9895e63be2103c5, type: 3}
+  m_Name: GuardData
+  m_EditorClassIdentifier: 
+  unitName: Guard
+  sprite: {fileID: 21300000, guid: 5972931ba6ae80449a53bffdd25ba577, type: 3}
+  sprite_NB: {fileID: 21300000, guid: 8311f7da0bab4da428a7a91600cf9433, type: 3}
+  baseCost: 7
+  isBoss: 0
+  moveAfterAttack: 0
+  canTargetAllies: 0
+  effectDatas: []
+  paletteIndex: 11
+  attackOrder: 1

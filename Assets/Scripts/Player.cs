@@ -29,7 +29,6 @@ public class Player : MonoBehaviour
     {
         money = 3;
         //testInventory();
-        //testMegaInventory();
         GlobalHelper.UI().UpdateMoneyCount();
         //ChangeAbility(GlobalHelper.GetAbilityData("ExtraTurn"));
         //ChangeAbility(GlobalHelper.GetAbilityData("Thirst"));
@@ -52,7 +51,7 @@ public class Player : MonoBehaviour
 
 
     }
-    void testMegaInventory()
+    public void testMegaInventory()
     {
         for(int i=0; i<5; i++)
         {
@@ -205,6 +204,10 @@ public class Player : MonoBehaviour
         foreach (UnitData u in data.startingUnits)
         {
             AddUnit(GlobalHelper.GetRoom().CreateUnit(u, false));
+        }
+        if (GlobalHelper.GlobalVariables.gameInfos.test)
+        {
+            GlobalHelper.GlobalVariables.player.testMegaInventory();
         }
         ChangeAbility(data.startingAbilityData);
     }

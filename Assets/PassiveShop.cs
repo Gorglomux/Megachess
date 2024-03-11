@@ -30,7 +30,7 @@ public class PassiveShop : MonoBehaviour
         GlobalHelper.UI().DisableButton(GlobalHelper.UI().abilityButton.button);
         GlobalHelper.UI().DisableButton(GlobalHelper.UI().resetFightButton);
 
-        nextButton.gameObject.SetActive(true);
+        nextButton.gameObject.SetActive(false);
         StartCoroutine(corFillPassives());
     }
     public IEnumerator corFillPassives()
@@ -116,6 +116,7 @@ public class PassiveShop : MonoBehaviour
             yield return new WaitForSeconds(0.2f);
         }
 
+        nextButton.gameObject.SetActive(true);
     }
 
     public void DisplayItems()
@@ -146,10 +147,10 @@ public class PassiveShop : MonoBehaviour
         {
             AudioManager.instance.PlaySound("dialogue", 1, UnityEngine.Random.Range(0.8f, 0.9f));
             Destroy(suc.gameObject);
-            GlobalHelper.getCamMovement().ShakeCamera(2);
-            yield return new WaitForSeconds(0.05f);
         }
 
+        GlobalHelper.getCamMovement().ShakeCamera(2);
+        yield return new WaitForSeconds(0.5f);
 
         passiveContainers.Clear();
         GlobalHelper.getCamMovement().ShakeCamera(2);

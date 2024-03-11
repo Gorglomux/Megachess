@@ -19,6 +19,7 @@ public class TutorialFightState : IState
     }
     public void OnEntry(GameManager gm)
     {
+        GlobalHelper.UI().HidePauseButton();
         gmRef = gm;
         if (tutorialCount == 0)
         {

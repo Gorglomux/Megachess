@@ -56,6 +56,7 @@ public class AudioManager : MonoBehaviour
             AudioSource audioSource = soundEffectsAudioSource.gameObject.AddComponent(typeof(AudioSource)) as AudioSource;
             pooledSoundEffectAudioSources.Add(audioSource);
         }
+        ambianceAudioSource.time = 10;
 
     }
 
@@ -96,13 +97,14 @@ public class AudioManager : MonoBehaviour
     }
     public void UpdateSoundValues()
     {
-        //PASSER PAR DES AUDIO MIXERS A LA PLACE
-        //musicAudioSource.volume = masterVolume * musicVolume;
-        //soundEffectsAudioSource.volume = masterVolume * soundEffectsVolume;
-        //foreach (AudioSource audioSource in pooledSoundEffectAudioSources)
-        //{
-        //    audioSource.volume = masterVolume * soundEffectsVolume;
-        //}
+        fightMusicAudioSource.volume = masterVolume * musicVolume;
+        mainMusicAudioSource.volume = masterVolume * musicVolume;
+        ambianceAudioSource.volume = masterVolume * soundEffectsVolume;
+        soundEffectsAudioSource.volume = masterVolume * soundEffectsVolume;
+        foreach (AudioSource audioSource in pooledSoundEffectAudioSources)
+        {
+            audioSource.volume = masterVolume * soundEffectsVolume;
+        }
     }
     public AudioSource PlaySound(string soundName, float volumeScale = 1, float pitch = 1)
     {
@@ -115,6 +117,7 @@ public class AudioManager : MonoBehaviour
         if (sfx != null)
         {
             pooledSoundEffectAudioSources[currentSourceIndex].pitch = pitch;
+            pooledSoundEffectAudioSources[currentSourceIndex].volume = masterVolume * soundEffectsVolume;
             pooledSoundEffectAudioSources[currentSourceIndex].PlayOneShot(sfx, volumeScale);
             asource = pooledSoundEffectAudioSources[currentSourceIndex];
         }
@@ -187,7 +190,7 @@ public class AudioManager : MonoBehaviour
         {
             t += Time.fixedUnscaledDeltaTime;
             yield return new WaitForFixedUpdate();
-            asource.volume = Mathf.Lerp(1, 0, t);
+            asource.volume = Mathf.Lerp(masterVolume * musicVolume, 0, t);
         }
 
         asource.volume = 0f;
@@ -198,14 +201,15 @@ public class AudioManager : MonoBehaviour
         asource.Play();
 
         float t = 0;
-        while (asource.volume < 0.95f)
+        while (asource.volume < masterVolume * musicVolume)
         {
             t += Time.fixedUnscaledDeltaTime;
             yield return new WaitForFixedUpdate();
-            asource.volume = Mathf.Lerp(0, 1, t);
+            asource.volume = Mathf.Lerp(0, masterVolume * musicVolume, t);
         }
-        asource.volume = 1f;
-        
+        asource.volume = masterVolume * musicVolume;
+
+
     }
 
     public void StopAmbiance()

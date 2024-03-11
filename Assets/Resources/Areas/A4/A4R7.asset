@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: A4R7
   m_EditorClassIdentifier: 
   roomName: Carousel
-  roomPrefab: {fileID: 0}
-  par: 6
+  roomPrefab: {fileID: 7856683090932274919, guid: 2c374b840b28656469da6e34ce504cf9, type: 3}
+  par: 4
   isTutorial: 0
   isBoss: 0
   maxUnits: 4

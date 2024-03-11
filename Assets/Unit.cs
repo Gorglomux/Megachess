@@ -264,7 +264,16 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
                 }
                 else
                 {
+                    GlobalHelper.GlobalVariables.indicatorManager.HideAll();
                     roomRef.OnBoardUpdate();
+                    if (actionsLeft > 0 && !isEnemy)
+                    {
+                        StartIdle();
+                    }
+                    else if (!isEnemy)
+                    {
+                        EndIdle();
+                    }
                 }
             };
         }
@@ -621,7 +630,18 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
 
         if (GlobalHelper.GlobalVariables.gameInfos.gameState is UnitPlaceState)
         {
-            MoveInUnitPlace();
+
+            if (GlobalHelper.IsMouseOnReserve(mousePosition) && GlobalHelper.GetRoom().getAllUnits().Contains(this))
+            {
+                GlobalHelper.GlobalVariables.player.AddUnit(this);
+                GlobalHelper.GetRoom().DestroyUnit(this);
+
+            }
+            else
+            {
+
+                MoveInUnitPlace();
+            }
             AudioManager.instance.PlaySound("sfx_chess_move", 0.8f, 0.95f);
         }
         else
@@ -668,9 +688,19 @@ public class Unit : MonoBehaviour , ISelectable, IHoverable, IDraggable
     public void onDragEnd(Vector3 mousePosition)
     {
         spriteRenderer.color = Color.white;
+
         if(GlobalHelper.GlobalVariables.gameInfos.gameState is UnitPlaceState)
         {
-            MoveInUnitPlace();
+            if (GlobalHelper.IsMouseOnReserve(mousePosition)&& GlobalHelper.GetRoom().getAllUnits().Contains(this))
+            {
+                GlobalHelper.GlobalVariables.player.AddUnit(this);
+                GlobalHelper.GetRoom().DestroyUnit(this);
+            }
+            else
+            {
+                MoveInUnitPlace();
+
+            }
         }
         else
         {

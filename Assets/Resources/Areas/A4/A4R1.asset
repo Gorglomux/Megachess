@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: A4R1
   m_EditorClassIdentifier: 
   roomName: Wedge
-  roomPrefab: {fileID: 7856683090932274919, guid: 7a5e30deecdf5014e9af67db6327b17b, type: 3}
-  par: 5
+  roomPrefab: {fileID: 7856683090932274919, guid: 39516e9849ba7404c9104335c1ff765c, type: 3}
+  par: 4
   isTutorial: 0
   isBoss: 0
   maxUnits: 4

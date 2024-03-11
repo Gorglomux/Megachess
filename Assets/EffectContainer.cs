@@ -159,4 +159,21 @@ public class EffectContainer : MonoBehaviour
         }
         return output;
     }
+
+    public void FillReset()
+    {
+        FillString("Reset the current fight at the cost of gold");
+        EffectContainer effectContainer2 = GlobalHelper.UI().effectContainerManager.getNext();
+        effectContainer2.FillString(string.Format("Cost increase by 1 after each use, and reset when clearing an area."));
+
+        EffectContainer effectContainer = GlobalHelper.UI().effectContainerManager.getNext();
+        effectContainer.FillString(string.Format("Current cost : ${0}",GlobalHelper.GetResetCost()));
+    }
+
+    public void FillString(string s, bool isRegex = false)
+    {
+        string o = isRegex ? RegexReplace(s) : s;
+
+        text.text = s;
+    }
 }

@@ -28,12 +28,10 @@ public class CameraMovementManager : MonoBehaviour
             camToZero();
         }
     }
-    Tween camToZeroTween;
+    Tween camToZeroTween = null;
     public Tween camToZero()
     {
-        Tween camToZeroTween = cameraMovementTransform.transform.DOMove(initialCameraPosition, 0.5f).SetEase(Ease.Linear);
-        print("ToZero");
-        tweenActive.Add(camToZeroTween);
+        camToZeroTween = cameraMovementTransform.transform.DOMove(initialCameraPosition, 0.5f).SetEase(Ease.Linear);
         camToZeroTween.onComplete += () =>
         {
             cam.transform.position = initialCameraPosition;
@@ -122,7 +120,7 @@ public class CameraMovementManager : MonoBehaviour
         }
 
         float value = speedMultiplier / 300f;
-        Tween t = cam.DOShakePosition(delay*0.8f, Vector3.one * value).SetEase(Ease.OutBounce);
+        Tween t = cam.DOShakePosition(delay*0.8f, Vector3.one * value * GlobalHelper.ScreenShakeMultiplier).SetEase(Ease.OutBounce);
         tweenActive.Add(t);
         t.onComplete += () =>
         {

@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: A0
   m_EditorClassIdentifier: 
   areaName: Tutorial
-  paletteIndex: 11
+  paletteIndex: 13
   contrastText: 0
   colorText: {r: 1, g: 1, b: 1, a: 1}
   roomList:
+  - {fileID: 11400000, guid: b3ed9d2c4ecc25347b688f6c09ae0573, type: 2}
   - {fileID: 11400000, guid: 065504665376b9242b1c7429388fad8f, type: 2}
   - {fileID: 11400000, guid: 9aba799bc2c953b4abef6511b0516933, type: 2}
-  - {fileID: 11400000, guid: b3ed9d2c4ecc25347b688f6c09ae0573, type: 2}
+  - {fileID: 11400000, guid: 7e217a8299fd7614699e8b7f165f903c, type: 2}
   shuffleArea: 0

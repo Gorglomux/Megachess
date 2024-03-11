@@ -81,15 +81,15 @@ Material:
     m_Floats:
     - _Dither: 12
     - _DitherAmplitude: 4.53
-    - _DitherMaxY: 4.77
-    - _DitherMinY: 0.8
+    - _DitherMaxY: 4.92
+    - _DitherMinY: 0.59
     - _DitherOffset: -0.13
     - _DitherSize: 6.09
     - _IndexToLerpTo: 17
     - _Lerp: 0
     - _MaxDitherValue: 16
     - _PaletteCount: 17
-    - _PaletteIndex: 11
+    - _PaletteIndex: 13
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:

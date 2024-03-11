@@ -28,7 +28,6 @@ public class GlobalHelper
 
     public static int gridCount = -1;
 
-    public static int RESET_COST = 1;
     public static Dictionary<string, List<Room>> roomDatas;
 
     public static List<Area> areaList;
@@ -57,8 +56,9 @@ public class GlobalHelper
     public static float DEFAULT_CAMERA_ZOOM_DURATION = 0.5f;
     public static float DEFAULT_CAMERA_ZOOM_STRENGTH = 1f;
 
-    
+
     #endregion
+    public static float ScreenShakeMultiplier = 1;
     public static int GetUID()
     {
         NEXT_UID++;
@@ -304,5 +304,14 @@ public class GlobalHelper
         return gm.currentState is FightState || gm.currentState is UnitPlaceState || gm.currentState is TutorialFightState || gm.currentState is TutorialUnitPlaceState;
     }
 
+    public static bool IsMouseOnReserve(Vector3 position)
+    {
+        return RectTransformUtility.RectangleContainsScreenPoint(UI().ReserveRectTransform, position);
+    }
+
+    public static int GetResetCost()
+    {
+        return (int)Mathf.Clamp(GlobalVariables.gameInfos.baseResetCost + GetGameManager().currentResetCost - GetGameManager().resetReduction , 1, 10);
+    }
 
 }

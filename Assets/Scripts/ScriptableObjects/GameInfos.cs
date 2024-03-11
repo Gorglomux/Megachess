@@ -29,4 +29,16 @@ public class GameInfos : ScriptableObject
     public int shopPassiveChoiceAmount = 3;
     public int shopUnitChoiceAmount = 6;
     public int roomToClearBaseAmount = 5;
+
+    public float minAnimationSpeed = 0.5f;
+    public float maxAnimationSpeed = 3f;
+
+
+    public float minScreenShake = 0f;
+    public float maxScreenShake = 3f;
+    public int baseResetCost = 1;
+
+    public bool test = false;
+
+
 }

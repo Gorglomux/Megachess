@@ -54,6 +54,9 @@ public class GameManager : MonoBehaviour
 
     public bool wasInShop = false;
     public int canCaptureThisFight = 1;
+
+    public int currentResetCost = 0;
+    public int resetReduction = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -128,7 +131,8 @@ public class GameManager : MonoBehaviour
     }
     public Tween LoadArea(Area a)
     {
-        roomToClearAmount = areaBeaten + roomToClearBonus + GlobalHelper.GlobalVariables.gameInfos.roomToClearBaseAmount;
+        currentResetCost = 0;
+        roomToClearAmount = /*areaBeaten+*/  roomToClearBonus + GlobalHelper.GlobalVariables.gameInfos.roomToClearBaseAmount;
         firstAttackThisArea = false;
         GlobalHelper.GlobalVariables.gameInfos.currentArea = a;
         print("Loading area " + a.name);

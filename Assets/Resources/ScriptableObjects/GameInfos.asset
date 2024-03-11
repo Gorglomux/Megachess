@@ -12,12 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 551e2acd69d82884db553b25863272e9, type: 3}
   m_Name: GameInfos
   m_EditorClassIdentifier: 
-  currentArea: {fileID: 11400000, guid: 4e2fa53a2d168ad49a8fec37f681a8f5, type: 2}
+  currentArea: {fileID: 11400000, guid: bf9217235d9af10438fb65cb9b2b3a69, type: 2}
   currentRoom: {fileID: 0}
   currentGlobalPaletteIndex: 0
-  currentTurn: 2
-  areaSize: 11
+  currentTurn: 1
+  areaSize: 1
   shouldClearPlayerPrefs: 0
   shopPassiveChoiceAmount: 3
   shopUnitChoiceAmount: 6
-  roomToClearBaseAmount: 5
+  roomToClearBaseAmount: 6
+  minAnimationSpeed: 0.5
+  maxAnimationSpeed: 3
+  minScreenShake: 0
+  maxScreenShake: 3
+  baseResetCost: 1
+  test: 1
