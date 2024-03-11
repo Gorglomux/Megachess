@@ -12,13 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee64ea7af66fc514b9895e63be2103c5, type: 3}
   m_Name: BowData
   m_EditorClassIdentifier: 
-  unitName: Boat
-  sprite: {fileID: 21300000, guid: 1e517d6c65c14524aae36e01bdfad27b, type: 3}
-  sprite_NB: {fileID: 21300000, guid: a008577d0e02be042a681c159489f9c1, type: 3}
-  baseCost: 5
+  unitName: Bow
+  sprite: {fileID: 21300000, guid: 4b99a910e333e9c45a25e4a3d750c96d, type: 3}
+  sprite_NB: {fileID: 21300000, guid: 4b99a910e333e9c45a25e4a3d750c96d, type: 3}
+  baseCost: 6
   isBoss: 0
   moveAfterAttack: 1
   canTargetAllies: 0
   effectDatas: []
-  paletteIndex: 11
-  attackOrder: 1
+  paletteIndex: 13
+  attackOrder: 8
+  spreadAttack: 0

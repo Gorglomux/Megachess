@@ -16968,6 +16968,7 @@ MonoBehaviour:
   tileAttack: {fileID: 11400000, guid: 54c1195adbfddd14db6aefa856f72db0, type: 2}
   tileSpread: {fileID: 11400000, guid: 389e88e8097d3cf41a9461489caad2a3, type: 2}
   spritesToShow: 3
+  minValue: 6
   tilemapBottomLeft: {fileID: 1862979421}
   grid: {fileID: 1005514639}
   tilemapSize: 1
