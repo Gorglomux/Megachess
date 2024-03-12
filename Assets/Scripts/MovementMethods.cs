@@ -119,7 +119,6 @@ public class MovementMethods
             List<Vector3Int> positionsOffset = new List<Vector3Int>();
             foreach(Vector3Int cell in positions)
             {
-                Debug.Log(" Distance betweeen" + origin + "and" +cell +" = " +Vector3.Distance(origin,cell));
                 if(Vector3.Distance(origin,cell) > 2 * ratio)
                 {
                     positionsOffset.Add(cell);
@@ -166,7 +165,131 @@ public class MovementMethods
         } },
     };
     public static Dictionary<string, Func<RoomView, Unit, int, Vector3Int, List<List<Vector3Int>>>> spreadMethods = new Dictionary<string, Func<RoomView, Unit, int, Vector3Int, List<List<Vector3Int>>>>()
-    {
+    { 
+        {"Guard", (room,unit, preview, targetedPosition)=>{
+
+            bool returnAll = false;
+            if(targetedPosition.x == 9999)
+            {
+                returnAll = true;
+            }
+
+            List<List<Vector3Int>> positions = new List<List<Vector3Int>>();
+            List<Vector3Int> directions = new List<Vector3Int>
+            {
+                new Vector3Int(0,1),
+                new Vector3Int(0,-1),
+                new Vector3Int(1,0),
+                new Vector3Int(-1,0)
+            };
+            int attackSize =(int) 2*unit.megaSize;
+            if(preview > 1)
+            {
+               List<Vector3Int> pPreview = new List<Vector3Int>();
+                for(int i = -1; i<= 1; i++)
+                {
+                    pPreview.AddRange(GetCellAlongStaticPreview(unit,directions[0] + new Vector3Int(i,0)));
+                }
+                positions.Add(pPreview);
+            }
+            else
+            {
+               foreach (Vector3Int direction in directions)
+                {
+                    List<Vector3Int> p= new List<Vector3Int>();
+                    if(direction.x == 0)
+                    {
+                        p.AddRange(GetCellFromFixedMovement(unit,room,direction+ new Vector3Int(1,0) ,true,false,true ));
+                        p.AddRange(GetCellFromFixedMovement(unit,room,direction+ new Vector3Int(-1,0),true,false,true ) );
+
+                    }
+                    else
+                    {
+
+                        p.AddRange(GetCellFromFixedMovement(unit,room,direction+ new Vector3Int(0,1),true,false,true ));
+                        p.AddRange(GetCellFromFixedMovement(unit,room,direction+ new Vector3Int(0,-1) ,true,false,true ) );
+                    }
+                        p.AddRange(GetCellFromFixedMovement(unit,room,direction,true,false,true ) );
+                    if (returnAll)
+                    {
+                        positions.Add(p);
+                    }
+                    else
+                    {
+                       if (p.Contains(targetedPosition))
+                       {
+                           positions.Add(p);
+                       }
+                   }
+
+                }
+            }
+            return positions;
+
+        } },
+       {"Joust", (room,unit, preview, targetedPosition)=>{
+
+            bool returnAll = false;
+            if(targetedPosition.x == 9999)
+            {
+                returnAll = true;
+            }
+
+            List<List<Vector3Int>> positions = new List<List<Vector3Int>>();
+            List<Vector3Int> directions = new List<Vector3Int>
+            {
+                new Vector3Int(0,1),
+                new Vector3Int(0,-1),
+                new Vector3Int(1,0),
+                new Vector3Int(-1,0)
+            };
+            int attackSize =(int) 2*unit.megaSize;
+            if(preview > 1)
+            {
+               List<Vector3Int> pPreview = new List<Vector3Int>();
+                for(int i = -1; i<= 1; i++)
+                {
+                    pPreview.AddRange(GetCellAlongStaticPreview(unit,directions[0] + new Vector3Int(i,0)));
+                }
+                    pPreview.AddRange(GetCellAlongStaticPreview(unit,directions[0] +directions[0]));
+                positions.Add(pPreview);
+            }
+            else
+            {
+               foreach (Vector3Int direction in directions)
+                {
+                    List<Vector3Int> p= new List<Vector3Int>();
+                    if(direction.x == 0)
+                    {
+                        p.AddRange(GetCellFromFixedMovement(unit,room,direction+ new Vector3Int(1,0) ,true,false,true ));
+                        p.AddRange(GetCellFromFixedMovement(unit,room,direction+ new Vector3Int(-1,0),true,false,true ) );
+
+                    }
+                    else
+                    {
+
+                        p.AddRange(GetCellFromFixedMovement(unit,room,direction+ new Vector3Int(0,1),true,false,true ));
+                        p.AddRange(GetCellFromFixedMovement(unit,room,direction+ new Vector3Int(0,-1) ,true,false,true ) );
+                    }
+                        p.AddRange(GetCellFromFixedMovement(unit,room,direction,true,false,true ) );
+                        p.AddRange(GetCellFromFixedMovement(unit,room,direction + direction,true,false,true ) );
+                    if (returnAll)
+                    {
+                        positions.Add(p);
+                    }
+                    else
+                    {
+                       if (p.Contains(targetedPosition))
+                       {
+                           positions.Add(p);
+                       }
+                   }
+
+                }
+            }
+            return positions;
+
+        } },
        {"Knife", (room,unit, preview, targetedPosition)=>{
 
             bool returnAll = false;
@@ -310,6 +433,52 @@ public class MovementMethods
 
     public static Dictionary<string, Func<RoomView, Unit, int, List<Vector3Int>>> movementMethods = new Dictionary<string, Func<RoomView, Unit, int, List<Vector3Int>>>()
     {
+        {"Guard", (room,unit, preview)=>{
+            List<Vector3Int> positions = new List<Vector3Int>();
+            List<Vector3Int> staticMovements = new List<Vector3Int>
+            {
+            };
+            int diamondSize = 3;
+            for(int y=-diamondSize;y<diamondSize+1; y++)
+            {
+                 for(int x= -diamondSize; x<diamondSize+1; x++)
+                 {
+                    if(x == 0 && (y  == -diamondSize || y == diamondSize))
+                    {
+                        staticMovements.Add(new Vector3Int(x,y));
+
+                    }
+                    if(y == 0 && (x  == -diamondSize || x == diamondSize))
+                    {
+                        staticMovements.Add(new Vector3Int(x,y));
+
+                    }
+                    else if(Mathf.Abs(x) + Mathf.Abs(y) == diamondSize)
+                    {
+                        staticMovements.Add(new Vector3Int(x,y));
+                    }
+                 }
+            }
+
+            if(preview > 1)
+            {
+                foreach(Vector3Int staticMovement in staticMovements)
+                {
+                    positions.AddRange(GetCellAlongStaticPreview(unit,staticMovement));
+                }
+            }
+            else
+            {
+                foreach (Vector3Int staticMovement in staticMovements)
+                {
+                    positions.AddRange(GetCellFromFixedMovement(unit,room,staticMovement,false));
+                }
+
+            }
+
+            return positions;
+
+        } },
         {"Rook", (room,unit, preview)=>{
             List<Vector3Int> positions = new List<Vector3Int>();
             List<Vector3Int> directions = new List<Vector3Int>
@@ -433,7 +602,7 @@ public class MovementMethods
             {
                 foreach (Vector3Int staticMovement in staticMovements)
                 {
-                    positions.AddRange(GetCellFromFixedMovement(unit,room,staticMovement,false));
+                    positions.AddRange(GetCellFromFixedMovement(unit,room,staticMovement,true));
                 }
 
             }
@@ -569,6 +738,92 @@ public class MovementMethods
             }
             //Filter unique position 
             positions = positions.Distinct().ToList();
+
+            return positions;
+
+        } },
+         {"Joust", (room,unit, preview)=>{
+            List<Vector3Int> positions = new List<Vector3Int>();
+            List<Vector3Int> directions = new List<Vector3Int>
+            {
+                new Vector3Int(1,1),
+                new Vector3Int(-1,-1),
+                new Vector3Int(1,-1),
+                new Vector3Int(-1,1)
+            };
+            if(preview > 1)
+            {
+                foreach(Vector3Int direction in directions)
+                {
+                    positions.AddRange(GetCellAlongDirectionPreview(unit,preview,direction));
+                }
+            }
+            else
+            {
+
+                foreach (Vector3Int direction in directions)
+                {
+                    positions.AddRange(GetCellAlongDirection(unit,room,direction,false));
+                }
+            }
+            //Filter unique position 
+            positions = positions.Distinct().ToList();
+            Vector3Int origin = new Vector3Int(0,0);
+            int ratio = 1;
+            if(preview < 0)
+            {
+                origin = unit.occupiedCells[unit.megaSize-1];
+                ratio = unit.megaSize;
+            }
+
+            List<Vector3Int> positionsOffset = new List<Vector3Int>();
+            foreach(Vector3Int cell in positions)
+            {
+                if(Vector3.Distance(origin,cell) > 2 * ratio)
+                {
+                    positionsOffset.Add(cell);
+                }
+
+            }
+
+            return positionsOffset;
+
+        } },
+
+          {"Boat", (room,unit, preview)=>{
+            List<Vector3Int> positions = new List<Vector3Int>();
+            List<Vector3Int> staticMovements = new List<Vector3Int>
+            {
+            };
+             int squareHoleSizeA = -2;
+             int squareHoleSizeB = 3;
+            for(int y=squareHoleSizeA;y<squareHoleSizeB; y++)
+            {
+                 for(int x= squareHoleSizeA; x<squareHoleSizeB; x++)
+                 {
+
+                    if(x != 0 &&y != 0)
+                    {
+                        staticMovements.Add(new Vector3Int(x,y));
+                    }
+                 }
+            }
+
+            if(preview > 1)
+            {
+                foreach(Vector3Int staticMovement in staticMovements)
+                {
+                    positions.AddRange(GetCellAlongStaticPreview(unit,staticMovement));
+                }
+            }
+            else
+            {
+                foreach (Vector3Int staticMovement in staticMovements)
+                {
+                    positions.AddRange(GetCellFromFixedMovement(unit,room,staticMovement,false));
+                }
+
+            }
 
             return positions;
 

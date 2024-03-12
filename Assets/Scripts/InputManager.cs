@@ -38,7 +38,7 @@ public class InputManager : MonoBehaviour
     public float currentHoverDelay = 0f;
     void Update()
     {
-        if(currentHovered != null)
+        if (currentHovered != null)
         {
             currentHoverDelay += Time.deltaTime;
 
@@ -46,8 +46,8 @@ public class InputManager : MonoBehaviour
 
         //Get the mouse position
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        worldPosition = new Vector3(worldPosition.x,worldPosition.y,0);
-        
+        worldPosition = new Vector3(worldPosition.x, worldPosition.y, 0);
+
         RaycastHit2D[] hits = Physics2D.RaycastAll(worldPosition, Vector3.forward, 1000, mask);
         foreach (RaycastHit2D hit in hits)
         {
@@ -56,9 +56,9 @@ public class InputManager : MonoBehaviour
 
 
             IHoverable hovered = nextCollider.GetComponent<IHoverable>();
-            if (hovered != null && currentHovered != hovered && hovered != currentSelected &&(currentHovered == null || currentHoverDelay > maxHoverDelay))
+            if (hovered != null && currentHovered != hovered && hovered != currentSelected && (currentHovered == null || currentHoverDelay > maxHoverDelay))
             {
-                if(currentHovered != null)
+                if (currentHovered != null)
                 {
                     currentHovered.onHoverExit();
                 }
@@ -69,11 +69,11 @@ public class InputManager : MonoBehaviour
             }
 
 
-           
+
         }
         if (Input.GetMouseButtonDown(0))
         {
-            if(hits.Length > 0)
+            if (hits.Length > 0)
             {
                 ISelectable selectable = hits[0].collider.GetComponent<ISelectable>();
                 if (selectable != null && currentSelected != selectable)
@@ -82,23 +82,30 @@ public class InputManager : MonoBehaviour
                     if (currentSelected != null)
                     {
                         infos.selected = null;
-                        currentSelected.onDeselect(new Vector3(worldPosition.x,worldPosition.y,0));
+                        currentSelected.onDeselect(new Vector3(worldPosition.x, worldPosition.y, 0));
+                        currentSelected = null;
                     }
-                    currentSelected = selectable;
-                    currentHovered.onHoverExit();
-                    currentHovered = null;
-                    infos.hovered = currentHovered;
-                    infos.selected = selectable;
-                    if (!currentSelected.onSelect()) {
-
-                        infos.selected = selectable;
-                        StartCoroutine(corDeselectAfterAFrame());
-
-                    }
-                    else
+                    if (!GlobalHelper.GetGameManager().isActionInProgress)
                     {
+                        currentSelected = selectable;
+                        currentHovered.onHoverExit();
+                        currentHovered = null;
+                        infos.hovered = currentHovered;
                         infos.selected = selectable;
+                        if (!currentSelected.onSelect())
+                        {
+
+                            infos.selected = selectable;
+                            StartCoroutine(corDeselectAfterAFrame());
+
+                        }
+                        else
+                        {
+                            infos.selected = selectable;
+                        }
                     }
+
+
                 }
             }
             else if (currentSelected != null)
@@ -106,6 +113,16 @@ public class InputManager : MonoBehaviour
                 Deselect(worldPosition);
             }
 
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            if (currentSelected != null)
+            {
+                infos.selected = null;
+                currentSelected.onDeselect(new Vector3(worldPosition.x, worldPosition.y, 0));
+                currentSelected = null;
+            }
         }
         if(currentSelected != null)
         {
@@ -128,6 +145,11 @@ public class InputManager : MonoBehaviour
                 {
                     currentDraggable = currentSelected as IDraggable;
                     Sprite spriteToShow = currentDraggable.onDragBegin(worldPosition);
+                    if(spriteToShow == null)
+                    {
+                        currentDraggable = null;
+                        return;
+                    }
                     dragStarted = true;
                     spritePreview.gameObject.SetActive(true);
                     spritePreview.sprite = spriteToShow;
@@ -181,6 +203,7 @@ public class InputManager : MonoBehaviour
                 infos.hovered = null;
             }
         }
+#if UNITY_EDITOR
         //REMOVE ME
         if (Input.GetKeyUp(KeyCode.KeypadMinus))
         {
@@ -202,6 +225,7 @@ public class InputManager : MonoBehaviour
             Time.timeScale = 0;
             GlobalHelper.UI().SetBottomText("Timescale " + Time.timeScale);
         }
+#endif
     }
 
 

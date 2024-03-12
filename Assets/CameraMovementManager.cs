@@ -42,14 +42,23 @@ public class CameraMovementManager : MonoBehaviour
 
     public Tween ResetCameraPosition(bool instant = false)
     {
-        Tween t = cameraMovementTransform.transform.DOMove(initialCameraPosition, 0.2f).SetEase(Ease.OutQuint);
-
-        tweenActive.Add(t);
-        t.onComplete += () =>
+        if (instant)
         {
-            tweenActive.Remove(t);
-        };
-        return t;
+            cameraMovementTransform.transform.position = initialCameraPosition;
+            return null ;
+        }
+        else
+        {
+            Tween t = cameraMovementTransform.transform.DOMove(initialCameraPosition, 0.2f).SetEase(Ease.OutQuint);
+
+            tweenActive.Add(t);
+            t.onComplete += () =>
+            {
+                tweenActive.Remove(t);
+            };
+            return t;
+        }
+
 
 
     }

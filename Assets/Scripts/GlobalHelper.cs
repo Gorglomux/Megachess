@@ -199,6 +199,9 @@ public class GlobalHelper
             case "Cleave":
                 effect = new CleaveEffect(ed);
                 break;
+            case "Guarded":
+                effect = new GuardedEffect(ed);
+                break;
             default:
                 Debug.LogError("Invalid Effect lookup");
                 break;

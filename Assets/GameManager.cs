@@ -57,6 +57,8 @@ public class GameManager : MonoBehaviour
 
     public int currentResetCost = 0;
     public int resetReduction = 0;
+
+    public bool isActionInProgress = false;
     // Start is called before the first frame update
     void Start()
     {

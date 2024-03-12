@@ -177,8 +177,13 @@ public class FightState : IState
         {
             foreach (Unit u in GlobalHelper.GetRoom().GetEnemies())
             {
-                u.RefreshActions();
-                yield return u.StartCoroutine(u.EnemyAttack());
+                if(u != null)
+                {
+                    u.RefreshActions();
+
+                    yield return u.StartCoroutine(u.EnemyAttack());
+
+                }
             }
             GlobalHelper.getCamMovement().ResetCameraPosition();
             GlobalHelper.getCamMovement().ResetZoomPosition();
