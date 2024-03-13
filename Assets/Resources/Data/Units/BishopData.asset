@@ -20,3 +20,6 @@ MonoBehaviour:
   moveAfterAttack: 1
   canTargetAllies: 0
   effectDatas: []
+  paletteIndex: 4
+  attackOrder: 5
+  spreadAttack: 0

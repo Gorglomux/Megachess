@@ -15,8 +15,11 @@ MonoBehaviour:
   unitName: Queen
   sprite: {fileID: -724591318, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
   sprite_NB: {fileID: -620975232, guid: f26745c7b7096f347b49bc944c5b9885, type: 3}
-  baseCost: 8
+  baseCost: 9
   isBoss: 0
   moveAfterAttack: 1
   canTargetAllies: 0
   effectDatas: []
+  paletteIndex: 4
+  attackOrder: 5
+  spreadAttack: 0

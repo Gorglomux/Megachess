@@ -259,7 +259,7 @@ MonoBehaviour:
   m_MinWidth: -1
   m_MinHeight: -1
   m_PreferredWidth: -1
-  m_PreferredHeight: 70
+  m_PreferredHeight: 93
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
@@ -284,7 +284,7 @@ MonoBehaviour:
   fitType: 4
   rows: 0
   columns: 4
-  cellSize: {x: 32, y: NaN}
+  cellSize: {x: 37, y: NaN}
   spacing: {x: 0, y: 0}
   fitX: 0
   fitY: 1
@@ -479,7 +479,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 46.51
+  m_fontSize: 34.85
   m_fontSizeBase: 29.87
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -537,7 +537,7 @@ MonoBehaviour:
   m_MinWidth: -1
   m_MinHeight: -1
   m_PreferredWidth: 114.6
-  m_PreferredHeight: 17.3
+  m_PreferredHeight: 0
   m_FlexibleWidth: 1
   m_FlexibleHeight: 1
   m_LayoutPriority: 1
@@ -1465,7 +1465,7 @@ MonoBehaviour:
   m_MinWidth: -1
   m_MinHeight: -1
   m_PreferredWidth: -1
-  m_PreferredHeight: -1
+  m_PreferredHeight: 0
   m_FlexibleWidth: 3.7
   m_FlexibleHeight: 1
   m_LayoutPriority: 1

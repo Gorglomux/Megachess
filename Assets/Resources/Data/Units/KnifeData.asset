@@ -15,7 +15,7 @@ MonoBehaviour:
   unitName: Knife
   sprite: {fileID: 21300000, guid: a0425300c5d2c7f4a9f15353e3dc2923, type: 3}
   sprite_NB: {fileID: 21300000, guid: 5e8b71d7102c6c84a9bb8340b896f4cd, type: 3}
-  baseCost: 7
+  baseCost: 4
   isBoss: 0
   moveAfterAttack: 0
   canTargetAllies: 0

@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: Promote
   targettingType: 1
-  cooldownType: 2
-  cooldownDuration: 1
+  cooldownType: 3
+  cooldownDuration: 3
   description: Target Pawn is promoted to Queen.

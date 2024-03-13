@@ -100,7 +100,6 @@ MonoBehaviour:
   m: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   spriteRenderer: {fileID: 5056264981853230970}
   referenceSprite: {fileID: 0}
-  atlas: {fileID: 4343727234628468602, guid: f080dadbb9287664b977b3cf2828c907, type: 2}
 --- !u!1 &5056264982835310702
 GameObject:
   m_ObjectHideFlags: 0
@@ -156,10 +155,14 @@ MonoBehaviour:
   currentEffects: []
   isEnemy: 0
   health: 0
+  startingHealth: 0
   megaSize: 1
+  shieldAmount: 0
   maxActions: 1
   actionsLeft: 1
   _room: {fileID: 0}
+  lastAttacker: {fileID: 0}
+  placedOrder: 0
   bloodEffectPrefab: {fileID: 3525757487997943904, guid: c6e8b98ac0f136c47bce8f4c0d3f3f1b, type: 3}
   bloodEffectTextures:
   - {fileID: 2800000, guid: 03740d041f299464285369ecb38bc8af, type: 3}

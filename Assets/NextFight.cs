@@ -18,13 +18,13 @@ public class NextFight : MonoBehaviour
     public Tween StartAnimate(string prefix)
     {
         text.text = prefix;
-        return transform.DOMove(Target.position, 0.5f).SetEase(Ease.OutQuint);
+        return transform.DOMove(Target.position, 0.5f).SetEase(Ease.OutBack,2);
         
     }
 
     public Tween StopAnimate()
     {
 
-        return transform.DOMove(star.position, 0.5f).SetEase(Ease.OutQuint);
+        return transform.DOMove(star.position, 0.5f).SetEase(Ease.OutBack,2);
     }
 }

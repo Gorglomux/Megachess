@@ -79,7 +79,7 @@ public class UIManager : MonoBehaviour
     }
     public void BackToMenu()
     {
-
+        StartCoroutine(corBackToMenu());
     }
     public IEnumerator corBackToMenu()
     {

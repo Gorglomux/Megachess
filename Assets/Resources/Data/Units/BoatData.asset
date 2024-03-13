@@ -15,10 +15,11 @@ MonoBehaviour:
   unitName: Boat
   sprite: {fileID: 21300000, guid: 1e517d6c65c14524aae36e01bdfad27b, type: 3}
   sprite_NB: {fileID: 21300000, guid: a008577d0e02be042a681c159489f9c1, type: 3}
-  baseCost: 5
+  baseCost: 3
   isBoss: 0
   moveAfterAttack: 1
   canTargetAllies: 0
   effectDatas: []
   paletteIndex: 11
   attackOrder: 1
+  spreadAttack: 0

@@ -15,7 +15,7 @@ MonoBehaviour:
   unitName: Fork
   sprite: {fileID: 21300000, guid: 9986bae66beb6bd4f849e7d27bc5df92, type: 3}
   sprite_NB: {fileID: 21300000, guid: 5f384a26498756347b64627bd556fb9a, type: 3}
-  baseCost: 12
+  baseCost: 2
   isBoss: 0
   moveAfterAttack: 0
   canTargetAllies: 0

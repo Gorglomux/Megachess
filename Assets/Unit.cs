@@ -93,7 +93,7 @@ public class Unit : MonoBehaviour, ISelectable, IHoverable, IDraggable
             AddEffect(GlobalHelper.effectLookup(ed));
         }
         this.isEnemy = isEnemy;
-        LoadPalette(palette);
+        LoadPalette(-1);
 
         UID = GlobalHelper.GetUID();
         megaSize = (int)Mathf.Sqrt(occupiedCells.Count);

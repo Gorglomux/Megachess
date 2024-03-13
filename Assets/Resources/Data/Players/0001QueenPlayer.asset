@@ -22,5 +22,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 22ffdd022e549434182fd356d4af910f, type: 2}
   - {fileID: 11400000, guid: 4500776807c84f94b97a2b65c53f0d41, type: 2}
   - {fileID: 11400000, guid: ec16354909c31cc48a99e01913265d94, type: 2}
-  startingAbilityData: {fileID: 11400000, guid: cef8e7116d7f6c047b20a3c53b030746, type: 2}
-  difficulty: 0
+  - {fileID: 11400000, guid: 04c9ee95b2607264baf21203e847f2ec, type: 2}
+  - {fileID: 11400000, guid: d0a61abff4e661e45a440fd602e5139b, type: 2}
+  startingAbilityData: {fileID: 11400000, guid: d2396c56e803a624f859c02f6c013bb8, type: 2}
+  difficulty: 1

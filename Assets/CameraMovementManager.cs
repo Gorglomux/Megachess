@@ -120,6 +120,31 @@ public class CameraMovementManager : MonoBehaviour
         };
 
     }
+    public float originalVignetteValue = 0.45f;
+    public void AccentuateVignette(float strength = -1f, float duration = -2f)
+    {
+        if (duration <= 0)
+        {
+            duration = 2;
+        }
+        if (strength <= 0)
+        {
+            strength = 0.6f;
+        }
+
+        Vignette vignette;
+        v.profile.TryGet<Vignette>(out vignette);
+        DOTween.To(() => vignette.intensity.value, x => vignette.intensity.value = x, strength, duration);
+
+    }
+    public void ResetVignette()
+    {
+
+        Vignette vignette;
+        v.profile.TryGet<Vignette>(out vignette);
+        DOTween.To(() => vignette.intensity.value, x => vignette.intensity.value = x, originalVignetteValue, 2);
+    }
+
     List<Tween> tweenActive = new List<Tween>();
     public Tween ShakeCamera(float speedMultiplier, float delay =-1f)
     {

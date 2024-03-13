@@ -15,7 +15,7 @@ MonoBehaviour:
   unitName: Snake
   sprite: {fileID: 21300000, guid: 72cc703e109076f4b8b515c1fb42905f, type: 3}
   sprite_NB: {fileID: 21300000, guid: 84a33865e51a45b45a4be6cef77b6ec3, type: 3}
-  baseCost: 3
+  baseCost: 1
   isBoss: 0
   moveAfterAttack: 1
   canTargetAllies: 0

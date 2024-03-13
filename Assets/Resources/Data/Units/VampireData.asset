@@ -15,7 +15,7 @@ MonoBehaviour:
   unitName: Vampire
   sprite: {fileID: 21300000, guid: f610ebb5ceff8e14389af9355d49ad56, type: 3}
   sprite_NB: {fileID: 21300000, guid: 7797d4dcb32bc6a4f83906abd0c3991f, type: 3}
-  baseCost: 6
+  baseCost: 4
   isBoss: 0
   moveAfterAttack: 1
   canTargetAllies: 0
@@ -23,3 +23,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 89592dc85f4e7a143862bd5acbff5ead, type: 2}
   paletteIndex: 11
   attackOrder: 2
+  spreadAttack: 0

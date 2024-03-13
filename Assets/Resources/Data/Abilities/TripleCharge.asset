@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d18cdd2b1f84ee44497c63617e058e0a, type: 3}
   m_Name: TripleCharge
   m_EditorClassIdentifier: 
-  abilityName: Triple Charge
+  abilityName: Double Charge
   targettingType: 1
   cooldownType: 4
   cooldownDuration: 4
-  description: Target unit gain 3 actions until the end of the turn.
+  description: Target unit gain 2 extra actions until the end of the turn.

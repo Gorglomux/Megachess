@@ -15,7 +15,7 @@ MonoBehaviour:
   unitName: Guard
   sprite: {fileID: 21300000, guid: 5972931ba6ae80449a53bffdd25ba577, type: 3}
   sprite_NB: {fileID: 21300000, guid: 8311f7da0bab4da428a7a91600cf9433, type: 3}
-  baseCost: 7
+  baseCost: 4
   isBoss: 0
   moveAfterAttack: 0
   canTargetAllies: 0

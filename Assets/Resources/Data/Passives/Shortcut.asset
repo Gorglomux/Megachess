@@ -17,4 +17,4 @@ MonoBehaviour:
   passiveSprite: {fileID: 21300000, guid: f9aebb3b9a61728499f7173d959eab4b, type: 3}
   passiveActivationTime: 4
   unique: 1
-  passiveCost: 20
+  passiveCost: 10

@@ -17,5 +17,5 @@ MonoBehaviour:
   par: 4
   isTutorial: 0
   isBoss: 0
-  maxUnits: 6
+  maxUnits: 4
   animateLevel: 1

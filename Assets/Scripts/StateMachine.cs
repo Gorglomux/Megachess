@@ -20,6 +20,7 @@ public class UnitPlaceState : IState
     public void OnEntry(GameManager gm)
     {
 
+        GlobalHelper.getCamMovement().ResetVignette();
         AudioManager.instance.SetBeforeFight();
         AudioManager.instance.SetInFight();
         GlobalHelper.UI().EnableButton(GlobalHelper.UI().endTurnButton);
@@ -162,6 +163,7 @@ public class FightState : IState
             yield break;
         }
         gmRef.playerTurn = false;
+        GlobalHelper.getCamMovement().AccentuateVignette();
         yield return GlobalHelper.UI().nextFight.StopAnimate().WaitForCompletion();
         yield return GlobalHelper.UI().nextFight.StartAnimate("Enemy Turn").WaitForCompletion();
 
@@ -190,6 +192,7 @@ public class FightState : IState
 
         }
 
+        GlobalHelper.getCamMovement().ResetVignette();
 
         //yield return GlobalHelper.UI().nextFight.AnimateText("Player").WaitForCompletion();
 

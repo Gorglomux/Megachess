@@ -23,7 +23,7 @@ public class TripleChargeAbility : BaseAbility
         GlobalHelper.UI().captureManager.DisplayAtPosition(u.GetWorldPosition(), "+ Triple Charge");
         GlobalHelper.UI().HideHoverInfos();
         BaseEffect chargedEffect = GlobalHelper.effectLookup(GlobalHelper.GetEffectData("Charged"));
-        chargedEffect.effectStrength = 3;
+        chargedEffect.effectStrength = 2;
         u.AddEffect(chargedEffect);
         chargedEffect.TriggerEffect(u);
         GlobalHelper.getCamMovement().ShakeCamera(0.3f, 0.2f);
