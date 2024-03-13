@@ -104,7 +104,8 @@ public class Player : MonoBehaviour
     public void AddUnitData(UnitData ud)
     {
         Unit u = GlobalHelper.GetRoom().CreateUnit(ud, false);
-        u.LoadPalette(GlobalHelper.GlobalVariables.gameInfos.currentArea.paletteIndex);
+        //u.LoadPalette(GlobalHelper.GlobalVariables.gameInfos.currentArea.paletteIndex);
+        u.LoadPalette(-1);
         if (!inventory.ContainsKey(u.unitData))
         {
             inventory[u.unitData] = new List<Unit>();
@@ -120,6 +121,7 @@ public class Player : MonoBehaviour
 
     public void AddUnit(Unit unit)
     {
+
         unit.gameObject.SetActive(false);
         int toAdd = 1;
         if (unit.isEnemy)
@@ -133,7 +135,8 @@ public class Player : MonoBehaviour
         for(int i= 0; i < toAdd; i++)
         {
             Unit u = GlobalHelper.GetRoom().CreateUnit(unit.unitData, false);
-            u.LoadPalette(unit.unitData.paletteIndex);
+            //u.LoadPalette(unit.unitData.paletteIndex);
+            u.LoadPalette(-1);
             if (!inventory.ContainsKey(u.unitData))
             {
                 inventory[u.unitData] = new List<Unit>();

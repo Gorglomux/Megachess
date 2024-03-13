@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: A7R0
   m_EditorClassIdentifier: 
   roomName: G I G A  K I N G
-  roomPrefab: {fileID: 7856683090932274919, guid: c2347c68fe79fc144b57d5e5c2dd80cb, type: 3}
-  par: 0
+  roomPrefab: {fileID: 7856683090932274919, guid: a90bab095069dc342a7334fd8511c216, type: 3}
+  par: 9999
   isTutorial: 0
   isBoss: 1
   maxUnits: 15

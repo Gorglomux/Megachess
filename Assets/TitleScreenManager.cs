@@ -23,12 +23,12 @@ public class TitleScreenManager : MonoBehaviour
         AudioManager.instance.PlayMainMusic();
         AudioManager.instance.SetInFight();
     }
+    List<PlayerContainer> lockedContainers = new List<PlayerContainer>();
 
     public void FillClasses()
     {
-        List<PlayerData> locked = new List<PlayerData> ();
-        List<PlayerData> unlocked = new List<PlayerData> ();
-
+            List<PlayerData> locked = new List<PlayerData>();
+         List<PlayerData> unlocked = new List<PlayerData>();
         foreach(PlayerData playerData in GlobalHelper.playerDataList)
         {
             if(PlayerPrefs.GetInt(playerData.name, 0) <= 0)
@@ -55,7 +55,7 @@ public class TitleScreenManager : MonoBehaviour
             if (unlockedStatus == 0)
             {
                 pc.setLocked();
-                continue;
+                lockedContainers.Add(pc);
             }
             else if (unlockedStatus == 1)
             {
@@ -92,7 +92,24 @@ public class TitleScreenManager : MonoBehaviour
 
         }
     }
+    public void unlockAllClasses(Toggle toggle)
+    {
+        if (toggle.isOn)
+        {
+            foreach(PlayerContainer container in lockedContainers)
+            {
+                container.setUnlocked();
+            }
+        }
+        else
+        {
+            foreach (PlayerContainer container in lockedContainers)
+            {
+                container.setLocked();
+            }
+        }
 
+    }
     public void OnValidatePlayerContainer()
     {
         //When clicking on the button in the bottom right ? 
@@ -116,6 +133,10 @@ public class TitleScreenManager : MonoBehaviour
     }
     public void OnHoverEnter(PointerEventData data, PlayerContainer container)
     {
+        if (container.isLocked)
+        {
+            return;
+        }
         AudioManager.instance.PlaySound("sfx_tap", 1, UnityEngine.Random.Range(0.8f, 0.9f));
         if (selectedPlayerContainer == null)
         {
@@ -126,6 +147,7 @@ public class TitleScreenManager : MonoBehaviour
     }
     public void OnHoverExit(PointerEventData data)
     {
+
         hoveredPlayerContainer = null;
         if (selectedPlayerContainer == null)
         {
@@ -134,6 +156,10 @@ public class TitleScreenManager : MonoBehaviour
     }
     public void OnSelectPlayerContainer(PointerEventData data, PlayerContainer container)
     {
+        if (container.isLocked)
+        {
+            return;
+        }
         AudioManager.instance.PlaySound("dialogue", 1, UnityEngine.Random.Range(0.8f, 0.9f));
         GlobalHelper.getCamMovement().ShakeCamera(0.5f, 0.2f);
         selectedPlayerContainer = container;

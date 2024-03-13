@@ -47,9 +47,17 @@ public class PlayerContainer : MonoBehaviour
             unitImages.Add(go);
         }
     }
+    public bool isLocked = false;
     public void setLocked()
     {
         lockedTransform.gameObject.SetActive(true);
+        isLocked = true;
+    }
+    public void setUnlocked()
+    {
+        isLocked = false;
+
+        lockedTransform.gameObject.SetActive(false);
     }
     public void setWinCount(int count)
     {
