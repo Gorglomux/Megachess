@@ -23,7 +23,6 @@ public class RoomView : MonoBehaviour
 
     public int allyUnitsInstantiated = 0;
     public int parAfterEffects = 0;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -223,7 +222,7 @@ public class RoomView : MonoBehaviour
             //Movement stops if there is a unit 
             foreach (Vector3Int position in targetDestination)
             {
-                if (!InBounds(position))
+                if (!InBounds(position)|| GetTileAt(position).name!= GlobalHelper.GlobalVariables.TILE_GROUND)
                 {
                     isValid = false;
                     break;
@@ -587,7 +586,7 @@ public class RoomView : MonoBehaviour
                     }
                 }
             }
-            AudioManager.instance.PlaySound("dialogue", 0.5f, 0.8f);
+            AudioManager.instance.PlaySound("dialogue", 0.8f, 0.8f);
             GlobalHelper.getCamMovement().ShakeCamera(1f, 0.1f);
             yield return new WaitForSeconds(0.12f);
 

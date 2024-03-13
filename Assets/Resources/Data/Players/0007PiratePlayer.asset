@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dea91b4c0d6fa6b47b40d5b2d3b6f985, type: 3}
+  m_Name: 0007PiratePlayer
+  m_EditorClassIdentifier: 
+  playerName: The Pirate
+  sprite: {fileID: 21300000, guid: 1e517d6c65c14524aae36e01bdfad27b, type: 3}
+  description: Searching for treasures to plunder
+  startingUnits:
+  - {fileID: 11400000, guid: 04c9ee95b2607264baf21203e847f2ec, type: 2}
+  - {fileID: 11400000, guid: 04c9ee95b2607264baf21203e847f2ec, type: 2}
+  - {fileID: 11400000, guid: 600e54353c8bf5441892a86bcc77d8cb, type: 2}
+  - {fileID: 11400000, guid: ab33ad8bfa8fd1744b5f63560f78b058, type: 2}
+  - {fileID: 11400000, guid: 4500776807c84f94b97a2b65c53f0d41, type: 2}
+  - {fileID: 11400000, guid: d73847c211a98854d84e9fa9697f6056, type: 2}
+  startingAbilityData: {fileID: 11400000, guid: 0efd1522daee3ca428a774a7e7c0ca09, type: 2}
+  difficulty: 5

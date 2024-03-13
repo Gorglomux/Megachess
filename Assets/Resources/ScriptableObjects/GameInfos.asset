@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 551e2acd69d82884db553b25863272e9, type: 3}
   m_Name: GameInfos
   m_EditorClassIdentifier: 
-  currentArea: {fileID: 11400000, guid: bf9217235d9af10438fb65cb9b2b3a69, type: 2}
+  currentArea: {fileID: 11400000, guid: f47f15b1f134bdc489a4f0a263f5bddd, type: 2}
   currentRoom: {fileID: 0}
   currentGlobalPaletteIndex: 0
-  currentTurn: 1
+  currentTurn: 4
   areaSize: 1
   shouldClearPlayerPrefs: 0
   shopPassiveChoiceAmount: 3
@@ -27,3 +27,8 @@ MonoBehaviour:
   maxScreenShake: 3
   baseResetCost: 1
   test: 1
+  classesUnlockAmount: 2
+  PlayerDatasUnlockedAtStart:
+  - {fileID: 11400000, guid: 8dd8cff30f2e24544baf697fc98b1ed4, type: 2}
+  - {fileID: 11400000, guid: ec166fb242a9b31478f29b3e9029559c, type: 2}
+  - {fileID: 11400000, guid: 02327cc566ffe5d428b5e907b847b41e, type: 2}

@@ -6,11 +6,11 @@ using System.Linq;
 using UnityEngine;
 
 
-
 public class GameManager : MonoBehaviour
 {
     public Action OnAreaLoaded = delegate { };
     public Action OnRoomLoaded = delegate { };
+
 
 
     public Action<object> OnRoomCleared = delegate { };
@@ -59,6 +59,9 @@ public class GameManager : MonoBehaviour
     public int resetReduction = 0;
 
     public bool isActionInProgress = false;
+
+    public bool isPillage = false;
+    public int pillageMoney = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -95,8 +98,31 @@ public class GameManager : MonoBehaviour
         //    LoadArea(GlobalHelper.areaList[0]);
 
         //}
+        SetVictoryAmount();
         roomToClearAmount = GlobalHelper.GlobalVariables.gameInfos.roomToClearBaseAmount;
     }
+
+    public void SetVictoryAmount()
+    {
+        if (PlayerPrefs.GetInt("ClassesInitialized", 0) == 1)
+        {
+            return;
+        }
+        foreach(PlayerData playerData in GlobalHelper.playerDataList)
+        {
+
+            PlayerPrefs.SetInt(playerData.name, 0);
+
+        }
+        foreach(PlayerData data in GlobalHelper.GlobalVariables.gameInfos.PlayerDatasUnlockedAtStart)
+        {
+            PlayerPrefs.SetInt(data.name, 1);
+            print(PlayerPrefs.GetInt(data.name));
+        }
+        PlayerPrefs.SetInt("ClassesInitialized", 1);
+        PlayerPrefs.Save();
+    }
+
     public bool shouldGetBackToTitle = false;
     public void BackToTitle()
     {
@@ -134,7 +160,15 @@ public class GameManager : MonoBehaviour
     public Tween LoadArea(Area a)
     {
         currentResetCost = 0;
-        roomToClearAmount = /*areaBeaten+*/  roomToClearBonus + GlobalHelper.GlobalVariables.gameInfos.roomToClearBaseAmount;
+        if(a.overrideRoomCount > 0)
+        {
+            roomToClearAmount = a.overrideRoomCount;
+        }
+        else
+        {
+            roomToClearAmount = /*areaBeaten+*/  roomToClearBonus + GlobalHelper.GlobalVariables.gameInfos.roomToClearBaseAmount;
+
+        }
         firstAttackThisArea = false;
         GlobalHelper.GlobalVariables.gameInfos.currentArea = a;
         print("Loading area " + a.name);

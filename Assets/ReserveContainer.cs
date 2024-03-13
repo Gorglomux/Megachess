@@ -17,7 +17,7 @@ public class ReserveContainer : MonoBehaviour,ISelectable
     private int _unitCount;
     public int unitCount { get { return _unitCount; } set { if (value != _unitCount) { UpdateText(_unitCount,value); _unitCount = value;  } } }
 
-    UnitData unitData;
+    public UnitData unitData;
     public Queue units = new Queue();
     // Start is called before the first frame update
     void Start()

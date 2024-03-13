@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 //Keeping for reference, to remove
 public enum GAME_STATE
@@ -41,4 +42,6 @@ public class GameInfos : ScriptableObject
     public bool test = false;
 
 
+    public int classesUnlockAmount = 2;
+    public List<PlayerData> PlayerDatasUnlockedAtStart;
 }

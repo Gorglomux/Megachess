@@ -142,12 +142,13 @@ public class PassiveShop : MonoBehaviour
             GlobalHelper.getCamMovement().ShakeCamera(2);
             yield return new WaitForSeconds(0.2f);
         }
-
+        passiveContainers.Clear();
         foreach (ShopUnitContainer suc in unitContainers)
         {
             AudioManager.instance.PlaySound("dialogue", 1, UnityEngine.Random.Range(0.8f, 0.9f));
             Destroy(suc.gameObject);
         }
+        unitContainers.Clear();
 
         GlobalHelper.getCamMovement().ShakeCamera(2);
         yield return new WaitForSeconds(0.5f);

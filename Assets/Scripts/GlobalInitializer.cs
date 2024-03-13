@@ -15,10 +15,15 @@ public class GlobalInitializer : MonoBehaviour
     public CameraMovementManager cameraMovement;
     public GameManager gameManager;
     public GameObject playerPrefab;
-
+    public CustomCursor cursor;
     public BloodSplatManager bloodSplatManager;
     private void Awake()
     {
+#if UNITY_EDITOR
+        Debug.unityLogger.logEnabled = true;
+#else
+ Debug.logger.logEnabled = false;
+#endif
         GlobalHelper.GlobalVariables = global;
         global.paletteMaterial = paletteMaterial;
         global.unitMaterial = unitMaterial;
@@ -30,6 +35,7 @@ public class GlobalInitializer : MonoBehaviour
         global.gameManager = gameManager;
         GlobalHelper.LoadGame();
         global.bloodSplatManager = bloodSplatManager;
+        global.cursor = cursor;
         global.player = GameObject.Instantiate(playerPrefab).GetComponent<Player>();
     }
 

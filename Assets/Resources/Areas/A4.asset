@@ -17,15 +17,21 @@ MonoBehaviour:
   contrastText: 0
   colorText: {r: 1, g: 1, b: 1, a: 1}
   roomList:
-  - {fileID: 11400000, guid: c72637f268beb6c4fa30b4cc611ea1db, type: 2}
-  - {fileID: 11400000, guid: 69ac5005a056df94eb5cb7c6fd285366, type: 2}
-  - {fileID: 11400000, guid: 4c8818a7d749d314189f41d41b4068d8, type: 2}
-  - {fileID: 11400000, guid: 2ce274874132fbb4588bd25aa424ac43, type: 2}
-  - {fileID: 11400000, guid: 19e1107c743a4d14e99dbf50183de99c, type: 2}
-  - {fileID: 11400000, guid: 9863c3bb70733fa4789f23abd395d4be, type: 2}
-  - {fileID: 11400000, guid: c272ad2c39c36044b8c2f048bf71170f, type: 2}
-  - {fileID: 11400000, guid: da56104e1cc52fb41a2ad62538b43e78, type: 2}
   - {fileID: 11400000, guid: cb67021abac1ff643b1892bf748e8125, type: 2}
-  - {fileID: 11400000, guid: 5bcfa8cb350ea0840a295a06112d5dfc, type: 2}
+  - {fileID: 11400000, guid: 2ce274874132fbb4588bd25aa424ac43, type: 2}
+  - {fileID: 11400000, guid: a5a62b769b25b4543bd7987c4c37d93c, type: 2}
+  - {fileID: 11400000, guid: 888d10d560bd9f941a318e607939a071, type: 2}
   - {fileID: 11400000, guid: 1926ccf9d19483140b474ab6141a922a, type: 2}
+  - {fileID: 11400000, guid: 9863c3bb70733fa4789f23abd395d4be, type: 2}
+  - {fileID: 11400000, guid: 8b81a64a1dcbf064886e8fd26b4ffbf5, type: 2}
+  - {fileID: 11400000, guid: 69ac5005a056df94eb5cb7c6fd285366, type: 2}
+  - {fileID: 11400000, guid: 5bcfa8cb350ea0840a295a06112d5dfc, type: 2}
+  - {fileID: 11400000, guid: da56104e1cc52fb41a2ad62538b43e78, type: 2}
+  - {fileID: 11400000, guid: 1313ee7d9fdae5a4e8970f78fa7747c5, type: 2}
+  - {fileID: 11400000, guid: 4c8818a7d749d314189f41d41b4068d8, type: 2}
+  - {fileID: 11400000, guid: c72637f268beb6c4fa30b4cc611ea1db, type: 2}
+  - {fileID: 11400000, guid: c272ad2c39c36044b8c2f048bf71170f, type: 2}
+  - {fileID: 11400000, guid: 51a7c501a8a199140a27fdb263e5b6b9, type: 2}
+  - {fileID: 11400000, guid: 19e1107c743a4d14e99dbf50183de99c, type: 2}
   shuffleArea: 1
+  overrideRoomCount: -1

@@ -16,4 +16,4 @@ MonoBehaviour:
   targettingType: 1
   cooldownType: 0
   cooldownDuration: 1
-  description: Target unit gain <Shielded>.
+  description: Target unit gain <Shielded> 3.

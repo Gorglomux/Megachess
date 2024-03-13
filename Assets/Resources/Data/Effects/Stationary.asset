@@ -18,4 +18,4 @@ MonoBehaviour:
   effectDescription: Does not move after attacking
   effectActivationTime: 5
   defaultValue: 1
-  transferOnMega: 1
+  transferOnMega: 0

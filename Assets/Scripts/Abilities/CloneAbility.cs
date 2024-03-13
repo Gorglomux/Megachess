@@ -19,7 +19,7 @@ public class CloneAbility : BaseAbility
         {
             return;
         }
-        UnitData ud = GlobalHelper.GetUnitData(rc.unitImage.name);
+        UnitData ud = rc.unitData;
         if(ud == null)
         {
             Debug.LogError("Couldn't clone unit ???? on container " + rc);

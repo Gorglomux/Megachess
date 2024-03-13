@@ -57,8 +57,15 @@ public class FightWinUI : MonoBehaviour
         moneyEarnedText.gameObject.SetActive(true);
         AudioManager.instance.PlaySound("dialogue", 1.2f, UnityEngine.Random.Range(0.8f, 0.9f));
 
-        moneyEarnedText.text = "$ Earned : "  + moneyEarned;
+        int moneyPlundered = GlobalHelper.GetGameManager().pillageMoney;
+        string plunderedOrNot = "";
+        if(moneyPlundered != 0)
+        {
+            plunderedOrNot = String.Format("+{0} Plundered", moneyPlundered);
+        }
+        moneyEarnedText.text = String.Format("$ Earned : {0} {1}",moneyEarned, plunderedOrNot);
         GlobalHelper.GlobalVariables.player.money += moneyEarned;
+        GlobalHelper.GlobalVariables.player.money += moneyPlundered;
         yield return new WaitForSeconds(delay);
 
         GlobalHelper.getCamMovement().ShakeCamera(0.5f, delay);

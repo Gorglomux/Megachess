@@ -18,4 +18,4 @@ MonoBehaviour:
   effectDescription: Negates one hit for each charge. Removes itself after activation.
   effectActivationTime: 5
   defaultValue: 1
-  transferOnMega: 1
+  transferOnMega: 0

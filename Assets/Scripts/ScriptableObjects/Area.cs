@@ -19,7 +19,7 @@ public class Area : ScriptableObject
 
     private int currentRoomIndex;
     private bool areaShuffled = false;
-    
+    public int overrideRoomCount = -1;
     public List<Room> GetRooms() { 
         if (shuffleArea)
         {

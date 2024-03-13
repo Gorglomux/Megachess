@@ -173,6 +173,9 @@ public class GlobalHelper
             case "Promote":
                 ability = new PromoteAbility(ad);
                 break;
+            case "Pillage":
+                ability = new PillageAbility(ad);
+                break;
             default:
                 Debug.LogError("Invalid ability lookup");
                 break;
@@ -249,7 +252,7 @@ public class GlobalHelper
         worldPosition = new Vector3(worldPosition.x, worldPosition.y, 0);
         return worldPosition;
     }
-
+    
     public static UIManager UI()
     {
         return GlobalVariables.UIManager;
@@ -323,4 +326,16 @@ public class GlobalHelper
         return (int)Mathf.Clamp(GlobalVariables.gameInfos.baseResetCost + GetGameManager().currentResetCost - GetGameManager().resetReduction , 1, 10);
     }
 
+    public static void DisableMouse()
+    {
+        GlobalVariables.inputManager.blockInputs = true;
+        GlobalVariables.cursor.hideMouse= true;
+    }
+    public static void EnableMouse()
+    {
+
+        GlobalVariables.inputManager.blockInputs = false;
+        GlobalVariables.cursor.hideMouse = false;
+
+    }
 }

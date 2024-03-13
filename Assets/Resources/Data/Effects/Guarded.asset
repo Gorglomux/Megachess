@@ -18,4 +18,4 @@ MonoBehaviour:
   effectDescription: Gain a shield after killing an enemy unit
   effectActivationTime: 6
   defaultValue: 1
-  transferOnMega: 1
+  transferOnMega: 0

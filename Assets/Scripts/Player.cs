@@ -192,6 +192,7 @@ public class Player : MonoBehaviour
 
 
     }
+    public PlayerData playerData;
     public IEnumerator corLoadPlayerData(PlayerData data)
     {
         ClearInventory();
@@ -209,6 +210,7 @@ public class Player : MonoBehaviour
         {
             GlobalHelper.GlobalVariables.player.testMegaInventory();
         }
+        playerData = data;
         ChangeAbility(data.startingAbilityData);
     }
     public List<PassiveData> passiveDatas = new List<PassiveData>();

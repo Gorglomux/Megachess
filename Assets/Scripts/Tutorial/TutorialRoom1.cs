@@ -34,6 +34,7 @@ public class TutorialRoom1 : TutorialRoomBase
         GlobalHelper.UI().abilityButton.gameObject.SetActive(false);
         GlobalHelper.UI().endTurnButton.gameObject.SetActive(false);
         GlobalHelper.UI().resetFightButton.gameObject.SetActive(false);
+        GlobalHelper.DisableMouse();
     }
 
     public void OnDestroy()
@@ -44,6 +45,8 @@ public class TutorialRoom1 : TutorialRoomBase
     {
         yield return new WaitForSeconds(2);
         EnableFogOfWar(0);
+        GlobalHelper.EnableMouse();
+
         GlobalHelper.UI().SetBottomText("Click on your king to select it.", -1, true);
         GlobalHelper.getCamMovement().ShakeCamera(4f, 0.8f);
 
@@ -91,6 +94,7 @@ public class TutorialRoom1 : TutorialRoomBase
     {
         yield return new WaitForSeconds(2);
         GlobalHelper.getCamMovement().ShakeCamera(3f, 1);
+        GlobalHelper.DisableMouse();
         GlobalHelper.UI().SetBottomText("Did you think getting rid of me was going to be this easy?");
         AudioManager.instance.PlaySound("sfx_drum_lowpitch", 1f, UnityEngine.Random.Range(0.9f, 1f));
 

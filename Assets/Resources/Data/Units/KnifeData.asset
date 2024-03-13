@@ -22,6 +22,6 @@ MonoBehaviour:
   effectDatas:
   - {fileID: 11400000, guid: 5c5db206379ecf24d9933a76c951d5a5, type: 2}
   - {fileID: 11400000, guid: da516d734bc970b48846a00519bcbb3b, type: 2}
-  paletteIndex: 13
-  attackOrder: 1
+  paletteIndex: 7
+  attackOrder: 13
   spreadAttack: 1

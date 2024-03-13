@@ -128,7 +128,7 @@ public class AudioManager : MonoBehaviour
         currentSourceIndex = (currentSourceIndex + 1)%pooledSourcesCount;
         return asource;
     }
-    public void PlayFightMusic(string musicName = "")
+    public void PlayFightMusic(string musicName = "", bool instant = false)
     {
         AudioClip music = null;
         if(musicName != "")
@@ -147,7 +147,18 @@ public class AudioManager : MonoBehaviour
         if (music != null)
         {
             savedMainMusicTime = mainMusicAudioSource.time;
-            StartCoroutine(crossFadeMusic(mainMusicAudioSource,fightMusicAudioSource, music));
+            if (!instant)
+            {
+                StartCoroutine(crossFadeMusic(mainMusicAudioSource, fightMusicAudioSource, music));
+
+            }
+            else
+            {
+                fightMusicAudioSource.clip = music;
+                fightMusicAudioSource.volume = 1f;
+                fightMusicAudioSource.Play();
+                mainMusicAudioSource.volume = 0f;
+            }
         }
         else
         {

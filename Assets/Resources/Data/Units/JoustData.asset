@@ -15,11 +15,13 @@ MonoBehaviour:
   unitName: Joust
   sprite: {fileID: 21300000, guid: 932b5a07c1cdb0b4f9832f21ffa57028, type: 3}
   sprite_NB: {fileID: 21300000, guid: 4ec3e905cc9296642a2e38a64c7aa1d8, type: 3}
-  baseCost: 7
+  baseCost: 8
   isBoss: 0
   moveAfterAttack: 1
   canTargetAllies: 0
-  effectDatas: []
-  paletteIndex: 11
+  effectDatas:
+  - {fileID: 11400000, guid: e25b0df6abc2a87479e1c2adee493ab2, type: 2}
+  - {fileID: 11400000, guid: 5c5db206379ecf24d9933a76c951d5a5, type: 2}
+  paletteIndex: 13
   attackOrder: 1
   spreadAttack: 0

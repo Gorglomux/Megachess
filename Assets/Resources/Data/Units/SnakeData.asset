@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee64ea7af66fc514b9895e63be2103c5, type: 3}
+  m_Name: SnakeData
+  m_EditorClassIdentifier: 
+  unitName: Snake
+  sprite: {fileID: 21300000, guid: 72cc703e109076f4b8b515c1fb42905f, type: 3}
+  sprite_NB: {fileID: 21300000, guid: 84a33865e51a45b45a4be6cef77b6ec3, type: 3}
+  baseCost: 3
+  isBoss: 0
+  moveAfterAttack: 1
+  canTargetAllies: 0
+  effectDatas: []
+  paletteIndex: 7
+  attackOrder: 3
+  spreadAttack: 0

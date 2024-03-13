@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaef5d30ab8397d4898a381aba4f3e7d, type: 3}
+  m_Name: A6
+  m_EditorClassIdentifier: 
+  areaName: Giant grounds
+  paletteIndex: 15
+  contrastText: 0
+  colorText: {r: 1, g: 1, b: 1, a: 1}
+  roomList:
+  - {fileID: 11400000, guid: 8e8f8cceae9ad074dbffabb386fd536f, type: 2}
+  - {fileID: 11400000, guid: 68a908f27dfe65b40a25e7ebbfc61e9d, type: 2}
+  - {fileID: 11400000, guid: aff68ed798c3bac4191e3dc8cdbd6312, type: 2}
+  - {fileID: 11400000, guid: 8aff5f28e8890f34b8831bc082f77afe, type: 2}
+  - {fileID: 11400000, guid: 175bca807c4fbe5409768a946d3a7c6c, type: 2}
+  - {fileID: 11400000, guid: 66c6fcc064576a24fa8ebbaee7b27184, type: 2}
+  - {fileID: 11400000, guid: f38c5bfd564a2ca4f93fca7b6168e573, type: 2}
+  - {fileID: 11400000, guid: db0cab481b39ad744bd0838bfc63a787, type: 2}
+  - {fileID: 11400000, guid: fdd990c1c44c39d41b0169ededea80b7, type: 2}
+  - {fileID: 11400000, guid: da6db5b2d2d49e5409488fada7f43b0a, type: 2}
+  - {fileID: 11400000, guid: 6d6140e533a7b7743a7354a58d5b665b, type: 2}
+  - {fileID: 11400000, guid: e9b80f3ae931cb44abab99d36545d425, type: 2}
+  shuffleArea: 1
+  overrideRoomCount: -1

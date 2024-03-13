@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
@@ -65,10 +66,32 @@ public class UIManager : MonoBehaviour
         DisableButton(abilityButton.button);
         SetBottomText("");
 
-
+        HideEndScreen();
 
         DOTween.timeScale = PlayerPrefs.GetFloat("AnimationSpeed", 1);
         GlobalHelper.ScreenShakeMultiplier = PlayerPrefs.GetFloat("ScreenShake", 1);
+    }
+    public EndScreen endScreen;
+    public void ShowEndScreen()
+    {
+        endScreen.gameObject.SetActive(true);
+        endScreen.AnimateShow();
+    }
+    public void BackToMenu()
+    {
+
+    }
+    public IEnumerator corBackToMenu()
+    {
+        ShowBlackScreen();
+        GlobalHelper.getCamMovement().ShakeCamera(2);
+        AudioManager.instance.PlaySound("dialogue", 1, 1);
+        yield return new WaitForSeconds(3);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+    public void HideEndScreen()
+    {
+        endScreen.gameObject.SetActive(false);
     }
     public void HidePassivesMenu()
     {

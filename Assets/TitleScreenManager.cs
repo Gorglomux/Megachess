@@ -26,11 +26,46 @@ public class TitleScreenManager : MonoBehaviour
 
     public void FillClasses()
     {
-        List<PlayerData> classes = GlobalHelper.playerDataList.OrderBy(x=> x.difficulty).ToList();
+        List<PlayerData> locked = new List<PlayerData> ();
+        List<PlayerData> unlocked = new List<PlayerData> ();
+
+        foreach(PlayerData playerData in GlobalHelper.playerDataList)
+        {
+            if(PlayerPrefs.GetInt(playerData.name, 0) <= 0)
+            {
+                locked.Add(playerData);
+            }
+            else
+            {
+                unlocked.Add(playerData);
+            }
+        }
+        unlocked = unlocked.OrderBy(x => x.difficulty).ToList();
+
+        List<PlayerData> classes = new List<PlayerData>();
+        classes.AddRange(unlocked);
+        classes.AddRange(locked);
+
         foreach (PlayerData playerData in classes)
         {
             GameObject go = GameObject.Instantiate(prefabPlayerContainer, gridTransform);
             PlayerContainer pc = go.GetComponent<PlayerContainer>();
+            playerContainers.Add(pc);
+            int unlockedStatus = PlayerPrefs.GetInt(playerData.name);
+            if (unlockedStatus == 0)
+            {
+                pc.setLocked();
+                continue;
+            }
+            else if (unlockedStatus == 1)
+            {
+
+            }
+            else
+            {
+                pc.setWinCount(unlockedStatus - 1);
+            }
+
             EventTrigger et = pc.GetComponent<EventTrigger>();
             // Add PointerEnter event listener
             EventTrigger.Entry entry2 = new EventTrigger.Entry();
@@ -54,7 +89,7 @@ public class TitleScreenManager : MonoBehaviour
             et.triggers.Add(entryExitHover);
             pc.AddUnits(playerData.startingUnits);
             pc.FillPlayer(playerData);
-            playerContainers.Add(pc);
+
         }
     }
 

@@ -13,16 +13,22 @@ MonoBehaviour:
   m_Name: A5
   m_EditorClassIdentifier: 
   areaName: The Hole
-  paletteIndex: 13
+  paletteIndex: 4
   contrastText: 0
   colorText: {r: 1, g: 1, b: 1, a: 1}
   roomList:
-  - {fileID: 11400000, guid: 45b7b23b5fbb0924bb9b631e3aa84e68, type: 2}
-  - {fileID: 11400000, guid: 8fe4bf5a04510754dbbad5372bbb782d, type: 2}
-  - {fileID: 11400000, guid: 635f4f7ec49800b4b95474a4925e53b2, type: 2}
-  - {fileID: 11400000, guid: d15859e2213889040972feabbcfc80ec, type: 2}
-  - {fileID: 11400000, guid: 804157168614f224baddce5c237850c7, type: 2}
   - {fileID: 11400000, guid: 8ef2ce9e50c90214489b87df2b336eed, type: 2}
+  - {fileID: 11400000, guid: 804157168614f224baddce5c237850c7, type: 2}
+  - {fileID: 11400000, guid: 8fe4bf5a04510754dbbad5372bbb782d, type: 2}
+  - {fileID: 11400000, guid: d15859e2213889040972feabbcfc80ec, type: 2}
   - {fileID: 11400000, guid: f2a68627fc924f14691e067ab2e12a98, type: 2}
+  - {fileID: 11400000, guid: 635f4f7ec49800b4b95474a4925e53b2, type: 2}
+  - {fileID: 11400000, guid: 108de9d8efb876c4db30460fe53c6fe6, type: 2}
+  - {fileID: 11400000, guid: f9f94fa314cc8a84699063b064eafb5c, type: 2}
+  - {fileID: 11400000, guid: 45fdb035b1d561c4792a315cc9714ac3, type: 2}
   - {fileID: 11400000, guid: 8cb6357bc79602e42bf9988d1871e703, type: 2}
+  - {fileID: 11400000, guid: 86f6b9b9ce772a14ea60f26406321eda, type: 2}
+  - {fileID: 11400000, guid: 45b7b23b5fbb0924bb9b631e3aa84e68, type: 2}
+  - {fileID: 11400000, guid: 335a7bd8c1dcfec44ad5a63b00afe8ff, type: 2}
   shuffleArea: 1
+  overrideRoomCount: -1

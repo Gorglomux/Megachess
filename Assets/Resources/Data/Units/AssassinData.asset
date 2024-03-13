@@ -19,6 +19,8 @@ MonoBehaviour:
   isBoss: 0
   moveAfterAttack: 1
   canTargetAllies: 0
-  effectDatas: []
-  paletteIndex: 7
+  effectDatas:
+  - {fileID: 11400000, guid: 89592dc85f4e7a143862bd5acbff5ead, type: 2}
+  paletteIndex: 13
   attackOrder: 5
+  spreadAttack: 0

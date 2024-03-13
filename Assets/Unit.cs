@@ -235,7 +235,7 @@ public class Unit : MonoBehaviour, ISelectable, IHoverable, IDraggable
                         attackSequence.Join(t);
                     }
                 }
-                if (!onlySelf && !isEnemy && !GlobalHelper.GetGameManager().firstAttackThisArea && !roomRef.roomData.isTutorial)
+                if (!onlySelf && !isEnemy && !GlobalHelper.GetGameManager().firstAttackThisArea && !roomRef.roomData.isTutorial && !roomRef.roomData.isBoss)
                 {
                     GlobalHelper.GetGameManager().firstAttackThisArea = true;
                     attackSequence.Prepend(GlobalHelper.getCamMovement().ZoomToPosition(GetWorldPosition() + (targeted[0].GetWorldPosition() - GetWorldPosition()) / 2));
@@ -250,28 +250,36 @@ public class Unit : MonoBehaviour, ISelectable, IHoverable, IDraggable
             attackSequence.onComplete += () =>
             {
 
+                List<Vector3Int> movePosition = new List<Vector3Int>();
                 if (unitData.moveAfterAttack)
                 {
                     bool canMove = true;
-                    List<Vector3Int> movePosition = new List<Vector3Int>();
-                    if(positions.Count > occupiedCells.Count && !mustNotMove)
+                    if(positions.Count != occupiedCells.Count)
                     {
-                        List<Vector3Int> orderedByDistance = positions.OrderBy(x => Vector3.Distance(roomRef.GetCenter(roomRef.CellToTilemap(x)), GetWorldPosition())).ToList();
-                        canMove = false;
-                        foreach (Vector3Int cell in orderedByDistance)
+                        if (positions.Count > occupiedCells.Count && !mustNotMove)
                         {
-                            movePosition = EvaluateAroundCellPosition(cell);
-                            movePosition.RemoveAll(x => !orderedByDistance.Contains(x));
-                            movePosition.Take(occupiedCells.Count);
-
-                            if (movePosition.Count == occupiedCells.Count)
+                            List<Vector3Int> orderedByDistance = positions.OrderBy(x => Vector3.Distance(roomRef.GetCenter(roomRef.CellToTilemap(x)), GetWorldPosition())).ToList();
+                            canMove = false;
+                            foreach (Vector3Int cell in orderedByDistance)
                             {
-                                canMove = true;
-                                break;
-                            }
-                        }
+                                movePosition = EvaluateAroundCellPosition(cell);
+                                movePosition.RemoveAll(x => !orderedByDistance.Contains(x));
+                                movePosition.Take(occupiedCells.Count);
 
+                                if (movePosition.Count == occupiedCells.Count)
+                                {
+                                    canMove = true;
+                                    break;
+                                }
+                            }
+
+                        }
                     }
+                    else
+                    {
+                        movePosition = positions;
+                    }
+                   
                     if (canMove)
                     {
                         Move(movePosition, !hasMoved);
@@ -288,6 +296,7 @@ public class Unit : MonoBehaviour, ISelectable, IHoverable, IDraggable
 
                     }
                     GlobalHelper.GlobalVariables.indicatorManager.HideAll();
+                    roomRef.OnBoardUpdate();
                     if (actionsLeft > 0 && !isEnemy)
                     {
                         StartIdle();
@@ -671,15 +680,20 @@ public class Unit : MonoBehaviour, ISelectable, IHoverable, IDraggable
 
         }
         bool hasUnits = false;
+        bool onlyAllies = true;
         foreach(Vector3Int cell in spreadList)
         {
-            if(roomRef.GetUnitAt(cell) != null)
+            Unit u = roomRef.GetUnitAt(cell);
+            if(u!= null)
             {
+                if (u.isEnemy)
+                {
+                    onlyAllies = false;
+                }
                 hasUnits = true;
-                break;
             }
         }
-        if (!hasUnits)
+        if (!hasUnits || onlyAllies)
         {
             spreadList.Clear();
         }

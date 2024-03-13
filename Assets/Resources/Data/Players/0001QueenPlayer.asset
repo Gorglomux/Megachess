@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dea91b4c0d6fa6b47b40d5b2d3b6f985, type: 3}
+  m_Name: 0001QueenPlayer
+  m_EditorClassIdentifier: 
+  playerName: The Queen
+  sprite: {fileID: 21300000, guid: 1b46791c58b58714ba6f1c236fc351a9, type: 3}
+  description: Will get Their majesty back at all cost
+  startingUnits:
+  - {fileID: 11400000, guid: 3f53a01bc97a588459a0c91a7f8a0c45, type: 2}
+  - {fileID: 11400000, guid: d73847c211a98854d84e9fa9697f6056, type: 2}
+  - {fileID: 11400000, guid: d73847c211a98854d84e9fa9697f6056, type: 2}
+  - {fileID: 11400000, guid: 22ffdd022e549434182fd356d4af910f, type: 2}
+  - {fileID: 11400000, guid: 4500776807c84f94b97a2b65c53f0d41, type: 2}
+  - {fileID: 11400000, guid: ec16354909c31cc48a99e01913265d94, type: 2}
+  startingAbilityData: {fileID: 11400000, guid: cef8e7116d7f6c047b20a3c53b030746, type: 2}
+  difficulty: 0

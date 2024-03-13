@@ -18,4 +18,4 @@ MonoBehaviour:
   effectDescription: +1 action per charge.
   effectActivationTime: 8
   defaultValue: 1
-  transferOnMega: 1
+  transferOnMega: 0

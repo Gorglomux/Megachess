@@ -24,6 +24,8 @@ public class GuardianAbility : BaseAbility
         GlobalHelper.UI().captureManager.DisplayAtPosition(u.GetWorldPosition(), "+ Shielded");
         GlobalHelper.UI().HideHoverInfos();
         u.AddEffect(GlobalHelper.effectLookup(GlobalHelper.GetEffectData("Shielded")));
+        u.AddEffect(GlobalHelper.effectLookup(GlobalHelper.GetEffectData("Shielded")));
+        u.AddEffect(GlobalHelper.effectLookup(GlobalHelper.GetEffectData("Shielded")));
         GlobalHelper.getCamMovement().ShakeCamera(0.3f, 0.2f);
 
         currentCharge = abilityData.cooldownDuration;

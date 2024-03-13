@@ -30,4 +30,5 @@ public class GlobalVariables : ScriptableObject
     public CameraMovementManager cameraMovement;
     public GameManager gameManager;
     public BloodSplatManager bloodSplatManager;
+    public CustomCursor cursor;
 }

@@ -230,11 +230,17 @@ public class FightState : IState
     }
     public void AutoEndTurn()
     {
+        gmRef.StartCoroutine(corAutoEndTurn());
+    }
+    public IEnumerator corAutoEndTurn()
+    {
+        yield return null;
+        yield return null;
         Debug.Log("Checking auto end turn");
         RoomView r = GlobalHelper.GetRoom();
         List<Unit> units = r.GetAllies();
         bool endTurn = true;
-        foreach(Unit u in units)
+        foreach (Unit u in units)
         {
             if (u.actionsLeft > 0)
             {
@@ -266,6 +272,7 @@ public class FightState : IState
         {
             GlobalHelper.UI().nextFight.StopAnimate();
             GlobalHelper.UI().SetBottomText("Fight won, going to the next fight !");
+            
             r.StartCoroutine(GoToNextFight());
             endFight = true;
         }
@@ -322,7 +329,7 @@ public class FightState : IState
         // Start Down Animation, and display the fight recap
         GameInfos gf = GlobalHelper.GlobalVariables.gameInfos;
 
-        int moneyEarned =Mathf.Clamp(gf.currentRoom.parAfterEffects - gf.currentTurn+1,0,99999);
+        int moneyEarned =Mathf.Clamp(gf.currentRoom.parAfterEffects - gf.currentTurn+1,1,99999);
         GlobalHelper.UI().fightWinUI.OnNextPressed += LoadNext;
         gmRef.OnRoomCleared(GlobalHelper.GetGameManager().currentRoom);
         yield return GlobalHelper.UI().fightWinUI.Show(gf.currentRoom.parAfterEffects, GlobalHelper.GlobalVariables.gameInfos.currentTurn, moneyEarned, capturedThisFight);
@@ -364,11 +371,11 @@ public class ChangeRoomState : IState
     {
         RoomView previousRoom = GlobalHelper.GetRoom();
         bool previousRoomIsTutorial = previousRoom != null && previousRoom.roomData.isTutorial;
+        bool previousRoomIsBoss = previousRoom != null && previousRoom.roomData.isBoss;
 
         if (gmRef.shouldGetBackToTitle)
         {
             GlobalHelper.getCamMovement().ShakeCamera(4f, 0.8f);
-            GlobalHelper.UI().ShowBlackScreen();
             yield return new WaitForSeconds(2);
 
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -385,6 +392,14 @@ public class ChangeRoomState : IState
         }
         else
         {
+
+            if (previousRoomIsBoss)
+            {
+                GlobalHelper.getCamMovement().ShakeCamera(4f, 1f);
+                GlobalHelper.UI().ShowEndScreen();
+                GlobalHelper.UI().ShowBlackScreen();
+                yield break;
+            }
             if (previousRoomIsTutorial)
             {
                 if (gmRef.shouldGetBackToTitle || previousRoomIsTutorial)

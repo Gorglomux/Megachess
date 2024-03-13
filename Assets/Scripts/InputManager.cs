@@ -16,9 +16,11 @@ public class InputManager : MonoBehaviour
 
 
     public GameInfos infos;
+    public bool blockInputs = false;
     // Start is called before the first frame update
     void Start()
     {
+        blockInputs = false;
         currentHoverDelay = maxHoverDelay;
            infos = GlobalHelper.GlobalVariables.gameInfos;
     }
@@ -38,6 +40,10 @@ public class InputManager : MonoBehaviour
     public float currentHoverDelay = 0f;
     void Update()
     {
+        if (blockInputs)
+        {
+            return;
+        }
         if (currentHovered != null)
         {
             currentHoverDelay += Time.deltaTime;
@@ -115,15 +121,7 @@ public class InputManager : MonoBehaviour
 
         }
 
-        if (Input.GetMouseButtonDown(1))
-        {
-            if (currentSelected != null)
-            {
-                infos.selected = null;
-                currentSelected.onDeselect(new Vector3(worldPosition.x, worldPosition.y, 0));
-                currentSelected = null;
-            }
-        }
+
         if(currentSelected != null)
         {
             currentSelected.onSelectTick(worldPosition);

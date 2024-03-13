@@ -76,7 +76,7 @@ public class BaseAbility
         }
     }
 
-    public void onDestroy()
+    public virtual void onDestroy()
     {
         RoomView rv = GlobalHelper.GetRoom();
         GameManager gm = GlobalHelper.GetGameManager();
